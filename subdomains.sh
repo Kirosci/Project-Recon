@@ -29,14 +29,14 @@ wait
 
 #----------------------------Sorting Assets-----------------------------------------
 
-cat assetfinder_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt knockpy_subdomains.txt | sort -u | tee all_assets.txt
+cat assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt knockpy_subdomains.txt | sort -u | tee all_assets.txt
 
 cat all_assets.txt | grep -i -F .$domain | awk '{print$1}' | sort -u | grep -i -F .$domain | awk '{print$1}' | tee subdomains.txt
 
 #---------------------------Organizing Assets---------------------------------------
 
 mkdir deep/
-mv assetfinder_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt knockpy_subdomains.txt all_assets.txt deep/  
+mv assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt knockpy_subdomains.txt all_assets.txt deep/  
 
 #-----------------------------Finding Live Subdomains-------------------------------
 

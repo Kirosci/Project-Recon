@@ -1,0 +1,13 @@
+resources.thecyberboy.com
+webmail.thecyberboy.com
+shop.thecyberboy.com
+ftp.thecyberboy.com
+blog.thecyberboy.com
+phpmyadmin.thecyberboy.com
+autoconfig.thecyberboy.com
+learn.thecyberboy.com
+autoconfig.course.thecyberboy.com
+course.thecyberboy.com
+autodiscover.course.thecyberboy.com
+autodiscover.thecyberboy.com
+vaidikpandya.thecyberboy.com

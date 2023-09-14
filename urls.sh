@@ -8,12 +8,12 @@ cat live_subdomains.txt | waybackurls | tee wayback_urls.txt
 ) &
 
 (
-cat live_subdomains.txt | gau | tee gau_urls.txt 
+cat live_subdomains.txt | gau | tee gau_urls.txt
 ) &
 
 wait
 
-cat wayback_urls.txt gau_urls.txt | sort -u |tee urls.txt &
+cat wayback_urls.txt gau_urls.txt | sort -u |tee urls.txt 1> /dev/null &
 
 
 #-------------------------------------URLs_Done------------------------------------------------
@@ -25,10 +25,9 @@ mv gau_urls.txt wayback_urls.txt all_assets.txt deep/
 
 #-----------------------------------------Organizing_Done---------------------------------------
 
-
 clear
 
 echo "Mission Completed Respect+"
 
-tree $dir
+tree ../$dir
 

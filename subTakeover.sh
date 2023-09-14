@@ -2,14 +2,13 @@
 
 read dir
 cd $dir
-touch a.txt
 # Remove files if it exisits
 rm subTakeovers.txt 2> /dev/null
 rm 404.txt 2> /dev/null
 
 # Read subdomains and filter out 404 ones
 file="subdomains.txt"
-cat $file | httpx -mc 404 | sed 's/https\?:\/\///' | tee 404.txt 1> /dev/null
+cat $file | httpx -mc 404 | sed 's/https\?:\/\///' | tee 404.txt
 clear
 
 # Checking for cname of all filtered subdomains

@@ -13,6 +13,6 @@ cat $file | httpx -mc 404 | sed 's/https\?:\/\///' > 404.txt 2> /dev/null
 # Checking for cname of all filtered subdomains
 file="404.txt"
 while read -r line; do
-dig "$line" | grep -a "CNAME" | grep -a "$line" > -a subTakeovers.txt 
+dig "$line" | grep -a "CNAME" | grep -a "$line" > subTakeovers.txt 
 done <$file
 

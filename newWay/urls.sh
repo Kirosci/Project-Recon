@@ -3,8 +3,6 @@
 read dir
 cd $dir
 
-echo "    |---[Waybackurls | GAU | Katana]"
-
 (
     cat live_subdomains.txt | waybackurls > wayback_urls.txt 
 ) &

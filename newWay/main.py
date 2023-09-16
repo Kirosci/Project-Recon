@@ -7,17 +7,20 @@ import colorama
 # For gathering subdomains
 def subdomains(domain):
     print("[Task: Subdomain Enumeration] [Status: In progress]")
+    print("    |---[Assetfinder |  Subfinder | Amass | Haktrails]")
     p_subdomain = subprocess.Popen(f"echo {domain} | ./subdomains.sh",shell=True).wait()
     print("[Task: subdomainEnumeration] [Status: Completed]")
 
 # For checking subdomain takeover 
 def subTakeover(domain):
     print("[Task: Subdomain Takeover Check] [Status: In progress]")
+    print("    |---[Dig]")
     p_urls= subprocess.Popen(f"echo {domain} | ./subTakeover.sh",shell=True)
 
 # For gathering urls 
 def urls(domain):
     print("[Task: URL Gathering] [Status: In progress]")
+    print("    |---[Waybackurls | GAU | Katana]")
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True)
 
 # Check internet connection 

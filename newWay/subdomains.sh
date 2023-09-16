@@ -6,8 +6,6 @@ mkdir $dir
 
 cd $dir
 
-echo "    |---[Assetfinder |  Subfinder | Amass | Haktrails]"
-
 (
   echo "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
 ) &

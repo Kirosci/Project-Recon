@@ -2,6 +2,7 @@ import subprocess
 import os
 import threading
 import requests
+import colorama
         
 # For gathering subdomains
 def subdomains(domain):

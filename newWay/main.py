@@ -24,11 +24,11 @@ def urls():
 if __name__ == '__main__':
 
     os.system('clear')
-    print("Go hunt for the bugs, leave recon on me")
+    print("<---------Go hunt for the bugs, leave recon on me--------->")
     thread_subdomains = threading.Thread(target=subdomains)
     thread_urls = threading.Thread(target=urls)
     thread_subTakeover = threading.Thread(target=subTakeover)
-    
+
     thread_subdomains.start()
     thread_subdomains.join()
 

@@ -6,22 +6,36 @@ import colorama
         
 # For gathering subdomains
 def subdomains(domain):
-    print("[Task: Subdomain Enumeration] [Status: In progress]")
+    print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
+    print (Fore.GREEN + "[Status: In progress]")
+    print(Style.RESET_ALL)
     print("    |---[Assetfinder |  Subfinder | Amass | Haktrails]")
     p_subdomain = subprocess.Popen(f"echo {domain} | ./subdomains.sh",shell=True).wait()
-    print("[Task: subdomainEnumeration] [Status: Completed]")
+    print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]")
+    print(Style.RESET_ALL)
 
 # For checking subdomain takeover 
 def subTakeover(domain):
-    print("[Task: Subdomain Takeover Check] [Status: In progress]")
+    print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
+    print (Fore.GREEN + "[Status: In progress]")
+    print(Style.RESET_ALL)
     print("    |---[Dig]")
     p_urls= subprocess.Popen(f"echo {domain} | ./subTakeover.sh",shell=True)
+    print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]")
+    print(Style.RESET_ALL)
 
 # For gathering urls 
 def urls(domain):
-    print("[Task: URL Gathering] [Status: In progress]")
+    print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
+    print (Fore.GREEN + "[Status: In progress]")
+    print(Style.RESET_ALL)
     print("    |---[Waybackurls | GAU | Katana]")
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True)
+    print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]")
+    print(Style.RESET_ALL)
 
 # Check internet connection 
 def check_internet():
@@ -43,7 +57,7 @@ def main():
             # Get Target Domain name 
             domain = input("Enter the domain name: ")
 
-            print("<---------Go hunt for the bugs, leave recon on me--------->")
+            print(Fore.YELLOW + "<---------Go hunt for the bugs, leave recon on me--------->")
 
             # Making threads for functions
             thread_subdomains = threading.Thread(target=subdomains, args=(domain,))

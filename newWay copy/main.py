@@ -1,6 +1,7 @@
 import subprocess
 import os
 import threading
+domain = input("Enter the domain name: ")
 
 def subdomains():
     print("[Task: Subdomain Enumeration] [Status: Sent to Queue]")
@@ -23,10 +24,6 @@ def urls():
 if __name__ == '__main__':
 
     os.system('clear')
-    domain = input("Enter the domain name: ")
-
-
-
     print("<---------Go hunt for the bugs, leave recon on me--------->")
     thread_subdomains = threading.Thread(target=subdomains)
     thread_urls = threading.Thread(target=urls)

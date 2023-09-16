@@ -2,14 +2,14 @@ import subprocess
 import os
 import threading
 import requests
-import colorama
+from colorama import Fore, Back, Style
         
 # For gathering subdomains
 def subdomains(domain):
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: In progress]")
+    print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]")
     print(Style.RESET_ALL)
-    print("    |---[Assetfinder |  Subfinder | Amass | Haktrails]")
     p_subdomain = subprocess.Popen(f"echo {domain} | ./subdomains.sh",shell=True).wait()
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
@@ -19,8 +19,8 @@ def subdomains(domain):
 def subTakeover(domain):
     print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.GREEN + "[Status: In progress]")
+    print(Fore.WHITE + "    |---[Dig]")
     print(Style.RESET_ALL)
-    print("    |---[Dig]")
     p_urls= subprocess.Popen(f"echo {domain} | ./subTakeover.sh",shell=True)
     print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
@@ -30,8 +30,8 @@ def subTakeover(domain):
 def urls(domain):
     print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
     print (Fore.GREEN + "[Status: In progress]")
+    print(Fore.WHITE + "    |---[Waybackurls | GAU | Katana]")
     print(Style.RESET_ALL)
-    print("    |---[Waybackurls | GAU | Katana]")
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True)
     print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
@@ -55,7 +55,7 @@ def main():
 
             os.system('clear')
             # Get Target Domain name 
-            domain = input("Enter the domain name: ")
+            domain = input(Fore.WHITE + "Enter the domain name: ")
 
             print(Fore.YELLOW + "<---------Go hunt for the bugs, leave recon on me--------->")
 

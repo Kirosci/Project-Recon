@@ -28,6 +28,7 @@ if __name__ == '__main__':
     thread_subdomains = threading.Thread(target=subdomains)
     thread_urls = threading.Thread(target=urls)
     thread_subTakeover = threading.Thread(target=subTakeover)
+    
     thread_subdomains.start()
     thread_subdomains.join()
 

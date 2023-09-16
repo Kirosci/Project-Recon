@@ -3,23 +3,23 @@ import os
 import threading
 import requests
         
-
+# For gathering subdomains
 def subdomains(domain):
     print("[Task: Subdomain Enumeration] [Status: In progress]")
     p_subdomain = subprocess.Popen(f"echo {domain} | ./subdomains.sh",shell=True).wait()
     print("[Task: subdomainEnumeration] [Status: Completed]")
 
-
+# For checking subdomain takeover 
 def subTakeover(domain):
     print("[Task: Subdomain Takeover Check] [Status: In progress]")
     p_urls= subprocess.Popen(f"echo {domain} | ./subTakeover.sh",shell=True)
 
-
+# For gathering urls 
 def urls(domain):
     print("[Task: URL Gathering] [Status: In progress]")
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True)
 
-
+# Check internet connection 
 def check_internet():
     try:
         response = requests.get("https://8.8.8.8", timeout=2)
@@ -30,12 +30,15 @@ def check_internet():
 
 def main():
 
+    # Handling sudden termination 
     try:
-
+        # Check Internet Connection 
         if check_internet():
 
             os.system('clear')
+            # Get Target Domain name 
             domain = input("Enter the domain name: ")
+
             print("<---------Go hunt for the bugs, leave recon on me--------->")
 
             # Making threads for functions

@@ -4,18 +4,18 @@ import threading
 import requests
         
 
-def subdomains():
+def subdomains(domain):
     print("[Task: Subdomain Enumeration] [Status: In progress]")
     p_subdomain = subprocess.Popen(f"echo {domain} | ./subdomains.sh",shell=True).wait()
     print("[Task: subdomainEnumeration] [Status: Completed]")
 
 
-def subTakeover():
+def subTakeover(domain):
     print("[Task: Subdomain Takeover Check] [Status: In progress]")
     p_urls= subprocess.Popen(f"echo {domain} | ./subTakeover.sh",shell=True)
 
 
-def urls():
+def urls(domain):
     print("[Task: URL Gathering] [Status: In progress]")
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True)
 
@@ -39,9 +39,9 @@ def main():
             print("<---------Go hunt for the bugs, leave recon on me--------->")
 
             # Making threads for functions
-            thread_subdomains = threading.Thread(target=subdomains)
-            thread_urls = threading.Thread(target=urls)
-            thread_subTakeover = threading.Thread(target=subTakeover)
+            thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
+            thread_urls = threading.Thread(target=urls, args=(domain,))
+            thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
 
             # Calling first function [subdomainEnumeration()] 
             thread_subdomains.start()

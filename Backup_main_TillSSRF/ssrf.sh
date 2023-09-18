@@ -4,13 +4,12 @@ dir=$1
 link=$2 
 
 cd $dir
-
 # cat a.txt | grep = | qsreplace -a | qsreplace $link | sort -u | httpx -fr | grep ']'
 
 echo "[Server: $link]"
 file="urls.txt"
 while read -r line; do
-  qs=$(echo "$line" | grep = | qsreplace -a | qsreplace $link)
+  qs=$(echo "$line" | grep = | qsreplace -a | qsreplace $link )
   headers=$(curl -I "$qs" -k 2> /dev/null)
   location_header=$(echo "$headers" | grep -i "location:")
 

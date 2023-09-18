@@ -24,12 +24,9 @@ wait
 #-------------------------------------URLs_Done------------------------------------------------
 
 
-mv gau_urls.txt wayback_urls.txt katana_urls.txt deep/
+mv wayback_urls.txt gau_urls.txt katana_urls.txt deep/
 
 
 #-----------------------------------------Organizing_Done---------------------------------------
 
-echo "Mission Completed Respect+"
-
-tree ../$dir
 

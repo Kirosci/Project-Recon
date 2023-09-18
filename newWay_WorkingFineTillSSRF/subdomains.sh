@@ -6,8 +6,6 @@ mkdir $dir
 
 cd $dir
 
-echo "    |---[Assetfinder |  Subfinder | Amass | Haktrails]"
-
 (
   echo "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
 ) &
@@ -58,3 +56,4 @@ cat subdomains.txt | httpx > live_subdomains.txt  2> /dev/null
 
 
 # Use "chmod 777 script.sh" to give it permissions for soomth run
+

@@ -56,3 +56,4 @@ cat subdomains.txt | httpx > live_subdomains.txt  2> /dev/null
 
 
 # Use "chmod 777 script.sh" to give it permissions for soomth run
+

@@ -7,6 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-ssrf", help="Please give your Burp Collaborator link/Server link")
+parser.add_argument("-xss", action='store_true', help="If you want to perform XSS testing")
 args = parser.parse_args()
 
 # For gathering subdomains
@@ -38,7 +39,6 @@ def urls(domain):
     print(Fore.WHITE + "    |---[Waybackurls | GAU | Katana]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | ./urls.sh",shell=True).wait()
-    print('\n')
     print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
     print(Style.RESET_ALL)
@@ -49,12 +49,21 @@ def ssrf(domain, link):
     print(Fore.WHITE + "    |---[Qsreplace]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"./ssrf.sh {domain} {link}",shell=True).wait()
-    print('\n')
     print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
     print (Fore.CYAN + "[Info: Check if you get any pingbacks]")
     print(Style.RESET_ALL)
 
+def xss(domain):
+    print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
+    print (Fore.GREEN + "[Status: In progress]")
+    print(Fore.WHITE + "    |---[KXSS]")
+    print(Style.RESET_ALL)
+    p_urls= subprocess.Popen(f"./xss.sh {domain}",shell=True).wait()
+    print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]")
+    print (Fore.CYAN + "[Info: Check *kxss.txt* file]")
+    print(Style.RESET_ALL)
 
 # Check internet connection 
 def check_internet():
@@ -91,16 +100,22 @@ def main():
             thread_urls.start()
             thread_urls.join()
             
-            # Getting server link for SSRF
+            # SSRF testing thread start
             if args.ssrf:
                 link = ("%s" % args.ssrf)
                 thread_ssrf = threading.Thread(target=ssrf, args=(domain,link,))
                 thread_ssrf.start()
             else:
-                print(Fore.RED + "[Step: SSRF Testing]", end=" ")
+                print(Fore.RED + "[Task: SSRF Testing]", end=" ")
                 print(Fore.BLUE + "[Info:Something went wrong]")
-
-
+            
+            # XSS testing thread start 
+            if args.xss:
+                thread_xss = threading.Thread(target=xss, args=(domain,))
+                thread_xss.start()
+            else:
+                print(Fore.RED + "[Task: XSS Testing]", end=" ")
+                print(Fore.BLUE + "[Info:Something went wrong]") 
 
         else:
             print("Internet is not working!")

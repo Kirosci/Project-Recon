@@ -15,7 +15,6 @@ while read -r line; do
 
   if [ -n "$location_header" ]; then
   url=$(echo "$location_header" | awk '{print $2}')
-  echo "$qs ---> $url"
+  echo "$qs ---> $url" | tee ssrf.txt
   fi
 done < "$file"
-echo "Done! Press enter to continue"

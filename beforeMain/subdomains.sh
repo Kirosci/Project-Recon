@@ -6,9 +6,9 @@ mkdir $dir
 
 cd $dir
 
-# (
-#   echo "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
-# ) &
+(
+  echo "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
+) &
 
 (
   echo "$domain" | haktrails subdomains > haktrails_subdomains.txt 2> /dev/null
@@ -18,9 +18,9 @@ cd $dir
   echo "$domain" | subfinder > subfinder_subdomains.txt 2> /dev/null
 ) &
 
-# (
-#   amass enum -d "$domain" > amass_subdomains.txt 2> /dev/null
-# ) &
+(
+  amass enum -d "$domain" > amass_subdomains.txt 2> /dev/null
+) &
 
 wait
 
@@ -41,14 +41,14 @@ wait
 
 #----------------------------Sorting Assets-----------------------------------------
 
-cat haktrails_subdomains.txt subfinder_subdomains.txt | sort -u > all_assets.txt
+cat assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt | sort -u > all_assets.txt
 
 cat all_assets.txt | grep -i -F .$domain | awk '{print$1}' | sort -u | grep -i -F .$domain | awk '{print$1}' > subdomains.txt 
 
 #---------------------------Organizing Assets---------------------------------------
 
 mkdir deep/
-mv haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
+mv assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
 
 #-----------------------------Finding Live Subdomains-------------------------------
 

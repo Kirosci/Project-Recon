@@ -4,7 +4,6 @@ dir=$1
 link=$2 
 
 cd $dir
-# cat a.txt | grep = | qsreplace -a | qsreplace $link | sort -u | httpx -fr | grep ']'
 
 echo "[Server: $link]"
 file="urls.txt"
@@ -15,6 +14,6 @@ while read -r line; do
 
   if [ -n "$location_header" ]; then
   url=$(echo "$location_header" | awk '{print $2}')
-  echo "$qs ---> $url" | tee ssrf.txt
+  echo "$qs ---> $url" | tee -a ssrf.txt
   fi
 done < "$file"

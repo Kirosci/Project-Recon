@@ -8,6 +8,9 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-ssrf", help="Please give your Burp Collaborator link/Server link")
 parser.add_argument("-xss", action='store_true', help="If you want to perform XSS testing")
+parser.add_argument("-sub", action='store_true', help="Only for Subdomain Enumeration")
+parser.add_argument("-tkovr", action='store_true', help="Only for Subdomain Takeover check")
+parser.add_argument("-urls", action='store_true', help="Only for URL Enumeration")
 args = parser.parse_args()
 
 # For gathering subdomains
@@ -86,20 +89,34 @@ def main():
             domain = input(Fore.WHITE + "Enter the domain name: ")
 
             print(Fore.YELLOW + "<---------Go hunt for the bugs, leave recon on me--------->")
-
-            # Making threads for functions
-            thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
-            thread_urls = threading.Thread(target=urls, args=(domain,))
-            thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
-
-            # Calling first function [subdomainEnumeration()] 
-            thread_subdomains.start()
-            thread_subdomains.join()
-            # When first function get finished these will be called parallelly
-            thread_subTakeover.start()
-            thread_urls.start()
-            thread_urls.join()
             
+            # Subdomain Enumeration thread start 
+            if args.sub:
+                thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
+                thread_subdomains.start()
+                thread_subdomains.join()
+            else:
+                print(Fore.RED + "[Task: Subdomain Enumeration]", end=" ")
+                print(Fore.BLUE + "[Argument not provided]")
+
+            # Subdomain Takeover thread start 
+            if args.tkovr:
+                thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
+                thread_subTakeover.start()
+            else:
+                print(Fore.RED + "[Task: Subdomain Takeover]", end=" ")
+                print(Fore.BLUE + "[Argument not provided]")
+
+            # URL Enumeration thread start 
+            if args.urls:
+                thread_urls = threading.Thread(target=urls, args=(domain,))
+                thread_urls.start()
+                thread_urls.join()
+            else:
+                print(Fore.RED + "[Task: URL Enumeration]", end=" ")
+                print(Fore.BLUE + "[Argument not provided]")
+
+
             # SSRF testing thread start
             if args.ssrf:
                 link = ("%s" % args.ssrf)
@@ -107,7 +124,7 @@ def main():
                 thread_ssrf.start()
             else:
                 print(Fore.RED + "[Task: SSRF Testing]", end=" ")
-                print(Fore.BLUE + "[Info:Something went wrong]")
+                print(Fore.BLUE + "[Argument not provided]")
             
             # XSS testing thread start 
             if args.xss:
@@ -115,7 +132,7 @@ def main():
                 thread_xss.start()
             else:
                 print(Fore.RED + "[Task: XSS Testing]", end=" ")
-                print(Fore.BLUE + "[Info:Something went wrong]") 
+                print(Fore.BLUE + "[Argument not provided]") 
 
         else:
             print("Internet is not working!")

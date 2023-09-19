@@ -13,8 +13,8 @@ cd $dir
     while read -r line; do
     python3 ~/tools/ParamSpider/paramspider.py -d $line 2> /dev/null | grep -E "https?://\S+" >> paramspider.txt
     done < $file
-    rf -rf output/
-)
+    rm -rf output/
+) &
 
 (
     cat live_subdomains.txt | gau > gau_urls.txt 

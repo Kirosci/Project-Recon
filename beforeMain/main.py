@@ -51,7 +51,7 @@ def ssrf(domain, link):
     print (Fore.GREEN + "[Status: In progress]")
     print(Fore.WHITE + "    |---[Qsreplace]")
     print(Style.RESET_ALL)
-    p_urls= subprocess.Popen(f"./ssrf.sh {domain} {link}",shell=True).wait()
+    p_urls= subprocess.Popen(f"./updatessrf.sh {domain} {link}",shell=True).wait()
     print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]")
     print (Fore.CYAN + "[Info: Check if you get any pingbacks]")

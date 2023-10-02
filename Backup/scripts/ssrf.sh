@@ -14,7 +14,7 @@ counter=1
 
 while read -r line; do
   lc=$link?no=$counter
-  qs=$(echo "$line" | grep = | qsreplace -a | qsreplace $lc | awk NF | tee -a all_ssrf_urls.txt)  # Use the counter in the query
+  qs=$(echo "$line" | grep = | qsreplace -a | qsreplace $lc | awk NF |sort -u | tee -a all_ssrf_urls.txt)  # Use the counter in the query
   headers=$(curl -I -L "$qs" -k 2> /dev/null)
   location_header=$(echo "$headers" | grep -i "location:" 2> /dev/null)
   if [ -n "$location_header" ]; then

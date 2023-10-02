@@ -121,7 +121,7 @@ def main():
 
             else:
                 print(Fore.RED + "[Status: File name not provided]", end=' ') 
-                print(Fore.BLUE + "[Info: Please provide a file name consisting of target domains]", end=' ') 
+                print(Fore.BLUE + "[Info: Please provide a file name consisting of target domains]") 
 
             if args.all:
 
@@ -180,7 +180,7 @@ def main():
                     thread_urls.join()
                 else:
                     print(Fore.RED + "[+] [Task: URL Enumeration]", end=' ') 
-                    print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # SSRF testing thread start
                 if args.ssrf:
@@ -189,7 +189,7 @@ def main():
                     thread_ssrf.start()
                 else:
                     print(Fore.RED + "[+] [Task: SSRF Testing]", end=' ') 
-                    print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # Nuclei Scan thread start
                 if args.nuclei:
@@ -197,7 +197,7 @@ def main():
                     thread_nuclei.start()
                 else:
                     print(Fore.RED + "[+] [Task: Nuclei Scan]", end=' ') 
-                    print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # XSS testing thread start
                 if args.xss:
@@ -205,7 +205,7 @@ def main():
                     thread_xss.start()
                 else:
                     print(Fore.RED + "[+] [Task: XSS Testing]", end=' ') 
-                    print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
         else:
             print("Internet is not working!")

@@ -106,6 +106,7 @@ def main():
     parser.add_argument('-urls', action='store_true', help='Execute URLs task')
     parser.add_argument('-ssrf', type=str, help='Execute SSRF task')
     parser.add_argument('-xss', action='store_true', help='Execute XSS task')
+    parser.add_argument('-nuclei', action='store_true', help='Execute XSS task')
     args = parser.parse_args()
 
     # Handling sudden termination

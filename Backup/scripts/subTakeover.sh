@@ -3,7 +3,6 @@
 read domain
 dir=$(head -1 $domain)
 cd $dir || exit 1
-# Remove files if it exisits
 rm subTakeovers.txt 2> /dev/null
 rm 404.txt 2> /dev/null
 
@@ -17,3 +16,4 @@ while read -r line; do
 dig "$line" | grep -a "CNAME" | grep -a "$line" >> subTakeovers.txt 
 done <$file
 
+cd ../

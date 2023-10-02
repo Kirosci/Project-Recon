@@ -22,61 +22,64 @@ args = parser.parse_args()
 # For gathering subdomains
 def subdomains(domain):
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]", end=' ')
     print(Style.RESET_ALL)
     p_subdomain = subprocess.Popen(f"echo {domain} | bash scripts/subdomains.sh",shell=True).wait()
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print (Fore.CYAN + "[Info: Results saved in subdomains.txt & live_subdomains.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For checking subdomain takeover 
 def subTakeover(domain):
     print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Dig]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True)
     print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print (Fore.CYAN + "[Info: Results saved in subTakeovers.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For gathering urls 
 def urls(domain):
     print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Waybackurls | GAU | Katana]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/urls.sh",shell=True).wait()
     print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print (Fore.CYAN + "[Info: Results saved in urls.txt]", end=' ')
     print(Style.RESET_ALL)
 
 def ssrf(domain, link): 
     print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Qsreplace]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"bash scripts/ssrf.sh {domain} {link}",shell=True).wait()
     print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
-    print (Fore.CYAN + "[Info: Check if you get any pingbacks]", end=' ')
+    print (Fore.CYAN + "[Info: Results saved in all_ssrf_urls.txt | Check if you get any pingbacks]", end=' ')
     print(Style.RESET_ALL)
 
 def xss(domain):
     print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[KXSS]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/xss.sh",shell=True).wait()
     print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
-    print (Fore.CYAN + "[Info: Check *kxss.txt* file]", end=' ')
+    print (Fore.CYAN + "[Info: Results saved in kxss.txt file]", end=' ')
     print(Style.RESET_ALL)
 
 def nuclei(domain):
     print(Fore.BLUE + "[Task: Nuclei]", end=' ') 
-    print (Fore.GREEN + "[Status: In progress]", end=' ')
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Nuclei]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/nuclei.sh",shell=True).wait()

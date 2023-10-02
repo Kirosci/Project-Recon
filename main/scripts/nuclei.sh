@@ -6,5 +6,5 @@ cd $dir || exit 1
 
 rm nuclei.txt 2> /dev/null
 
-nuclei -l subdomains.txt 2> /dev/null > nuclei.txt 
-
+nuclei -l subdomains.txt -o nuclei.txt  1&>2 /dev/null
+cd ../

@@ -5,7 +5,10 @@ dir=$(head -1 $domain)
 mkdir "$dir" 2> /dev/null
 
 cp $domain $dir
-cd $dir
+cd $dir || exit 1
+
+rm subdomains.txt 2> /dev/null
+rm live_subdomains.txt 2> /dev/null
 
 (
   cat "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
@@ -64,7 +67,7 @@ done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
-mkdir deep/
+mkdir deep/ 2> /dev/null
 mv assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
 #-----------------------------Finding Live Subdomains-------------------------------
 

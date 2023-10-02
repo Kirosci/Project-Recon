@@ -93,66 +93,103 @@ def check_internet():
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Provide File consisting of target domains')
+    parser.add_argument('-all', type=str, help='Execute all tasks sequentially')
+    parser.add_argument('-sub', action='store_true', help='Execute subdomains task')
+    parser.add_argument('-tkovr', action='store_true', help='Execute subTakeover task')
+    parser.add_argument('-urls', action='store_true', help='Execute URLs task')
+    parser.add_argument('-ssrf', type=str, help='Execute SSRF task')
+    parser.add_argument('-xss', action='store_true', help='Execute XSS task')
+    args = parser.parse_args()
 
-    # Handling sudden termination 
+    # Handling sudden termination
     try:
-        # Check Internet Connection 
+        # Check Internet Connection
         if check_internet():
-            # Get Target Domain name 
+            # Get Target Domain name
 
-        
             if args.f:
-                domain = ("%s" % args.f)
-                print(Fore.YELLOW + "<---------Go hunt for the bugs, leave recon on me--------->")
+                domain = args.f
+                print("<---------Go hunt for the bugs, leave recon on me--------->")
             else:
-                print(Fore.RED + "[Info: File name not provided]", end=" ")
-                print(Fore.BLUE + "[Please provide file name consisting of target domains]")
+                print("[Info: File name not provided]")
+                print("[Please provide a file name consisting of target domains]")
 
-
-            if args.sub:
+            if args.all:
                 thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
                 thread_subdomains.start()
                 thread_subdomains.join()
-            else:
-                print(Fore.RED + "[Task: Subdomain Enumeration]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]")
-            # Subdomain Takeover thread start 
-            if args.tkovr:
+
                 thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                 thread_subTakeover.start()
-            else:
-                print(Fore.RED + "[Task: Subdomain Takeover]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]")
-            # URL Enumeration thread start 
-            if args.urls:
+                thread_subTakeover.join()
+
                 thread_urls = threading.Thread(target=urls, args=(domain,))
                 thread_urls.start()
                 thread_urls.join()
-            else:
-                print(Fore.RED + "[Task: URL Enumeration]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]")
-            # SSRF testing thread start
-            if args.ssrf:
-                link = ("%s" % args.ssrf)
-                thread_ssrf = threading.Thread(target=ssrf, args=(domain,link,))
+
+                link = args.all
+                thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                 thread_ssrf.start()
-            else:
-                print(Fore.RED + "[Task: SSRF Testing]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]")
-            # XSS testing thread start 
-            if args.xss:
+
                 thread_xss = threading.Thread(target=xss, args=(domain,))
                 thread_xss.start()
-            else:
-                print(Fore.RED + "[Task: XSS Testing]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]") 
-            # Nuclei Scan thread start
-            if args.nuclei:
+
+                thread_subdomains.join()
+                thread_subTakeover.join()
+                thread_urls.join()
+                thread_ssrf.join()
+                thread_xss.join()
+
                 thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
                 thread_nuclei.start()
+                thread_nuclei.join()
+
             else:
-                print(Fore.RED + "[Task: Nuclei]", end=" ")
-                print(Fore.BLUE + "[Argument not provided]") 
+                # Subdomain Enumeration thread start
+                if args.sub:
+                    thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
+                    thread_subdomains.start()
+                    thread_subdomains.join()
+                else:
+                    print("[Task: Subdomain Enumeration] [Argument not provided]")
+
+                # Subdomain Takeover thread start
+                if args.tkovr:
+                    thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
+                    thread_subTakeover.start()
+                    thread_subTakeover.join()
+                else:
+                    print("[Task: Subdomain Takeover] [Argument not provided]")
+
+                # URL Enumeration thread start
+                if args.urls:
+                    thread_urls = threading.Thread(target=urls, args=(domain,))
+                    thread_urls.start()
+                    thread_urls.join()
+                else:
+                    print("[Task: URL Enumeration] [Argument not provided]")
+
+                # SSRF testing thread start
+                if args.ssrf:
+                    link = args.ssrf
+                    thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
+                    thread_ssrf.start()
+                else:
+                    print("[Task: SSRF Testing] [Argument not provided]")
+
+                # XSS testing thread start
+                if args.xss:
+                    thread_xss = threading.Thread(target=xss, args=(domain,))
+                    thread_xss.start()
+                else:
+                    print("[Task: XSS Testing] [Argument not provided]")
+
+                thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
+                thread_nuclei.start()
+                thread_nuclei.join()
+
         else:
             print("Internet is not working!")
 
@@ -161,5 +198,4 @@ def main():
 
 
 if __name__ == '__main__':
-    
     main()

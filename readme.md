@@ -2,6 +2,7 @@
 
 ### Below 2 commands does the same work:
 `python3 main.py -f domains.txt -all https://burpcollaborator.link`
+
 `python3 main.py -f domains.txt -sub -tkovr -urls -xss -ssrf https://burpcollaborator.link`
 
 ### Incase you already found subdomains you do not need to find it again, you can remove **-sub** argument:

@@ -21,69 +21,69 @@ args = parser.parse_args()
 
 # For gathering subdomains
 def subdomains(domain):
-    print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]", end=' ')
     print(Style.RESET_ALL)
     p_subdomain = subprocess.Popen(f"echo {domain} | bash scripts/subdomains.sh",shell=True).wait()
-    print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subdomains.txt & live_subdomains.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For checking subdomain takeover 
 def subTakeover(domain):
-    print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Dig]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True)
-    print(Fore.BLUE + "[Task: Subdomain Takeover Check]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subTakeovers.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For gathering urls 
 def urls(domain):
-    print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Waybackurls | GAU | Katana]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/urls.sh",shell=True).wait()
-    print(Fore.BLUE + "[Task: URL Gathering]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in urls.txt]", end=' ')
     print(Style.RESET_ALL)
 
 def ssrf(domain, link): 
-    print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Qsreplace]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"bash scripts/ssrf.sh {domain} {link}",shell=True).wait()
-    print(Fore.BLUE + "[Task: SSRF Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in all_ssrf_urls.txt | Check if you get any pingbacks]", end=' ')
     print(Style.RESET_ALL)
 
 def xss(domain):
-    print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[KXSS]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/xss.sh",shell=True).wait()
-    print(Fore.BLUE + "[Task: XSS Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in kxss.txt file]", end=' ')
     print(Style.RESET_ALL)
 
 def nuclei(domain):
-    print(Fore.BLUE + "[Task: Nuclei]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     # print(Fore.WHITE + "    |---[Nuclei]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/nuclei.sh",shell=True).wait()
-    print(Fore.BLUE + "[Task: Nuclei]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results Saved in nuclei.txt]", end=' ')
     print(Style.RESET_ALL)
@@ -116,7 +116,8 @@ def main():
 
             if args.f:
                 domain = args.f
-                print("<---------Go hunt for the bugs, leave recon on me--------->")
+                print(Back.WHITE, Fore.RED + '[~Automating the hunt, so I can hunt more and sleep less]', Style.RESET_ALL)
+
             else:
                 print(Fore.RED + "[Status: File name not provided]", end=' ') 
                 print(Fore.BLUE + "[Info: Please provide a file name consisting of target domains]", end=' ') 
@@ -160,7 +161,7 @@ def main():
                     thread_subdomains.start()
                     thread_subdomains.join()
                 else:
-                    print(Fore.RED + "[Task: Subdomain Enumeration]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Subdomain Enumeration]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
  
                 # Subdomain Takeover thread start 
@@ -168,7 +169,7 @@ def main():
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                     thread_subTakeover.start()
                 else:
-                    print(Fore.RED + "[Task: Subdomain Takeover]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Subdomain Takeover]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
  
                 # URL Enumeration thread start AND WAIT
@@ -177,7 +178,7 @@ def main():
                     thread_urls.start()
                     thread_urls.join()
                 else:
-                    print(Fore.RED + "[Task: URL Enumeration]", end=' ') 
+                    print(Fore.RED + "[+] [Task: URL Enumeration]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
 
                 # SSRF testing thread start
@@ -186,7 +187,7 @@ def main():
                     thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                     thread_ssrf.start()
                 else:
-                    print(Fore.RED + "[Task: SSRF Testing]", end=' ') 
+                    print(Fore.RED + "[+] [Task: SSRF Testing]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
 
                 # Nuclei Scan thread start
@@ -194,7 +195,7 @@ def main():
                     thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
                     thread_nuclei.start()
                 else:
-                    print(Fore.RED + "[Task: Nuclei Scan]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Nuclei Scan]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
 
                 # XSS testing thread start
@@ -202,7 +203,7 @@ def main():
                     thread_xss = threading.Thread(target=xss, args=(domain,))
                     thread_xss.start()
                 else:
-                    print(Fore.RED + "[Task: XSS Testing]", end=' ') 
+                    print(Fore.RED + "[+] [Task: XSS Testing]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]", end=' ')
 
         else:

@@ -1,16 +1,24 @@
 #!/bin/bash
-# read domain
-# read dir
-# # domain="$1"
-# # dir=$(head -1 "$domain")
-# # dir=/home/kali/tools/automation/gopro.com
-# cd "$dir" || exit 1
-# file="testurls.txt"
-# cat "$file" | grep = | kxss | grep '>\|<\|"' | tee kxss.txt
 
+# Function to display a spinning bar
+function loading() {
+    local chars="/-\|"
+    while :; do
+        for ((i=0; i<${#chars}; i++)); do
+            echo -ne "${chars:$i:1}\r"
+            sleep 0.1
+        done
+    done
+}
 
-read domain
-dir=$(head -1 "$domain")
-cd "$dir" || exit 1
-file="testurls.txt"
-cat "$file" | grep = | kxss | grep '>\|<\|"' | tee kxss.txt
+# Start the loading animation in the background
+loading &
+
+# Simulate some work
+sleep 5
+
+# Stop the loading animation by killing the background process
+kill $!
+
+# Clear the line
+echo -e "\033[2K\033[1GDone"

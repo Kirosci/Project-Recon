@@ -115,8 +115,8 @@ def main():
                 domain = args.f
                 print("<---------Go hunt for the bugs, leave recon on me--------->")
             else:
-                print("[Info: File name not provided]")
-                print("[Please provide a file name consisting of target domains]")
+                print(Fore.RED + "[Status: File name not provided]", end=' ') 
+                print(Fore.BLUE + "[Info: Please provide a file name consisting of target domains]", end=' ') 
 
             if args.all:
 

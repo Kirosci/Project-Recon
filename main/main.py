@@ -119,59 +119,63 @@ def main():
                 print("[Please provide a file name consisting of target domains]")
 
             if args.all:
+
+                # Subdomain Enumeration Start AND WAIT 
                 thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
                 thread_subdomains.start()
                 thread_subdomains.join()
-
+                
+                # Subdomain Takeover
                 thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                 thread_subTakeover.start()
-                thread_subTakeover.join()
 
+                # URL Enumeration Start AND WAIT
                 thread_urls = threading.Thread(target=urls, args=(domain,))
                 thread_urls.start()
                 thread_urls.join()
 
+                # SSRF Testing
                 link = args.all
                 thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                 thread_ssrf.start()
 
+                # Nuclei Scan
+                thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
+                thread_nuclei.start()
+
+                # XSS Testing 
                 thread_xss = threading.Thread(target=xss, args=(domain,))
                 thread_xss.start()
 
-                thread_subdomains.join()
-                thread_subTakeover.join()
-                thread_urls.join()
-                thread_ssrf.join()
-                thread_xss.join()
 
-                thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
-                thread_nuclei.start()
-                thread_nuclei.join()
 
             else:
-                # Subdomain Enumeration thread start
+
+                # Subdomain Enumeration thread start AND WAIT
                 if args.sub:
                     thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
                     thread_subdomains.start()
                     thread_subdomains.join()
                 else:
-                    print("[Task: Subdomain Enumeration] [Argument not provided]")
-
-                # Subdomain Takeover thread start
+                    print(Fore.RED + "[Task: Subdomain Enumeration]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
+ 
+                # Subdomain Takeover thread start 
                 if args.tkovr:
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                     thread_subTakeover.start()
-                    thread_subTakeover.join()
                 else:
-                    print("[Task: Subdomain Takeover] [Argument not provided]")
-
-                # URL Enumeration thread start
+                    print(Fore.RED + "[Task: Subdomain Takeover]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
+ 
+                # URL Enumeration thread start AND WAIT
                 if args.urls:
                     thread_urls = threading.Thread(target=urls, args=(domain,))
                     thread_urls.start()
                     thread_urls.join()
                 else:
-                    print("[Task: URL Enumeration] [Argument not provided]")
+                    print(Fore.RED + "[Task: URL Enumeration]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # SSRF testing thread start
                 if args.ssrf:
@@ -179,18 +183,24 @@ def main():
                     thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                     thread_ssrf.start()
                 else:
-                    print("[Task: SSRF Testing] [Argument not provided]")
+                    print(Fore.RED + "[Task: SSRF Testing]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
+
+                # Nuclei Scan thread start
+                if args.nuclei:
+                    thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
+                    thread_nuclei.start()
+                else:
+                    print(Fore.RED + "[Task: Nuclei Scan]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # XSS testing thread start
                 if args.xss:
                     thread_xss = threading.Thread(target=xss, args=(domain,))
                     thread_xss.start()
                 else:
-                    print("[Task: XSS Testing] [Argument not provided]")
-
-                thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
-                thread_nuclei.start()
-                thread_nuclei.join()
+                    print(Fore.RED + "[Task: XSS Testing]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
 
         else:
             print("Internet is not working!")

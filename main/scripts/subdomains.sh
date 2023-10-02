@@ -21,10 +21,10 @@ cd $dir
   echo "Subfinder Done"
 ) &
 
-(
-  amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo "Amass Done"
-) &
+# (
+#   amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
+#   echo "Amass Done"
+# ) &
 
 (
   subdominator -dL "$domain" -o subdominator_subdomains.txt 1> /dev/null

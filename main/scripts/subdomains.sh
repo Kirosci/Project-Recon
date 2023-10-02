@@ -24,7 +24,7 @@ cd $dir
 
 (
   amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo -e "        |---\e[32mAmass Done]\e[0m"
+  echo -e "        |---\e[32m[Amass Done]\e[0m"
 ) &
 
 (

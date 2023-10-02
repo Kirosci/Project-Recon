@@ -2,41 +2,34 @@
 
 read domain
 dir=$(head -1 $domain)
-if [ -d "$dir" ]; then
-    file_count=1
-    while [ -d "${dir}_${file_count}" ]; do
-        file_count=$((file_count + 1))
-    done  
-    dir="${dir}_${file_count}"
-fi
-mkdir "$dir"
+mkdir "$dir" 2> /dev/null
 
 cp $domain $dir
 cd $dir
 
 (
   cat "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
-  echo -e "        |---\e[32mAssetfinder Done\e[0m"
+  echo -e "        |---\e[32m[Assetfinder Done]\e[0m"
 ) &
 
 (
   cat "$domain" | haktrails subdomains > haktrails_subdomains.txt 2> /dev/null
-  echo -e "     |---\e[32mHaktrails Done\e[0m"
+  echo -e "        |---\e[32m[Haktrails Done]\e[0m"
 ) &
 
 (
   cat "$domain" | subfinder > subfinder_subdomains.txt 2> /dev/null
-  echo -e "      |---\e[32mSubfinder Done\e[0m"
+  echo -e "        |---\e[32m[Subfinder Done]\e[0m"
 ) &
 
 (
   amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo -e "    |---\e[32mAmass Done\e[0m"
+  echo -e "        |---\e[32mAmass Done]\e[0m"
 ) &
 
 (
   subdominator -dL "$domain" -o subdominator_subdomains.txt 1> /dev/null
-  echo -e "   |---\e[32mSubdominator Done" 
+  echo -e "        |---\e[32m[Subdominator Done]\e[0m" 
 ) &
 
 wait

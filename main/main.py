@@ -23,7 +23,7 @@ args = parser.parse_args()
 def subdomains(domain):
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: In progress]")
-    print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]")
+    print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]", end=' ')
     print(Style.RESET_ALL)
     p_subdomain = subprocess.Popen(f"echo {domain} | bash scripts/subdomains.sh",shell=True).wait()
     print(Fore.BLUE + "[Task: Subdomain Enumeration]", end=' ') 

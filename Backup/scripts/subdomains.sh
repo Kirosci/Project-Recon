@@ -2,33 +2,34 @@
 
 read domain
 dir=$(head -1 $domain)
-mkdir $dir
+mkdir "$dir" 2> /dev/null
+
 cp $domain $dir
 cd $dir
 
 (
   cat "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
-  echo "Assetfinder Done"
+  echo -e "        |---\e[32m[Assetfinder Done]\e[0m"
 ) &
 
 (
   cat "$domain" | haktrails subdomains > haktrails_subdomains.txt 2> /dev/null
-  echo "Haktrails Done"
+  echo -e "        |---\e[32m[Haktrails Done]\e[0m"
 ) &
 
 (
   cat "$domain" | subfinder > subfinder_subdomains.txt 2> /dev/null
-  echo "Subfinder Done"
+  echo -e "        |---\e[32m[Subfinder Done]\e[0m"
 ) &
 
 (
   amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo "Amass Done"
+  echo -e "        |---\e[32m[Amass Done]\e[0m"
 ) &
 
 (
   subdominator -dL "$domain" -o subdominator_subdomains.txt 1> /dev/null
-  echo "Subdominator Done" 
+  echo -e "        |---\e[32m[Subdominator Done]\e[0m" 
 ) &
 
 wait
@@ -69,6 +70,6 @@ mv assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt h
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null
 
-
+cd ../
 # Use "chmod 777 script.sh" to give it permissions for soomth run
 

@@ -2,7 +2,7 @@
 
 read domain
 dir=$(head -1 $domain)
-cd $dir
+cd $dir || exit 1
 # Remove files if it exisits
 rm subTakeovers.txt 2> /dev/null
 rm 404.txt 2> /dev/null

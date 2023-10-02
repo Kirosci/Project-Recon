@@ -2,7 +2,7 @@
 
 read domain
 dir=$(head -1 $domain)
-cd $dir
+cd $dir || exit 1
 
 (
     cat live_subdomains.txt | waybackurls > wayback_urls.txt 
@@ -39,6 +39,7 @@ cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/
 mv wayback_urls.txt paramspider.txt gau_urls.txt katana_urls.txt deep/
 
 rm -rf deep
+
 #-----------------------------------------Organizing_Done---------------------------------------
 
 

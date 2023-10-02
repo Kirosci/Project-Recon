@@ -1,5 +1,5 @@
-##Usage:
-
+## Usage:
+---
 ### Below 2 commands does the same work:
 `python3 main.py -f domains.txt -all https://burpcollaborator.link`
 

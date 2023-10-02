@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 
-import subprocess
 import os
+import shutil
+import subprocess
 import threading
 import requests
 from colorama import Fore, Back, Style
 import argparse
 
 parser = argparse.ArgumentParser()
+parser.add_argument("-update", action='store_true', help="Update to latest version")
 parser.add_argument("-f", help="Give file name consisting of target domains")
 parser.add_argument("-all", help="[Subdomain & URL Enum, Subdomain Takeover, SSRF, XSS, Nuclei]: Provide Link for SSRF Testing")
 parser.add_argument("-ssrf", help="SSRF Testing: Provide Burp Collaborator/Server link")
@@ -19,6 +21,17 @@ parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
 args = parser.parse_args()
+
+# Update the Tool
+REPO_URL = 'https://github.com/Kirosci/Project-Recon.git'
+
+def clone_and_update_repository(repo_url, target_directory):
+    if os.path.exists(target_directory):
+        # Remove the old repository
+        shutil.rmtree(target_directory)
+
+    # Clone the new repository
+    subprocess.run(['git', 'clone', repo_url, target_directory])
 
 # For gathering subdomains
 def subdomains(domain):
@@ -104,6 +117,16 @@ def main():
         # Check Internet Connection
         if check_internet():
             # Get Target Domain name
+
+            if args.update:
+                target_directory = os.getcwd()  # Set the target directory to the current working directory
+                try:
+                    clone_and_update_repository(REPO_URL, target_directory)
+                    print(f'Repository cloned and updated successfully in the current working directory.')
+                except Exception as e:
+                    print(f'Error: {e}')
+            else:
+                print("Use -update to update the previously cloned repository.")
 
             if args.f:
                 domain = args.f

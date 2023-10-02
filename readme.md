@@ -28,5 +28,9 @@ Check `kxss.txt` file it contains all the URL with reflected parameters and all 
 ### SSRF:
 For SSRF testing you just provide the Server URL (Burp collaborator, Interactsh, Canary Token) to it , add it will send the request if in case you got the hit, check the query section, there will be a number like `?no=123` then go to `all_ssrf_urls.txt`file (each URL in this file is assigned with a unique number) and search for that number you will get to know the URL that SSRF vulnerable URL.
 
+![image](https://github.com/Kirosci/Project-Recon/assets/106021529/6950b0ce-3ac5-4b22-8bdb-d57895684f9b)
+![image](https://github.com/Kirosci/Project-Recon/assets/106021529/40e4ca81-664e-4a07-9c8b-51897b07226d)
+
+
 ### Nuclei:
 Check `nuclei.txt` file it will contain all the nuclei results. 

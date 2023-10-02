@@ -16,6 +16,7 @@ parser.add_argument("-sub", action='store_true', help="Subdomain Enumeration")
 parser.add_argument("-tkovr", action='store_true', help="Subdomain Takeover check")
 parser.add_argument("-urls", action='store_true', help="URL Enumeration")
 parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
+parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
 args = parser.parse_args()
 
@@ -98,17 +99,6 @@ def check_internet():
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Provide File consisting of target domains')
-    parser.add_argument('-all', type=str, help='Execute all tasks sequentially')
-    parser.add_argument('-sub', action='store_true', help='Execute subdomains task')
-    parser.add_argument('-tkovr', action='store_true', help='Execute subTakeover task')
-    parser.add_argument('-urls', action='store_true', help='Execute URLs task')
-    parser.add_argument('-ssrf', type=str, help='Execute SSRF task')
-    parser.add_argument('-xss', action='store_true', help='Execute XSS task')
-    parser.add_argument('-nuclei', action='store_true', help='Execute XSS task')
-    args = parser.parse_args()
-
     # Handling sudden termination
     try:
         # Check Internet Connection

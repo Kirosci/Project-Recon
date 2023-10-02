@@ -1,25 +1,34 @@
 #!/bin/bash
 
 read domain
-dir=$domain
+dir=$(head -1 $domain)
 mkdir $dir
-
+cp $domain $dir
 cd $dir
 
 (
-  echo "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
+  cat "$domain" | assetfinder > assetfinder_subdomains.txt 2> /dev/null
+  echo "Assetfinder Done"
 ) &
 
 (
-  echo "$domain" | haktrails subdomains > haktrails_subdomains.txt 2> /dev/null
+  cat "$domain" | haktrails subdomains > haktrails_subdomains.txt 2> /dev/null
+  echo "Haktrails Done"
 ) &
 
 (
-  echo "$domain" | subfinder > subfinder_subdomains.txt 2> /dev/null
+  cat "$domain" | subfinder > subfinder_subdomains.txt 2> /dev/null
+  echo "Subfinder Done"
 ) &
 
 (
-  amass enum -d "$domain" > amass_subdomains.txt 2> /dev/null
+  amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
+  echo "Amass Done"
+) &
+
+(
+  subdominator -dL "$domain" -o subdominator_subdomains.txt 1> /dev/null
+  echo "Subdominator Done" 
 ) &
 
 wait
@@ -41,18 +50,24 @@ wait
 
 #----------------------------Sorting Assets-----------------------------------------
 
-cat assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt | sort -u > all_assets.txt
+cat assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt | sort -u > all_assets.txt
 
-cat all_assets.txt | grep -i -F .$domain | awk '{print$1}' | sort -u | grep -i -F .$domain | awk '{print$1}' > subdomains.txt 
+# Filtering out false positives
+
+file1="$domain"
+file2="all_assets.txt"
+
+while IFS= read -r word; do
+    grep -E "\\b${word//./\\.}\\b" "$file2" >> "subdomains.txt"
+done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
 mkdir deep/
-mv assetfinder_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
-
+mv assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
 #-----------------------------Finding Live Subdomains-------------------------------
 
-cat subdomains.txt | httpx > live_subdomains.txt  2> /dev/null
+cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null
 
 
 # Use "chmod 777 script.sh" to give it permissions for soomth run

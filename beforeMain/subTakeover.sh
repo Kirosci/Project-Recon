@@ -1,6 +1,7 @@
 #!/bin/bash
 
-read dir
+read domain
+dir=$(head -1 $domain)
 cd $dir
 # Remove files if it exisits
 rm subTakeovers.txt 2> /dev/null

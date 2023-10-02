@@ -1,6 +1,7 @@
 #!/bin/bash
 
-read dir
+read domain
+dir=$(head -1 $domain)
 cd $dir
 
 (
@@ -13,8 +14,8 @@ cd $dir
     while read -r line; do
     python3 ~/tools/ParamSpider/paramspider.py -d $line 2> /dev/null | grep -E "https?://\S+" >> paramspider.txt
     done < $file
-    rf -rf output/
-)
+    rm -rf output/
+) &
 
 (
     cat live_subdomains.txt | gau > gau_urls.txt 
@@ -30,12 +31,14 @@ cat wayback_urls.txt paramspider.txt gau_urls.txt katana_urls.txt | sort -u > ur
 
 wait
 
+cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/null 
+
 #-------------------------------------URLs_Done------------------------------------------------
 
 
 mv wayback_urls.txt paramspider.txt gau_urls.txt katana_urls.txt deep/
 
-
+rm -rf deep
 #-----------------------------------------Organizing_Done---------------------------------------
 
 

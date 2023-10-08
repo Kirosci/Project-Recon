@@ -13,6 +13,10 @@
 
 #### NOTE: Like above 2 examples you can exclude and include arguments accordingly.
 
+### Update:
+You can update your script to latest version.
+Example: `python3 main.py -update`
+
 ### Subdomains:
 There will be two files `subdomains.txt` this will contain all subdomains found using various tool, and `live_subdomains.txt` this file will contain all live subdomains. 
 

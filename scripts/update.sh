@@ -5,7 +5,7 @@ current_dir=$(basename "$PWD")
 if [ "$current_dir" == "Project-Recon" ]; then
     git clone https://github.com/shivpratapsingh111/Project-Recon.git
     
-    rsync -av --exclude='main.py' --exclude='.git' --exclude='scripts' --exclude='Backup' --exclude='README.md' ./ Project-Recon
+    rsync -av --exclude='main.py' --exclude='.git' --exclude='scripts' --exclude='Backup' --exclude='readme.md' ./ Project-Recon
     mv Project-Recon ../temp
     cd ../
     rm -rf Project-Recon

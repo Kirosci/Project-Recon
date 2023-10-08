@@ -1,6 +1,13 @@
 #!/bin/bash
 
-read domain
+domain=$1
+
+if [ -z "$2" ]; then
+    timeout="30"
+else
+    timeout="$2"
+fi
+
 dir=$(head -1 $domain)
 mkdir "$dir" 2> /dev/null
 
@@ -26,8 +33,15 @@ rm live_subdomains.txt 2> /dev/null
 ) &
 
 (
-  amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo -e "    |---\e[32m[Amass Done]\e[0m"
+
+  if [ "$2" -eq 0 ]; then
+    amass enum -df "$domain" > amass_subdomains.txt 2> /dev/null
+    echo -e "    |---\e[32m[Amass Done]\e[0m"
+  else
+    amass enum -df "$domain" -timeout $timeout > amass_subdomains.txt 2> /dev/null
+    echo -e "    |---\e[32m[Amass Done] [Timeout: $2 minutes]\e[0m" 
+  fi
+
 ) &
 
 (

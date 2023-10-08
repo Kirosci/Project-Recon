@@ -18,6 +18,7 @@ parser.add_argument("-sub", action='store_true', help="Subdomain Enumeration")
 parser.add_argument("-tkovr", action='store_true', help="Subdomain Takeover check")
 parser.add_argument("-urls", action='store_true', help="URL Enumeration")
 parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
+parser.add_argument("-amass_t", help="Amass timeout [Default 30 mins] [Use 0 for no timeout] [-amass_t 30 for 30 min timeout ]")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
 args = parser.parse_args()
@@ -34,12 +35,11 @@ def clone_and_update_repository(repo_url, target_directory):
     subprocess.run(['git', 'clone', repo_url, target_directory])
 
 # For gathering subdomains
-def subdomains(domain):
+def subdomains(domain, amass_timeout):
     print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[Assetfinder |  Subfinder | Amass | Haktrails]", end=' ')
     print(Style.RESET_ALL)
-    p_subdomain = subprocess.Popen(f"echo {domain} | bash scripts/subdomains.sh",shell=True).wait()
+    p_subdomain = subprocess.Popen(f"bash scripts/subdomains.sh {domain} {amass_timeout}",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subdomains.txt & live_subdomains.txt]", end=' ')
@@ -49,7 +49,6 @@ def subdomains(domain):
 def subTakeover(domain):
     print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[Dig]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True)
     print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
@@ -61,7 +60,6 @@ def subTakeover(domain):
 def urls(domain):
     print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[Waybackurls | GAU | Katana]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/urls.sh",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
@@ -72,7 +70,6 @@ def urls(domain):
 def ssrf(domain, link): 
     print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[Qsreplace]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"bash scripts/ssrf.sh {domain} {link}",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
@@ -83,7 +80,6 @@ def ssrf(domain, link):
 def xss(domain):
     print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[KXSS]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/xss.sh",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
@@ -94,7 +90,6 @@ def xss(domain):
 def nuclei(domain):
     print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
-    # print(Fore.WHITE + "    |---[Nuclei]")
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/nuclei.sh",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
@@ -117,7 +112,8 @@ def main():
         # Check Internet Connection
         if check_internet():
             # Get Target Domain name
-
+            main_script_directory = os.path.dirname(os.path.abspath(__file__))
+            target_directory = os.path.join(main_script_directory, 'Project-Recon')
             if args.update:
                 target_directory = os.getcwd()  # Set the target directory to the current working directory
                 try:
@@ -126,7 +122,7 @@ def main():
                 except Exception as e:
                     print(f'Error: {e}')
             else:
-                print("Use -update to update the previously cloned repository.")
+                pass
 
             if args.f:
                 domain = args.f
@@ -136,10 +132,16 @@ def main():
                 print(Fore.RED + "[Status: File name not provided]", end=' ') 
                 print(Fore.BLUE + "[Info: Please provide a file name consisting of target domains]") 
 
+            if args.amass_t:
+                amass_timeout = args.amass_t
+            else:
+                amass_timeout = 30
+
             if args.all:
 
+
                 # Subdomain Enumeration Start AND WAIT 
-                thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
+                thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))
                 thread_subdomains.start()
                 thread_subdomains.join()
                 
@@ -171,7 +173,7 @@ def main():
 
                 # Subdomain Enumeration thread start AND WAIT
                 if args.sub:
-                    thread_subdomains = threading.Thread(target=subdomains, args=(domain,))
+                    thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))
                     thread_subdomains.start()
                     thread_subdomains.join()
                 else:

@@ -117,10 +117,11 @@ def main():
             main_script_directory = os.path.dirname(os.path.abspath(__file__))
             target_directory = os.path.join(main_script_directory, 'Project-Recon')
 
-            if args.update and len(vars(args)) > 1:
-                parser.error(Fore.RED + "\n[+] [-update should be used alone, without other arguments]")
-            else:
+            if args.update:
                 update()
+            else:
+                parser.error(Fore.RED + "\n[+] [-update should be used alone, without other arguments]")
+                
                 
 
             if args.f:

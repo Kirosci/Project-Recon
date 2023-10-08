@@ -26,13 +26,15 @@ args = parser.parse_args()
 # Update the Tool
 REPO_URL = 'https://github.com/Kirosci/Project-Recon.git'
 
-def clone_and_update_repository(repo_url, target_directory):
-    if os.path.exists(target_directory):
-        # Remove the old repository
-        shutil.rmtree(target_directory)
-
-    # Clone the new repository
-    subprocess.run(['git', 'clone', repo_url, target_directory])
+# For Updating the tool 
+def update():
+    print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
+    print(Style.RESET_ALL)
+    p_update = subprocess.Popen("bash scripts/update.sh", shell=True)
+    print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print(Style.RESET_ALL)
 
 # For gathering subdomains
 def subdomains(domain, amass_timeout):
@@ -114,15 +116,12 @@ def main():
             # Get Target Domain name
             main_script_directory = os.path.dirname(os.path.abspath(__file__))
             target_directory = os.path.join(main_script_directory, 'Project-Recon')
-            if args.update:
-                target_directory = os.getcwd()  # Set the target directory to the current working directory
-                try:
-                    clone_and_update_repository(REPO_URL, target_directory)
-                    print(f'Repository cloned and updated successfully in the current working directory.')
-                except Exception as e:
-                    print(f'Error: {e}')
+
+            if args.update and len(vars(args)) > 1:
+                parser.error(Fore.RED + "\n[+] [-update should be used alone, without other arguments]")
             else:
-                pass
+                update()
+                
 
             if args.f:
                 domain = args.f
@@ -138,7 +137,6 @@ def main():
                 amass_timeout = 30
 
             if args.all:
-
 
                 # Subdomain Enumeration Start AND WAIT 
                 thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))

@@ -2,10 +2,23 @@
 
 current_dir=$(basename "$PWD")
 
-if [ "$current_dir" == "Project-Recon" ]; then
-    git clone https://github.com/shivpratapsingh111/Project-Recon.git
+ls
+read -p "Do you want to remove all these data along? [y/n]: " option
+if [ "$option"="y" ]; then
+    option=1    
+else
+    option=0
+fi
 
-    rm -rf main.py .git scripts Backup readme.md    
+if [ "$current_dir" == "Project-Recon" ]; then
+
+    if [ "$option" -eq 1 ]; then
+        rm -rf *
+    else
+        rm -rf main.py .git scripts Backup readme.md    
+    fi
+    
+    git clone https://github.com/shivpratapsingh111/Project-Recon.git
     mv Project-Recon/* ./
     rm -rf Project-Recon
 else

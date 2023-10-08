@@ -31,7 +31,7 @@ def update():
     print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
-    p_update = subprocess.Popen("bash scripts/update.sh", shell=True)
+    p_update = subprocess.Popen("bash scripts/update.sh", shell=True).wait()
     print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print(Style.RESET_ALL)
@@ -118,7 +118,9 @@ def main():
             target_directory = os.path.join(main_script_directory, 'Project-Recon')
 
             if args.update:
-                update()
+                thre_update = threading.Thread(target=update)
+                thre_update.start()
+                thre_update.join()
             else:
                 parser.error(Fore.RED + "\n[+] [-update should be used alone, without other arguments]")
                 

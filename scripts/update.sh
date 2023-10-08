@@ -11,6 +11,7 @@ if [ "$current_dir" == "Project-Recon" ]; then
     rm -rf Project-Recon
     mv temp Project-Recon
     cd Project-Recon
+    rm -rf Project-Recon
 
 else
     echo "The current directory is not named 'Project-recon'."

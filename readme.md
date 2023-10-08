@@ -20,10 +20,10 @@ Example: `python3 main.py -update`
 ### Subdomains:
 There will be two files `subdomains.txt` this will contain all subdomains found using various tool, and `live_subdomains.txt` this file will contain all live subdomains. 
 #### Amass Timeout:
-        * Added amass timeout feature thet you can use with -sub or -all argument to specify timeout for amass tool.
-        * By default it is set to 30 mins
-        * `-amass_t 0` for not setting any timeout
-        * `-amass_t 60` for 60 minutes timeout 
+  * Added amass timeout feature thet you can use with -sub or -all argument to specify timeout for amass tool.
+  * By default it is set to 30 mins
+  * `-amass_t 0` for not setting any timeout
+  * `-amass_t 60` for 60 minutes timeout 
 
 ### URLs: 
 Check `urls.txt` will contain all the URLs and `js_urls.txt`  will contain all the *JavaScript* file URLs found by grepping from the discovered URLs. 

@@ -76,7 +76,7 @@ file1="$domain"
 file2="all_assets.txt"
 
 while IFS= read -r word; do
-    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' >> "subdomains.txt"
+    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u | >> "subdomains.txt"
 done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------

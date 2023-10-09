@@ -81,8 +81,7 @@ done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
-mkdir deep/ 2> /dev/null
-mv assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
+rm assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null

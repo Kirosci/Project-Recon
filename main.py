@@ -52,7 +52,7 @@ def subTakeover(domain):
     print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
-    p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True)
+    p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True).wait()
     print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subTakeovers.txt]", end=' ')

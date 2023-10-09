@@ -122,8 +122,7 @@ def main():
                 thre_update.start()
                 thre_update.join()
             else:
-                parser.error(Fore.RED + "\n[+] [-update should be used alone, without other arguments]")
-                
+                pass
                 
 
             if args.f:

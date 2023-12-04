@@ -37,9 +37,8 @@ cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/
 #-------------------------------------URLs_Done------------------------------------------------
 
 
-mv wayback_urls.txt paramspider.txt gau_urls.txt katana_urls.txt deep/
+rm wayback_urls.txt paramspider.txt gau_urls.txt katana_urls.txt =
 
-rm -rf deep
 cd ../
 #-----------------------------------------Organizing_Done---------------------------------------
 

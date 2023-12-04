@@ -22,7 +22,8 @@ There will be two files `subdomains.txt` this will contain all subdomains found 
 #### Amass Timeout:
   * Added amass timeout feature thet you can use with -sub or -all argument to specify timeout for amass tool.
   * By default it is set to 30 mins
-  * `-amass_t 0` for not setting any timeout
+  * `-amass_t 0` for not using amass
+  * `-amass_t 1` for not setting any timeout, it will run until it gets stoped by itself.
   * `-amass_t 60` for 60 minutes timeout 
 
 ### URLs: 

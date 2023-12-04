@@ -34,9 +34,13 @@ rm live_subdomains.txt 2> /dev/null
 
 (
 
-  if [ "$2" -eq 0 ]; then
+  if [ "$2" -eq 1 ]; then
     amass enum -df "$domain" > amass_subdomains.txt 2> /dev/null
     echo -e "    |---\e[32m[Amass Done]\e[0m"
+
+  elif [ "$2" -eq 0 ]; then
+  echo -e "    |---\e[32m[Excluded Amass]\e[0m"
+
   else
     amass enum -df "$domain" -timeout $timeout > amass_subdomains.txt 2> /dev/null
     echo -e "    |---\e[32m[Amass Done] [Timeout: $2 minutes]\e[0m" 

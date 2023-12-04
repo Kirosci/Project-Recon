@@ -40,7 +40,7 @@ rm live_subdomains.txt 2> /dev/null
 
   elif [ "$2" -eq 0 ]; then
   echo -e "    |---\e[32m[Excluded Amass]\e[0m"
-  nano amass_subdomains.txt
+  cat "$domain" | tee amass_subdomains.txt 2> /dev/null
 
   else
     amass enum -df "$domain" -timeout $timeout > amass_subdomains.txt 2> /dev/null

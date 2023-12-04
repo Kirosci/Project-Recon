@@ -1,6 +1,13 @@
 #!/bin/bash
 
-read domain
+domain=$1
+
+if [ -z "$2" ]; then
+    timeout="30"
+else
+    timeout="$2"
+fi
+
 dir=$(head -1 $domain)
 mkdir "$dir" 2> /dev/null
 
@@ -26,8 +33,15 @@ rm live_subdomains.txt 2> /dev/null
 ) &
 
 (
-  amass enum -df "$domain" -timeout 10 > amass_subdomains.txt 2> /dev/null
-  echo -e "    |---\e[32m[Amass Done]\e[0m"
+
+  if [ "$2" -eq 0 ]; then
+    amass enum -df "$domain" > amass_subdomains.txt 2> /dev/null
+    echo -e "    |---\e[32m[Amass Done]\e[0m"
+  else
+    amass enum -df "$domain" -timeout $timeout > amass_subdomains.txt 2> /dev/null
+    echo -e "    |---\e[32m[Amass Done] [Timeout: $2 minutes]\e[0m" 
+  fi
+
 ) &
 
 (
@@ -62,13 +76,12 @@ file1="$domain"
 file2="all_assets.txt"
 
 while IFS= read -r word; do
-    grep -E "\\b${word//./\\.}\\b" "$file2" >> "subdomains.txt"
+    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u | >> "subdomains.txt"
 done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
-mkdir deep/ 2> /dev/null
-mv assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt all_assets.txt deep/
+rm assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null

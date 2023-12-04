@@ -90,7 +90,5 @@ rm assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt h
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null
-
-cd ../
 # Use "chmod 777 script.sh" to give it permissions for soomth run
 

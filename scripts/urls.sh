@@ -6,7 +6,7 @@ cd $dir || exit 1
 rm urls.txt 2> /dev/null
 
 (
-    cat live_subdomains.txt | waybackurls > wayback_urls.txt 
+    cat subdomains.txt | waybackurls > wayback_urls.txt 
 ) &
 
 # (
@@ -19,16 +19,16 @@ rm urls.txt 2> /dev/null
 # ) &
 
 (
-    cat live_subdomains.txt | gau > gau_urls.txt 
+    cat subdomains.txt | gau > gau_urls.txt 
 ) &
 
 (
-    cat live_subdomains.txt | katana scan --depth 3 > katana_urls.txt 2> /dev/null
+    cat subdomains.txt | katana scan --depth 3 > katana_urls.txt 2> /dev/null
 ) &
 
 (
-    sed 's/^https\?:\/\/\(www\.\)\?//' live_subdomains.txt > for_waymore.txt
-    python3 ~/tools/waymore/waymore.py -i cleaned_subdomains.txt -mode U
+    sed 's/^https\?:\/\/\(www\.\)\?//' subdomains.txt > for_waymore.txt
+    python3 ~/tools/waymore/waymore.py -i for_waymore.txt -mode U
 ) &
 wait
 
@@ -43,7 +43,7 @@ cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/
 #-------------------------------------URLs_Done------------------------------------------------
 
 
-rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt
+rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt for_waymore.txt
 
 cd ../
 #-----------------------------------------Organizing_Done---------------------------------------

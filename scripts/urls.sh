@@ -27,10 +27,13 @@ rm urls.txt 2> /dev/null
 ) &
 
 (
+    mkdir ~/tools/waymore/old_results 2> /dev/null
+    mv ~/tools/waymore/results/* ~/tools/waymore/old_results/
     sed 's/^https\?:\/\/\(www\.\)\?//' subdomains.txt > for_waymore.txt
     python3 ~/tools/waymore/waymore.py -i for_waymore.txt -mode U
 ) &
 wait
+
 
 cat ~/tools/waymore/results/*/waymore.txt | sort -u > waymore_urls.txt
 

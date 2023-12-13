@@ -16,7 +16,7 @@ wait
 echo "y" | sudo apt upgrade &
 wait
 
-mkdir tools
+mkdir ~/tools
 
 sudo apt install curl &
 wait

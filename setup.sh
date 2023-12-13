@@ -37,7 +37,7 @@ wait
 wait
 
 # Move all go binaries to bin
-sudo mv ~/go/bin/* /usr/local/go/bin/ &
+sudo mv ~/go/bin/* /usr/bin/ &
 wait
 
 # PIP3 INSTALL

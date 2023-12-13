@@ -7,9 +7,9 @@ if ! command -v /usr/local/go/bin/go &> /dev/null; then
 fi
 
 # Update and Upgrade
-sudo apt-update
-sudo apt-upgrade &
-
+sudo apt update &
+wait
+sudo apt upgrade &
 wait
 
 sudo apt install curl &

@@ -28,7 +28,7 @@ rm urls.txt 2> /dev/null
 
 (
     mkdir ~/tools/waymore/old_results 2> /dev/null
-    rsync -av ~/tools/waymore/results/ ~/tools/waymore/old_results/
+    rsync -av ~/tools/waymore/results/ ~/tools/waymore/old_results/ 1&>2 /dev/null
     rm -rf ~/tools/waymore/results
     mkdir ~/tools/waymore/results
     # mv ~/tools/waymore/results/* ~/tools/waymore/old_results/

@@ -50,7 +50,7 @@ rm live_subdomains.txt 2> /dev/null
 ) &
 
 (
-  subdominator -dL "$domain" -o subdominator_subdomains.txt 1> /dev/null
+  subdominator -dL "$domain" -o subdominator_subdomains.txt 1&>2 /dev/null
   echo -e "    |---\e[32m[Subdominator Done]\e[0m" 
 ) &
 
@@ -86,7 +86,7 @@ done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
-rm all_assets.txt assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt
+rm all_assets.txt assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt 
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null

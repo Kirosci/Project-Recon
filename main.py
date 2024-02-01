@@ -18,6 +18,7 @@ parser.add_argument("-sub", action='store_true', help="Subdomain Enumeration")
 parser.add_argument("-tkovr", action='store_true', help="Subdomain Takeover check")
 parser.add_argument("-urls", action='store_true', help="URL Enumeration")
 parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
+parser.add_argument("-fuzz", action='store_true', help="Fuzz")
 parser.add_argument("-amass_t", help="Amass timeout [Default 30 mins] [Use 0 for no timeout] [-amass_t 30 for 30 min timeout ]")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
@@ -99,6 +100,16 @@ def nuclei(domain):
     print (Fore.CYAN + "[Info: Results Saved in nuclei.txt]", end=' ')
     print(Style.RESET_ALL)
 
+def fuzz(domain):
+    print(Fore.BLUE + "[+] [Task: Fuzz]", end=' ') 
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
+    print(Style.RESET_ALL)
+    p_urls= subprocess.Popen(f"echo {domain} | bash scripts/fuzz.sh",shell=True).wait()
+    print(Fore.BLUE + "[+] [Task: Fuzz]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print (Fore.CYAN + "[Info: Results Saved in fuzz.txt and fuzz/]", end=' ')
+    print(Style.RESET_ALL)
+
 # Check internet connection 
 def check_internet():
     try:
@@ -144,6 +155,10 @@ def main():
                 thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))
                 thread_subdomains.start()
                 thread_subdomains.join()
+
+                #Fuzz
+                thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
+                thread_fuzz.start()
                 
                 # Subdomain Takeover
                 thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
@@ -178,6 +193,14 @@ def main():
                     thread_subdomains.join()
                 else:
                     print(Fore.RED + "[+] [Task: Subdomain Enumeration]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
+
+                # Fuzz
+                if args.fuzz:
+                    thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
+                    thread_fuzz.start()
+                else:
+                    print(Fore.RED + "[+] [Task: Fuzz]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
  
                 # Subdomain Takeover thread start 

@@ -38,7 +38,7 @@ dirsearch -l live_subdomains.txt  -w ~/wordlists/WordList/pl.txt -t 10 -i 200 -o
 ) &
 
 (
-dirsearch -l live_subdomains.txt  -w ~/wordlists/WordList/fuzz-php.txt -t 10 -i 200 -o fuzz-php.txt
+dirsearch -l live_subdomains.txt  -w ~/wordlists/WordList/fuzz-php.php -t 10 -i 200 -o fuzz-php.txt
 ) &
 
 wait

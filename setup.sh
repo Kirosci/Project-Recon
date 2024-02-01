@@ -53,6 +53,11 @@ git clone https://github.com/xnl-h4ck3r/waymore.git
 cd waymore
 sudo python3 setup.py install
 
+# Install GodFather Wordlist
+mkdir ~/wordlists
+cd ~/wordlists
+git clone https://github.com/orwagodfather/WordList.git
+
 # Project Recon Install
 cd ~/tools
 git clone https://github.com/shivpratapsingh111/Project-Recon.git

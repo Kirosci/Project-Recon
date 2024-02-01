@@ -86,7 +86,7 @@ done < "$file1"
 
 #---------------------------Organizing Assets---------------------------------------
 
-rm assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt
+rm all_assets.txt assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null

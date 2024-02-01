@@ -2,12 +2,15 @@
 
 domain=$1
 link=$2
+
+# For getting firdst 20 charachters of $link so we can grep for it to get proper open redirects.
+first_20="${link:0:20}"
+
 dir=$(head -1 $domain)
 
 cd "$dir" || exit 1
 rm openredirect_urls.txt 2> /dev/null
 rm all_ssrf_urls.txt 2> /dev/null
-# echo "[Server: $link]"
 file="urls.txt"
 
 counter=1
@@ -24,5 +27,8 @@ while read -r line; do
 
   counter=$((counter+1))
 done < "$file"
+
+# Filtering out proper Open Redirects
+cat openredirect_urls.txt | grep -- "---> $first_20" > openrediects.txt
 
 cd ../

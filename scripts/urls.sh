@@ -37,7 +37,7 @@ wait
 
 cat ~/tools/waymore/results/*/waymore.txt | sort -u > waymore_urls.txt
 
-cat wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt | sort -u | httpx -mc 200 > urls.txt 2> /dev/null &
+cat wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt | sort -u > urls.txt 2> /dev/null &
 
 wait
 
@@ -45,8 +45,6 @@ cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/
 
 #-------------------------------------URLs_Done------------------------------------------------
 
-
-rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt openredirect_urls.txt for_waymore.txt 404.txt 
 
 wc -l * | grep "^[[:space:]]*0[[:space:]]" | awk '{print$2}' > filelist.txt
 
@@ -65,6 +63,8 @@ while IFS= read -r filename; do
         echo "File not found: $filename"
     fi
 done < "filelist.txt"
+
+rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt for_waymore.txt 
 
 cd ../
 #-----------------------------------------Organizing_Done---------------------------------------

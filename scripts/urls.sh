@@ -40,7 +40,7 @@ wait
 
 cat ~/tools/waymore/results/*/waymore.txt | sort -u > waymore_urls.txt
 
-cat wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt | sort -u | httpx -mc 200 > urls.txt 2> /dev/null 
+cat wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt | sort -u | httpx -t 100 -mc 200 > urls.txt 2> /dev/null 
 
 cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsUrls.txt 1> /dev/null 
 

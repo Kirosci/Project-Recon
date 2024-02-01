@@ -65,7 +65,7 @@ while IFS= read -r filename; do
     fi
 done < "filelist.txt"
 
-rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt for_waymore.txt 
+rm wayback_urls.txt gau_urls.txt katana_urls.txt waymore_urls.txt for_waymore.txt filelist.txt
 
 cd ../
 #-----------------------------------------Organizing_Done---------------------------------------

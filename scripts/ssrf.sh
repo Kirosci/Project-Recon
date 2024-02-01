@@ -29,6 +29,8 @@ while read -r line; do
 done < "$file"
 
 # Filtering out proper Open Redirects
-cat openredirect_urls.txt | grep -- "---> $first_20" > openrediects.txt
+cat openredirect_urls.txt | grep -- "---> $first_20" > openredirects.txt
+
+rm openredirect_urls.txt
 
 cd ../

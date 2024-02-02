@@ -57,4 +57,4 @@ It uses GodFather's worlisits to fuzz:
 * pl.txt
 * fuzz-php.php
 
-Sorted results are saved in fuzz.txt file while seperate results for each wordlists are saved in /fuzz
+Results are saved in fuzz.txt file, while seperate results for each wordlist are saved in /fuzz

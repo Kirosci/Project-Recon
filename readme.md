@@ -7,7 +7,7 @@
 
 ## Usage:
 
-### Update (-update):
+### > Update (-update):
 You can update your script to latest version.
 Example: `python3 main.py -update`
 

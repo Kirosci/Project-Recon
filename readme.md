@@ -1,14 +1,13 @@
 ## Usage:
 
-### Incase you already found subdomains you do not need to find it again, you can remove **-sub** argument:
-`python3 main.py -f domains.txt -tkovr -urls -xss -ssrf https://burpcollaborator.link`
-
-#### NOTE: Like above example you can exclude and include arguments accordingly.
+#### NOTE: You can use this tool to do tasks one at a time, 
+Example:
+> Incase you only need to find subdomains then use, `python3 main.py -f domain.txt -sub`
+> Now you need urls only no worries, just use `python3 main.py -f domains.txt -urls` you don't need to specify -sub flag again. It will use the lastly found subdomains.
 
 ### Update (-update):
 You can update your script to latest version.
 Example: `python3 main.py -update`
-
 
 ### All (-all):
 `python3 main.py -f domains.txt -all https://burpcollaborator.link`
@@ -24,7 +23,7 @@ There will be two files `subdomains.txt` this will contain all subdomains found 
   * By default it is set to 30 mins
   * `-amass_t 0` for not using amass
   * `-amass_t 1` for not setting any timeout, it will run until it gets stoped by itself.
-  * `-amass_t 60` for 60 minutes timeout 
+  * `-amass_t 60` for 60 minutes timeout
 
 ### URLs (-urls): 
 Check `urls.txt` will contain all the URLs and `js_urls.txt`  will contain all the *JavaScript* file URLs found by grepping from the discovered URLs. 

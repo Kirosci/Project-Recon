@@ -76,4 +76,8 @@ It uses GodFather's worlisits to fuzz:
 
 Results are saved in fuzz.txt file, while seperate results for each wordlist are saved in /fuzz
 
+<<<<<<< HEAD
 ---
+=======
+---
+>>>>>>> 679ac51 (Update)

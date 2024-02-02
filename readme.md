@@ -1,5 +1,3 @@
----
-
 #### NOTE: You can use this tool to do tasks one at a time. [If your PC doesn't have enough resources]
 * Example:
    * Incase you only need to find subdomains then use, `python3 main.py -f domain.txt -sub`

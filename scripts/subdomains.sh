@@ -81,12 +81,14 @@ file1="$domain"
 file2="all_assets.txt"
 
 while IFS= read -r word; do
-    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> "subdomains.txt"
+    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> "subdomain.txt"
 done < "$file1"
+
+cat subdomain.txt | dnsx -silent | tee subdomains.txt 
 
 #---------------------------Organizing Assets---------------------------------------
 
-rm all_assets.txt assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt 
+rm subdomain.txt all_assets.txt assetfinder_subdomains.txt subdominator_subdomains.txt amass_subdomains.txt haktrails_subdomains.txt subfinder_subdomains.txt 
 #-----------------------------Finding Live Subdomains-------------------------------
 
 cat subdomains.txt | httpx > live_subdomains.txt 2> /dev/null

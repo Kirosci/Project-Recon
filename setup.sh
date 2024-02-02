@@ -33,19 +33,24 @@ wait
 /usr/local/go/bin/go install -v github.com/projectdiscovery/katana/cmd/katana@latest &
 /usr/local/go/bin/go install -v github.com/lc/gau/v2/cmd/gau@latest &
 /usr/local/go/bin/go install -v github.com/tomnomnom/waybackurls@latest &
+/usr/local/go/bin/go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest &
 
 wait
 
 # Move all go binaries to bin
-sudo mv ~/go/bin/* /usr/bin/ &
-wait
+sudo mv ~/go/bin/* /usr/bin/
 
 # PIP3 INSTALL
 sudo apt-get install python3-pip &
 wait
 
 # Subdominator Install
-pip3 install subdominator
+pip3 install subdominator &
+
+# Dirsearch Install
+pip3 install dirsearch &
+
+wait
 
 # Waymore Install
 cd ~/tools
@@ -64,7 +69,8 @@ git clone https://github.com/shivpratapsingh111/Project-Recon.git
 
 # Check if there were any installation errors
 if [ $? -eq 0 ]; then
-    echo "All Go tools have been installed successfully."
+    echo "All Go tools have been installed successfully"
+    echo "Manually Setup Haktrails API"
 else
     echo "Error occurred during installation. Please check the output for details."
 fi

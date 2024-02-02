@@ -1,6 +1,6 @@
 ## Usage:
 
-#### NOTE: You can use this tool to do tasks one at a time, 
+#### NOTE: You can use this tool to do tasks one at a time. [Incase your PC doesn't have enough resources]
 Example:
 > Incase you only need to find subdomains then use, `python3 main.py -f domain.txt -sub`
 > Now you need urls only no worries, just use `python3 main.py -f domains.txt -urls` you don't need to specify -sub flag again. It will use the lastly found subdomains.

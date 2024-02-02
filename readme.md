@@ -44,3 +44,17 @@ For SSRF testing you just provide the Server URL (Burp collaborator, Interactsh,
 
 ### Nuclei:
 Check `nuclei.txt` file it will contain all the nuclei results. 
+
+### Fuzz:
+It will fuzz with GodFathers worlisits.
+It uses:
+* 1.txt
+* apac.txt
+* cgi-bin.txt
+* fuzz.txt
+* god.txt
+* kibana.txt
+* xml.txt
+* pl.txt
+* fuzz-php.php
+Sorted results are saved in fuzz.txt file while seperate results for each wordlists are saved in /fuzz

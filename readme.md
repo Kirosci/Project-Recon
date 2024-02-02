@@ -53,7 +53,7 @@ For SSRF testing you just provide the Server URL (Burp collaborator, Interactsh,
 
 ![image](https://github.com/Kirosci/Project-Recon/assets/106021529/6950b0ce-3ac5-4b22-8bdb-d57895684f9b)
 ![image](https://github.com/Kirosci/Project-Recon/assets/106021529/40e4ca81-664e-4a07-9c8b-51897b07226d)
-* In abve image it is ssrfUrls.txt in place of all_ssrf_urls.txt
+* In above image it is ssrfUrls.txt in place of all_ssrf_urls.txt
 
 ---
 

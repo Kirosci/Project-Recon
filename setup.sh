@@ -58,13 +58,14 @@ git clone https://github.com/xnl-h4ck3r/waymore.git
 cd waymore
 sudo python3 setup.py install
 
-# Install Wordlists
-git clone https://github.com/shivpratapsingh111/wordlists
 
 # Project Recon Install
 cd ~/tools
 git clone https://github.com/shivpratapsingh111/Project-Recon.git
 
+unzip cent-nuclei-templates
+
+wait
 
 
 rm -rf Backup TODO 1&>2 /dev/null

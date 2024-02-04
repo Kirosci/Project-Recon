@@ -6,11 +6,11 @@ cd $dir || exit 1
 
 
 (
-dirsearch -l subdomains.txt  -w wordlists/mixedBig.txt -t 50 -i 200 -o fuzz_mixedBig.txt
+dirsearch -l subdomains.txt  -w wordlists/mixedBig.txt -t 10 -i 200 -o fuzz_mixedBig.txt
 ) &
 
 (
-dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 50 -i 200 -o fuzz_dirSmall.txt
+dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
 ) &
 
 wait

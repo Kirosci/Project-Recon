@@ -15,3 +15,8 @@ https://github.com/assetnote/kiterunner?tab=readme-ov-file
 
 
 
+Alive-Domains -> subj -> jsurls
+cat wayback + gau + etc | grep .js | jsurls2.txt
+
+
+

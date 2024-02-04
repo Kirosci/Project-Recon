@@ -84,7 +84,7 @@ while IFS= read -r word; do
     grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> "subdomain.txt"
 done < "$file1"
 
-cat subdomain.txt | dnsx -silent | tee subdomains.txt 
+cat subdomain.txt | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 | tee subdomains.txt 
 
 #---------------------------Organizing Assets---------------------------------------
 

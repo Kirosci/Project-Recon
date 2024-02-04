@@ -10,6 +10,8 @@ if [ "$current_dir" == "Project-Recon" ]; then
     mv Project-Recon/* ./
     mv Project-Recon/.* ./
     rm -rf Project-Recon
+    rm -rf Backup TODO 1&>2 /dev/null
+
 else
     echo "The current directory is not named 'Project-recon'."
 fi

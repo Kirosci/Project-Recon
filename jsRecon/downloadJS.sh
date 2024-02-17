@@ -57,7 +57,7 @@ download_file() {
 
     # Retry loop
     for ((i=1; i<=$RETRY; i++)); do
-        wget --timeout=$TIMEOUT -O $filename $url && echo "$url : ${index}.js" >> linked.txt && break
+        wget --timeout=$TIMEOUT --no-check-certificate -O $filename $url && echo "$url : ${index}.js" >> linked.txt && break
         sleep 1
     done
 }

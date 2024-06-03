@@ -1,15 +1,8 @@
 test.*
 test/*
-*.com
-project/
-gopro*
-freepik.com
-nab.com.au
-pornhub.com
-domain.freepik.com.txt
-domain.nab.com.au.txt
-domain.pornhub.com.txt
+domain.txt
 jsSource
 linked.txt
 secretsOnly.txt
 urlsOnly.txt
+*.com

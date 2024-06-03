@@ -5,6 +5,7 @@ directory=""
 file=""
 find_flag=false
 string_to_find=""
+mkdir -p js/jsSourceFiles
 
 # Function to print usage
 usage() {
@@ -61,14 +62,18 @@ process_directory() {
 
     wait
 
-    cat *_urls.txt > combinedUrls.txt &
-    cat *_secrets.txt > secretsOnly.txt
+    cat *_urls.txt > .jsLuiceCombinedUrls.txt &
+    cat *_secrets.txt > secrets.txt
+
+    rm *_urls.txt
+    rm *_secrets.txt 
 
     wait
 
-    cat combinedUrls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee pathsOnly.txt &
-    cat combinedUrls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urlsOnly.txt
+    cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt &
+    cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urls.txt
     wait
+    mv *.js jsSourceFiles
 }
 
 # Function to process single file
@@ -81,8 +86,8 @@ process_file() {
     jsluice secrets "$1" | jq | tee "secrets.txt"
     wait
 
-    cat urls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee pathsOnly.txt &
-    cat urls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urlsOnly.txt
+    cat urls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt &
+    cat urls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urls.txt
     wait
 
     rm urls.txt
@@ -92,7 +97,7 @@ process_file() {
 find_string_in_directory() {
     local directory="$1"
     local string_to_find="$2"
-    grep -A 5 -r "$string_to_find" "$directory"/combinedUrls.txt | grep filename | sort -u
+    grep -A 5 -r "$string_to_find" "$directory"/.jsLuiceCombinedUrls.txt | grep filename | sort -u
 }
 
 # Execute based on the flags provided

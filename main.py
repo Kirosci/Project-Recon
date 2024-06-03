@@ -14,11 +14,12 @@ parser.add_argument("-f", help="Give file name consisting of target domains")
 parser.add_argument("-all", help="[Subdomain & URL Enum, Subdomain Takeover, SSRF, XSS, Nuclei]: Provide Link for SSRF Testing")
 parser.add_argument("-ssrf", help="SSRF Testing: Provide Burp Collaborator/Server link")
 parser.add_argument("-xss", action='store_true', help="XSS testing")
-parser.add_argument("-sub", action='store_true', help="Subdomain Enumeration")
+parser.add_argument("-sub", action='store_true', help="Enumerating Subdomains")
 parser.add_argument("-tkovr", action='store_true', help="Subdomain Takeover check")
 parser.add_argument("-urls", action='store_true', help="URL Enumeration")
 parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
-parser.add_argument("-fuzz", action='store_true', help="Fuzz")
+parser.add_argument("-fuzz", action='store_true', help="Fuzz subdomains")
+parser.add_argument("-js", action='store_true', help="Analyse JS files for juicy stuff")
 parser.add_argument("-amass_t", help="Amass timeout [Default 30 mins] [Use 0 for no timeout] [-amass_t 30 for 30 min timeout ]")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
@@ -29,85 +30,95 @@ REPO_URL = 'https://github.com/Kirosci/Project-Recon.git'
 
 # For Updating the tool 
 def update():
-    print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Updating]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_update = subprocess.Popen("bash scripts/update.sh", shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: Update]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Updating]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print(Style.RESET_ALL)
 
 # For gathering subdomains
 def subdomains(domain, amass_timeout):
-    print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Enumerating Subdomains]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_subdomain = subprocess.Popen(f"bash scripts/subdomains.sh {domain} {amass_timeout}",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: Subdomain Enumeration]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Enumerating Subdomains]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subdomains.txt & live_subdomains.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For checking subdomain takeover 
 def subTakeover(domain):
-    print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential Subdomain Takeovers]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/subTakeover.sh",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: Subdomain Takeover Check]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential Subdomain Takeovers]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in subTakeovers.txt]", end=' ')
     print(Style.RESET_ALL)
 
 # For gathering urls 
 def urls(domain):
-    print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Gathering URLs]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/urls.sh",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: URL Gathering]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Gathering URLs]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in urls.txt]", end=' ')
     print(Style.RESET_ALL)
 
 def ssrf(domain, link): 
-    print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential SSRF]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"bash scripts/ssrf.sh {domain} {link}",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: SSRF Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential SSRF]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in all_ssrf_urls.txt | Check if you get any pingbacks]", end=' ')
     print(Style.RESET_ALL)
 
 def xss(domain):
-    print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential XSS]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/xss.sh",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: XSS Testing]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Scanning for potential XSS]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results saved in kxss.txt file]", end=' ')
     print(Style.RESET_ALL)
 
 def nuclei(domain):
-    print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Running Nuclei]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/nuclei.sh",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: Nuclei]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Running Nuclei]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results Saved in nuclei.txt]", end=' ')
     print(Style.RESET_ALL)
 
 def fuzz(domain):
-    print(Fore.BLUE + "[+] [Task: Fuzz]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Fuzzing subdomains]", end=' ') 
     print (Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
     p_urls= subprocess.Popen(f"echo {domain} | bash scripts/fuzz.sh",shell=True).wait()
-    print(Fore.BLUE + "[+] [Task: Fuzz]", end=' ') 
+    print(Fore.BLUE + "[+] [Task: Fuzzing subdomains]", end=' ') 
     print (Fore.GREEN + "[Status: Completed]", end=' ')
     print (Fore.CYAN + "[Info: Results Saved in fuzz.txt and fuzz/]", end=' ')
+    print(Style.RESET_ALL)
+
+def js(domain):
+    print(Fore.BLUE + "[+] [Task: Analyzing JS files]", end=' ') 
+    print (Fore.YELLOW + "[Status: In progress]", end=' ')
+    print(Style.RESET_ALL)
+    p_urls= subprocess.Popen(f"echo {domain} | bash scripts/js.sh",shell=True).wait()
+    print(Fore.BLUE + "[+] [Task: Analyzing JS files]", end=' ') 
+    print (Fore.GREEN + "[Status: Completed]", end=' ')
+    print (Fore.CYAN + "[Info: Results Saved in js/]", end=' ')
     print(Style.RESET_ALL)
 
 # Check internet connection 
@@ -151,16 +162,16 @@ def main():
 
             if args.all:
 
-                # Subdomain Enumeration Start AND WAIT 
+                # Enumerating Subdomains Start AND WAIT 
                 thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))
                 thread_subdomains.start()
                 thread_subdomains.join()
 
-                #Fuzz
+                #Fuzzing subdomains
                 thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
                 thread_fuzz.start()
                 
-                # Subdomain Takeover
+                # Scanning for potential Subdomain Takeovers
                 thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                 thread_subTakeover.start()
 
@@ -169,38 +180,42 @@ def main():
                 thread_urls.start()
                 thread_urls.join()
 
-                # SSRF Testing
+                # Scanning for potential SSRF
                 link = args.all
                 thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                 thread_ssrf.start()
 
-                # Nuclei Scan
+                # Running Nuclei
                 thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
                 thread_nuclei.start()
 
-                # XSS Testing 
+                # Scanning for potential XSS 
                 thread_xss = threading.Thread(target=xss, args=(domain,))
                 thread_xss.start()
+
+                #Analyzing JS files
+                thread_js = threading.Thread(target=js, args=(domain,))
+                thread_js.start()
 
 
 
             else:
 
-                # Subdomain Enumeration thread start AND WAIT
+                # Enumerating Subdomains thread start AND WAIT
                 if args.sub:
                     thread_subdomains = threading.Thread(target=subdomains, args=(domain,amass_timeout,))
                     thread_subdomains.start()
                     thread_subdomains.join()
                 else:
-                    print(Fore.RED + "[+] [Task: Subdomain Enumeration]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Enumerating Subdomains]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
 
-                # Fuzz
+                # Fuzzing subdomains
                 if args.fuzz:
                     thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
                     thread_fuzz.start()
                 else:
-                    print(Fore.RED + "[+] [Task: Fuzz]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Fuzzing subdomains]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
  
                 # Subdomain Takeover thread start 
@@ -208,7 +223,7 @@ def main():
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(domain,))
                     thread_subTakeover.start()
                 else:
-                    print(Fore.RED + "[+] [Task: Subdomain Takeover]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Scanning for potential Subdomain Takeovers]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
  
                 # URL Enumeration thread start AND WAIT
@@ -217,7 +232,7 @@ def main():
                     thread_urls.start()
                     thread_urls.join()
                 else:
-                    print(Fore.RED + "[+] [Task: URL Enumeration]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Gathering URLs]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # SSRF testing thread start
@@ -226,7 +241,7 @@ def main():
                     thread_ssrf = threading.Thread(target=ssrf, args=(domain, link,))
                     thread_ssrf.start()
                 else:
-                    print(Fore.RED + "[+] [Task: SSRF Testing]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Scanning for potential SSRF]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # Nuclei Scan thread start
@@ -234,7 +249,7 @@ def main():
                     thread_nuclei = threading.Thread(target=nuclei, args=(domain,))
                     thread_nuclei.start()
                 else:
-                    print(Fore.RED + "[+] [Task: Nuclei Scan]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Running Nuclei]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
 
                 # XSS testing thread start
@@ -242,9 +257,16 @@ def main():
                     thread_xss = threading.Thread(target=xss, args=(domain,))
                     thread_xss.start()
                 else:
-                    print(Fore.RED + "[+] [Task: XSS Testing]", end=' ') 
+                    print(Fore.RED + "[+] [Task: Scanning for potential XSS]", end=' ') 
                     print (Fore.BLUE + "[Status: Argument Not Provided]")
 
+                # JS analyzing thread start
+                if args.js:
+                    thread_js = threading.Thread(target=js, args=(domain,))
+                    thread_js.start()
+                else:
+                    print(Fore.RED + "[+] [Task: Analyzing JS files]", end=' ') 
+                    print (Fore.BLUE + "[Status: Argument Not Provided]")
         else:
             print("Internet is not working!")
 

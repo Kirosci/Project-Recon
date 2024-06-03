@@ -44,7 +44,7 @@ if [ -z "$FILENAME" ]; then
 fi
 
 # Create directory if not exists
-mkdir -p jsSource
+mkdir -p js
 
 # Initialize linked.txt
 echo -n > linked.txt
@@ -53,7 +53,7 @@ echo -n > linked.txt
 download_file() {
     url=$1
     index=$2
-    filename="jsSource/${index}.js"
+    filename="js/${index}.js"
 
     # Retry loop
     for ((i=1; i<=$RETRY; i++)); do

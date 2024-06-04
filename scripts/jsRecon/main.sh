@@ -4,46 +4,20 @@
 directory=""
 file=""
 find_flag=false
-string_to_find=""
-mkdir -p js/jsSourceFiles
+stringToFind=""
 
-# Function to print usage
+
 usage() {
-    echo "Usage: $0 [-dir <directory>] [-f <file>] [-find <string> -d <directory>]"
+    echo -e "\nUsage: \n $0 [-dir <directory> OR -f <file>] OR [-find <string> AND -d <directory>]\n\nUse \`=\` between flag and data"
     exit 1
 }
 
-# Parse command-line arguments
-while [ "$#" -gt 0 ]; do
-    case "$1" in
-        -dir)
-            shift
-            directory="$1"
-            ;;
-        -f)
-            shift
-            file="$1"
-            ;;
-        -find)
-            find_flag=true
-            shift
-            string_to_find="$1"
-            ;;
-        -d)
-            shift
-            directory="$1"
-            ;;
-        *)
-            usage
-            ;;
-    esac
-    shift
-done
-
-# Function to process directory
-process_directory() {
+# Function for directory of js files (-dir)
+scanDirectory() {
+    directory=$1
+    cd "$directory" || exit
+    mkdir -p jsSourceFiles
     local output_index=1
-    cd "$1" || exit
     for file in *.js; do
         if jsluice urls "$file" | jq | tee "${output_index}_urls.txt"; then
             ((output_index++))
@@ -76,8 +50,8 @@ process_directory() {
     mv *.js jsSourceFiles
 }
 
-# Function to process single file
-process_file() {
+# Function for a single javascript (-f)
+scanFile() {
     if [ ! -f "$1" ]; then
         echo "File $1 not found."
         exit 1
@@ -93,22 +67,36 @@ process_file() {
     rm urls.txt
 }
 
-# Function to find string in directory
-find_string_in_directory() {
+# Function to find provided string in directory of js files (-find and -d)
+findString() {
     local directory="$1"
-    local string_to_find="$2"
-    grep -A 5 -r "$string_to_find" "$directory"/.jsLuiceCombinedUrls.txt | grep filename | sort -u
+    local stringToFind="$2"
+    grep -A 5 -r "$stringToFind" "$directory"/.jsLuiceCombinedUrls.txt | grep filename | sort -u
 }
 
-# Execute based on the flags provided
-if [ "$directory" != "" ]; then
-    if [ "$find_flag" = true ]; then
-        find_string_in_directory "$directory" "$string_to_find"
-    else
-        process_directory "$directory"
-    fi
-elif [ "$file" != "" ]; then
-    process_file "$file"
+
+# Defining command-line arguments
+arg1Data="$(echo $1 | cut -d "=" -f2)"
+arg1="$(echo $1 | cut -d "=" -f1)"
+
+arg2Data="$(echo $2 | cut -d "=" -f2)"
+arg2="$(echo $2 | cut -d "=" -f1)"
+
+
+if [ "$arg1" == "-find" ] && [ "$arg2" == "-d" ] ; then
+# Ensure $1 must be directory and $2 must be string
+    findString "$arg2Data" "$arg1Data"
+elif [ "$arg1" == "-d" ] &&  [ "$arg2" == "-find" ]; then
+# Ensure $1 must be directory and $2 must be string
+    findString "$arg1Data" "$arg2Data"
+
+elif [ "$arg1" == "-dir" ]; then
+    scanDirectory "$arg1Data"
+
+elif [ "$arg1" == "-f" ]; then
+    scanFile "$arg1Data"
+
 else
     usage
 fi
+

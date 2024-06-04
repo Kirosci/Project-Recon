@@ -1,79 +1,269 @@
 #!/bin/bash
 
-# Ensure that Go is installed
-if ! command -v /usr/local/go/bin/go &> /dev/null; then
-    echo "Go is not installed. Installing..."
-    curl https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -L --output go1.21.5.linux-amd64.tar.gz &
-    wait
-    sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.5.linux-amd64.tar.gz & 
-    wait
-    export PATH=$PATH:/usr/local/go/bin
+
+allTools=("assetfinder" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx")
+
+commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "sed")
+
+missingTools=()
+missingAgain=()
+packetManager=""
+allPresent=1
+mkdir -p ~/tools
+
+
+
+
+installmissingTools(){
+        echo "In missingTools"
+
+    for tool in ${missingTools[@]}; do
+        
+        case $tool in
+
+        # Subdomain gathering tools
+            "amass")
+                /usr/local/go/bin/go install -v github.com/owasp-amass/amass/v4/...@master
+                ;;
+            "assetfinder")
+                /usr/local/go/bin/go install -v github.com/tomnomnom/assetfinder@latest
+                ;;
+            "haktrails")
+                /usr/local/go/bin/go install -v github.com/hakluke/haktrails@latest
+                ;;
+            "subdominator")
+                pip3 install git+https://github.com/RevoltSecurities/Subdominator
+                ;;
+            "subfinder")
+                /usr/local/go/bin/go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+                ;;
+
+        # URL gathering tools
+            "gau")
+                /usr/local/go/bin/go install -v github.com/lc/gau/v2/cmd/gau@latest
+                ;;
+            "katana")
+                /usr/local/go/bin/go install -v github.com/projectdiscovery/katana/cmd/katana@latest 
+                ;;
+            "waybackurls")
+                /usr/local/go/bin/go install -v github.com/tomnomnom/waybackurls@latest
+                ;;
+            "waymore")
+                pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
+                ;;
+
+
+
+        # Misc Tools
+            "dirsearch")
+                pip3 install dirsearch
+                ;;
+            "kxss")
+                /usr/local/go/bin/go install -v github.com/Emoe/kxss@latest
+                ;;
+            "nuclei")
+                /usr/local/go/bin/go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+                ;;
+            "qsreplace")
+                /usr/local/go/bin/go install -v github.com/tomnomnom/qsreplace@latest
+                ;;
+            "httpx")
+                /usr/local/go/bin/go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+                ;;
+            *)
+                echo "[+] Installation method not added for: $tool"
+                ;;
+        esac
+    done
+
+}
+
+
+
+
+
+fixMissingAgain(){
+    for tool in ${missingAgain[@]}; do
+        echo "y" | sudo pip3 uninstall $tool
+    done
+
+    installmissingTools
+}
+
+
+
+
+
+checkTools(){
+# Checking for missing tools
+
+    for tool in "${allTools[@]}"; do
+    
+        if ! command -v $tool &>/dev/null; then
+            missingTools+=("$tool")
+            allPresent=0
+        fi
+    done
+    
+    if [ ${#missingTools[@]} -gt 0 ]; then
+        echo "[+] Following tools are missing: "
+        for tool in ${missingTools[@]}; do
+            echo "-""$tool"
+        done
+        installmissingTools
+    else
+        echo "[+] All required tools are present"
+        return 1
+    fi
+
+
+# Checking and fixing errors for still missing tools (that may not got installed due to some errors)
+    for tool in "${allTools[@]}"; do
+    
+        if ! command -v $tool &>/dev/null; then
+            missingAgain+={"$tool"}
+        fi
+    done
+
+    if [ ${#missingAgain[@]} -gt 0 ]; then
+        fixMissingAgain
+    fi
+
+# Checking third time for missing tools, printing their name
+    for tool in "${allTools[@]}"; do
+    
+        if ! command -v $tool &>/dev/null; then
+            echo "[+] Not Installed, Install manually $tool"
+            allPresent=0
+        fi
+    done
+
+    if  [[ ! $allPresent -eq 0 ]]; then
+        echo "[+] All required tools are installed"
+    fi
+}
+
+
+
+
+
+updateUpgrade() {
+
+    if [ -f /etc/debian_version ]; then
+
+        echo "[+] OS: Debian"
+        
+        echo "y" | sudo apt update
+        echo "y" | sudo apt full-upgrade -y
+        echo "y" | sudo apt autoremove -y
+
+        for utility in ${commonUtilties[@]}; do
+
+            if [ $utility == "coreutils" ]; then
+
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | sudo apt install coreutils
+
+                fi
+
+            elif ! command -v $utility &>/dev/null; then
+
+                echo "[+] $utility not present, Installing..."
+                echo "y" | sudo apt install $utility
+
+            fi
+            
+        done      
+
+
+    elif [ -f /etc/fedora-release ]; then
+
+        echo "[+] OS: Fedora"
+
+        # echo "y" | sudo dnf update -y
+        # echo "y" | sudo dnf clean all
+
+        for utility in ${commonUtilties[@]}; do
+
+            if [ $utility == "coreutils" ]; then
+
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | sudo dnf install coreutils
+
+                fi
+
+            elif ! command -v $utility &>/dev/null; then
+
+                echo "[+] $utility not present, Installing..."
+                echo "y" | sudo dnf install $utility
+
+            fi
+
+        done      
+
+
+    elif [ -f /etc/arch-release ]; then
+
+        echo "[+] OS: Arch"
+
+        echo "y" | sudo pacman -Syu
+
+        for utility in ${commonUtilties[@]}; do
+
+            if [ $utility == "coreutils" ]; then
+
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | pacman -S coreutils
+
+                fi
+
+            elif ! command -v $utility &>/dev/null; then
+
+                echo "[+] $utility not present, Installing..."
+                echo "y" | pacman -S $utility
+
+            fi
+            
+        done               
+
+    fi
+
+    
+# Checking & Installing Go Lang
+
+    if ! command -v /usr/local/go/bin/go &> /dev/null; then
+        echo "Go is not installed. Installing..."
+        curl https://go.dev/dl/go1.22.3.linux-amd64.tar.gz -L --output go1.22.3.linux-amd64.tar.gz &
+        wait
+        sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz & 
+        wait
+        export PATH=$PATH:/usr/local/go/bin
+    fi
+
+}
+
+
+
+
+# Driver Code
+mainFunction(){
+if [ "$EUID" -ne 0 ]
+  then echo "Please run $0 as root"
+  exit
 fi
 
-# Update and Upgrade
-sudo apt update &
-wait
-echo "y" | sudo apt upgrade &
-wait
-
-mkdir ~/tools
-
-sudo apt install curl &
-wait
+updateUpgrade
+checkTools
+}
 
 
-# Install Go tools
-/usr/local/go/bin/go install -v github.com/owasp-amass/amass/v4/...@master &
-/usr/local/go/bin/go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest &
-/usr/local/go/bin/go install -v github.com/tomnomnom/assetfinder@latest &
-/usr/local/go/bin/go install -v github.com/hakluke/haktrails@latest &
-/usr/local/go/bin/go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest &
-/usr/local/go/bin/go install -v github.com/Emoe/kxss@latest &
-/usr/local/go/bin/go install -v github.com/tomnomnom/qsreplace@latest &
-/usr/local/go/bin/go install -v github.com/projectdiscovery/katana/cmd/katana@latest &
-/usr/local/go/bin/go install -v github.com/lc/gau/v2/cmd/gau@latest &
-/usr/local/go/bin/go install -v github.com/tomnomnom/waybackurls@latest &
-/usr/local/go/bin/go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest &
-
-wait
-
-# Move all go binaries to bin
-sudo mv ~/go/bin/* /usr/bin/
-
-# PIP3 INSTALL
-sudo apt-get install python3-pip &
-wait
-
-# Subdominator Install
-pip3 install subdominator &
-
-# Dirsearch Install
-pip3 install dirsearch &
-
-wait
-
-# Waymore Install
-cd ~/tools
-git clone https://github.com/xnl-h4ck3r/waymore.git
-cd waymore
-sudo python3 setup.py install
+# Calling mainFunction
+mainFunction
 
 
-# Project Recon Install
-cd ~/tools
-git clone https://github.com/shivpratapsingh111/Project-Recon.git
-
-unzip cent-nuclei-templates
-
-wait
-
-
-rm -rf Backup TODO 1&>2 /dev/null
-
-# Check if there were any installation errors
-if [ $? -eq 0 ]; then
-    echo "All Go tools have been installed successfully"
-    echo "Manually Setup Haktrails API"
-else
-    echo "Error occurred during installation. Please check the output for details."
-fi

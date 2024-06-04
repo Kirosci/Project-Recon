@@ -34,17 +34,17 @@ There will be two files `subdomains.txt` this will contain all subdomains found 
 ---
 
 ### > URLs (-urls): 
-Check `urls.txt` will contain all the URLs and `js_urls.txt`  will contain all the *JavaScript* file URLs found by grepping from the discovered URLs. 
+Check `urls.txt` file for all the URLs and `js_urls.txt`  will contain all the *JavaScript* file URLs found by grepping from the discovered URLs. 
 
 ---
 
 ### > Subdomain Takeover (-tkovr):
-Check `subTakeover.txt` file it will contain all the subdomains with **status code:404** and having some **CNAME**
+Check `subTakeover.txt` file for all the subdomains with **status code:404** and having some **CNAME**
 
 ---
 
 ### > XSS (-xss):
-Check `xss.txt` file it contains all the URL with reflected parameters and all allowed characters on that parameter. 
+Check `xss.txt` file for all the URLs with reflected parameters and all allowed special characters on that parameter. 
 
 ---
 
@@ -58,7 +58,7 @@ For SSRF testing you just provide the Server URL (Burp collaborator, Interactsh,
 ---
 
 ### > Nuclei (-nuclei):
-Check `nuclei.txt` file it will contain all the nuclei results. 
+Check `nuclei.txt` file for results. 
 
 ---
 
@@ -75,5 +75,10 @@ It uses GodFather's worlisits to fuzz:
 * fuzz-php.php
 
 Results are saved in fuzz.txt file, while seperate results for each wordlist are saved in /fuzz
+---
+
+### > Analyze JS file for juicy stuff (-js):
+Check `js/` directory for all the results. 
+  * 
 
 ---

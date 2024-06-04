@@ -148,6 +148,7 @@ checkTools(){
         continue
     else
         echo "[+] All required tools are installed"
+        echo "[+] Set API Keys in config file for waymore & subfinder"
     fi
 
 # Printing name of tools, that were unable to install
@@ -160,7 +161,6 @@ checkTools(){
     done
 
 }
-
 
 
 

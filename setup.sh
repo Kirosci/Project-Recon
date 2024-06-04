@@ -3,7 +3,7 @@
 
 allTools=("assetfinder" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx")
 
-commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "sed")
+commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
 
 missingTools=()
 missingAgain=()
@@ -182,8 +182,8 @@ updateUpgrade() {
 
         echo "[+] OS: Fedora"
 
-        # echo "y" | sudo dnf update -y
-        # echo "y" | sudo dnf clean all
+        echo "y" | sudo dnf update -y
+        echo "y" | sudo dnf clean all
 
         for utility in ${commonUtilties[@]}; do
 

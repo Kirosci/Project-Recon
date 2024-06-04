@@ -8,14 +8,14 @@ commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
 missingTools=()
 missingAgain=()
 packetManager=""
-allPresent=1
+allPresent=0
+
 mkdir -p ~/tools
 
 
 
 
 installmissingTools(){
-        echo "In missingTools"
 
     for tool in ${missingTools[@]}; do
         
@@ -76,6 +76,9 @@ installmissingTools(){
         esac
     done
 
+    if [ $(ls ~/go/bin | wc -l) -gt 0 ]; then
+        sudo mv ~/go/bin/* /usr/bin/
+    fi
 }
 
 
@@ -84,7 +87,9 @@ installmissingTools(){
 
 fixMissingAgain(){
     for tool in ${missingAgain[@]}; do
+        echo "[+] Fixing misses"
         echo "y" | sudo pip3 uninstall $tool
+        echo "[+] Fixed misses"
     done
 
     installmissingTools
@@ -101,19 +106,20 @@ checkTools(){
     
         if ! command -v $tool &>/dev/null; then
             missingTools+=("$tool")
-            allPresent=0
+            
         fi
     done
     
     if [ ${#missingTools[@]} -gt 0 ]; then
         echo "[+] Following tools are missing: "
+        echo "---"
         for tool in ${missingTools[@]}; do
-            echo "-""$tool"
+            echo "- ""$tool"
         done
+        echo "---"
+        echo ""
         installmissingTools
-    else
-        echo "[+] All required tools are present"
-        return 1
+
     fi
 
 
@@ -121,7 +127,7 @@ checkTools(){
     for tool in "${allTools[@]}"; do
     
         if ! command -v $tool &>/dev/null; then
-            missingAgain+={"$tool"}
+            missingAgain+="$tool"
         fi
     done
 
@@ -129,18 +135,30 @@ checkTools(){
         fixMissingAgain
     fi
 
-# Checking third time for missing tools, printing their name
+
+# Checking if all tools are installed
+    for tool in "${allTools[@]}"; do
+    
+        if ! command -v $tool &>/dev/null; then
+            allPresent+=1
+        fi
+    done
+
+    if [ $allPresent -gt 0 ]; then
+        continue
+    else
+        echo "[+] All required tools are installed"
+    fi
+
+# Printing name of tools, that were unable to install
     for tool in "${allTools[@]}"; do
     
         if ! command -v $tool &>/dev/null; then
             echo "[+] Not Installed, Install manually $tool"
-            allPresent=0
+            
         fi
     done
 
-    if  [[ ! $allPresent -eq 0 ]]; then
-        echo "[+] All required tools are installed"
-    fi
 }
 
 

@@ -10,15 +10,6 @@ rm urls.txt 2> /dev/null
     cat subdomains.txt | waybackurls > .wayback_urls.txt 
 ) &
 
-# (
-#     rm para.txt 2> /dev/null
-#     file="live_subdomains.txt"
-#     while read -r line; do
-#     python3 ~/tools/ParamSpider/paramspider.py -d $line 2> /dev/null | grep -E "https?://\S+" >> paramspider.txt
-#     done < $file
-#     rm -rf output/
-# ) &
-
 (
     cat subdomains.txt | gau > .gau_urls.txt 
 ) &
@@ -28,13 +19,9 @@ rm urls.txt 2> /dev/null
 ) &
 
 (
-    # mkdir ~/tools/waymore/old_results 2> /dev/null
-    # rsync -av ~/tools/waymore/results/ ~/tools/waymore/old_results/ 1&>2 /dev/null
-    # rm -rf ~/tools/waymore/results
-    # mkdir ~/tools/waymore/results
     currentDir=$(pwd)
-    sed 's/^https\?:\/\/\(www\.\)\?//' subdomains.txt > for_waymore.txt
-    python3 ~/tools/waymore/waymore.py -urlr 0 -mc 200 -r 2 -i for_waymore.txt -mode U -oU "$currentDir/.waymore_urls.txt"
+    sed 's/^https\?:\/\/\(www\.\)\?//' subdomains.txt > .for_waymore.txt
+    waymore -urlr 0 -mc 200 -r 2 -i .for_waymore.txt -mode U -oU "$currentDir/.waymore_urls.txt"
 ) &
 wait
 
@@ -43,14 +30,13 @@ wait
 
 cat .wayback_urls.txt .gau_urls.txt .katana_urls.txt .waymore_urls.txt | sort -u | httpx -t 100 -mc 200 > urls.txt 2> /dev/null 
 
-cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee jsurls.txt 1> /dev/null 
+cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee .tmpJsUrls.txt 1> /dev/null 
 
 #-------------------------------------URLs_Done------------------------------------------------
 
-
-#rm .wayback_urls.txt .gau_urls.txt .katana_urls.txt .waymore_urls.txt for_waymore.txt filelist.txt
+mv .wayback_urls.txt .gau_urls.txt .katana_urls.txt .waymore_urls.txt .for_waymore.txt .tmp/
 
 #-----------------------------------------Organizing_Done---------------------------------------
 
-cat jsurls.txt | httpx -t 100 -mc 200 > jsUrls.txt
+cat .tmpJsUrls.txt | httpx -t 100 -mc 200 > jsUrls.txt
 cd ../

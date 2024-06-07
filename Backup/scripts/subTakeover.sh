@@ -16,4 +16,6 @@ while read -r line; do
 dig "$line" | grep -a "CNAME" | grep -a "$line" >> subTakeovers.txt 
 done <$file
 
+rm 404.txt
+
 cd ../

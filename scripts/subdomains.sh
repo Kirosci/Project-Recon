@@ -147,6 +147,8 @@ activeEnumeration() {
 passiveEnumeration
 activeEnumeration
 
+wait
+
 cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a subdomains.txt
 
 # Organising

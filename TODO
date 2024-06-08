@@ -1,14 +1,1 @@
-Add dnsgen, alterx, puredns in setup.sh
-
-- dnsgen installtion:
-
-    python -m pip install dnsgen
-
-- altdns installation:
-
-    pip3 install py-altdns==1.0.2
-
-
-- alterx installation:
-
-    go install github.com/projectdiscovery/alterx/cmd/alterx@latest
+Test

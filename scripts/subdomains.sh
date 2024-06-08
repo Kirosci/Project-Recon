@@ -95,12 +95,15 @@ activeEnumeration() {
     # Wordlist is the latest on good to go
     activeEnumeration    
   elif [ "$wordlistDate_converted" -lt "$currentDate_converted" ]; then
-    # Updating the wordlist
-    cd $wordlistsDir
-    wget "wget https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_$(date +%Y)_$(date +%m)_28.txt"
-    rm assetnoteSubdomains.txt 2> /dev/null
-    cat "httparchive_subdomains_$(date +%Y)_$(date +%m)_28.txt" "2m-subdomains.txt" | sort -u | tee -a assetnoteSubdomains.txt
-    cd $dir
+
+    if [ $(date +%d) -gt 27 ]; then
+      # Updating the wordlist, If last updated date of wordlist is earlier than current date and if current date is greatter than 27
+      cd $wordlistsDir
+      wget "https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_$(date +%Y)_$(date +%m)_28.txt"
+      rm assetnoteSubdomains.txt 2> /dev/null
+      cat "httparchive_subdomains_$(date +%Y)_$(date +%m)_28.txt" "2m-subdomains.txt" | sort -u | tee -a assetnoteSubdomains.txt
+      cd $dir
+    fi
   else
     # Wordlist is the latest on good to go
     activeEnumeration
@@ -152,9 +155,9 @@ wait
 cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a subdomains.txt
 
 # Organising
-mv .assetfinderSubdomains.txt .subdominatorSubdomains.txt .amassSubdomains.txt .haktrailsSubdomains.txt .subfinderSubdomains.txt .tmp/.subdomains/.passive
+mv ".assetfinderSubdomains.txt" ".subdominatorSubdomains.txt" ".amassSubdomains.txt" ".haktrailsSubdomains.txt" "z" ".tmp/.subdomains/.passive"
 
-mv .dnsgen.txt .alterx.txt .altdns.txt .totalPermuted.txt .tmp/.subdomains/.active
+mv ".dnsgen.txt" ".alterx.txt" ".altdns.txt" ".totalPermuted.txt" ".tmp/.subdomains/.active"
 
 
 # Filtering out false positives

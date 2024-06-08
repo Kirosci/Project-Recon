@@ -100,7 +100,6 @@ activeEnumeration() {
   wordlistDate_converted=$(date -d "${wordlistDate//_/}" +%Y%m%d)
   currentDate_converted=$(date -d "${currentDate//_/}" +%Y%m%d)
 
-  # Compare the dates
   if [ "$wordlistDate_converted" -gt "$currentDate_converted" ]; then
     # Wordlist is the latest on good to go
     activeEnumeration    
@@ -162,30 +161,18 @@ activeEnumeration
 
 wait
 
-cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a subdomains.txt
+cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a .subdomain.txt
 
 # Organising
 mv ".assetfinderSubdomains.txt" ".combinedPassiveSubdomains.txt" ".subfinderSubdomains.txt" ".subdominatorSubdomains.txt" ".amassSubdomains.txt" ".haktrailsSubdomains.txt" ".tmp/.subdomains/.passive"
 
 mv ".dnsgen.txt" ".alterx.txt" ".altdns.txt" ".totalPermuted.txt" ".tmp/.subdomains/.active"
 
+cat .subdomain.txt | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 | tee subdomains.txt 
 
+mv ".subdomain.txt" ".tmp/.subdomains/"
 
-
-
-
-
-
-
-# cat .subdomain.txt | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 | tee subdomains.txt 
-
-#---------------------------Organizing Assets---------------------------------------
-
-# mv .subdomain.txt .passiveSubdomains.txt .assetfinderSubdomains.txt .subdominatorSubdomains.txt .amassSubdomains.txt .haktrailsSubdomains.txt .subfinderSubdomains.txt .tmp/
-
-#-----------------------------Finding Live Subdomains-------------------------------
-
-# cat subdomains.txt | httpx > liveSubdomains.txt 2> /dev/null
+cat subdomains.txt | httpx > liveSubdomains.txt 2> /dev/null
 
 
 # Use "chmod 777 script.sh" to give it permissions for soomth run

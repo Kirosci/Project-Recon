@@ -1,10 +1,10 @@
 #!/bin/bash
 
 
-if [ -z "$2" ]; then
-    timeout="30"
-else
+if [[ ! -z "$2" ]]; then
     timeout="$2"
+else
+    timeout="30"
 fi
 
 domain=$1

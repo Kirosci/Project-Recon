@@ -75,7 +75,17 @@ wait
 
 #----------------------------Sorting Assets-----------------------------------------
 
-cat .assetfinderSubdomains.txt .subdominatorSubdomains.txt .amassSubdomains.txt .haktrailsSubdomains.txt .subfinderSubdomains.txt | sort -u > .passiveSubdomains.txt
+cat .assetfinderSubdomains.txt .subdominatorSubdomains.txt .amassSubdomains.txt .haktrailsSubdomains.txt .subfinderSubdomains.txt | sort -u > .combinedPassiveSubdomains.txt
+
+# Filtering out false positives
+
+file1="$domain"
+file2=".combinedPassiveSubdomains.txt"
+
+
+while IFS= read -r word; do
+    grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> ".passiveSubdomains.txt"
+done < "$file1"
 
 }
 
@@ -113,14 +123,14 @@ activeEnumeration() {
   (
     # Dnsgen will take list of subdomains (.passiveSubdomains.txt) and will permute between them
 
-    cat ".passiveSubdomains.txt" | dnsgen - | tee -a .dnsgen.txt 2> err
+    cat ".passiveSubdomains.txt" | dnsgen - | tee -a .dnsgen.txt
     lines=$(cat .dnsgen.txt | wc -l)
     echo -e "    |---\e[32m[Dnsgen Done] [Lines: $lines]\e[0m"
   ) &
 
   (
     # Alterx takes subdomains (.passiveSubdomains.txt) and will permute between them, on behalf of specified rules
-    cat ".passiveSubdomains.txt" | alterx -o .alterx.txt 2> err
+    cat ".passiveSubdomains.txt" | alterx -o .alterx.txt
     lines=$(cat .alterx.txt | wc -l)
     echo -e "    |---\e[32m[Alterx Done] [Lines: $lines]\e[0m"
   ) &
@@ -128,14 +138,14 @@ activeEnumeration() {
   (
     # Altdns will permute assetnote wordlist with domain name
 
-    altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o .altdns.txt 2> err
+    altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o .altdns.txt
     lines=$(cat .altdns.txt | wc -l)
     echo -e "    |---\e[32m[Altdns (Assetnote wordlist) Done] [Lines: $lines]\e[0m"
   ) & 
 
   wait
 
-  cat .dnsgen.txt .alterx.txt .altdns.txt | sort -u | tee -a .totalPermuted.txt 2> err
+  cat .dnsgen.txt .alterx.txt .altdns.txt | sort -u | tee -a .totalPermuted.txt
 
 
   # Puredns will resolve the permuted subdomains 
@@ -155,22 +165,12 @@ wait
 cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a subdomains.txt
 
 # Organising
-mv ".assetfinderSubdomains.txt" ".subdominatorSubdomains.txt" ".amassSubdomains.txt" ".haktrailsSubdomains.txt" "z" ".tmp/.subdomains/.passive"
+mv ".assetfinderSubdomains.txt" ".combinedPassiveSubdomains.txt" ".subfinderSubdomains.txt" ".subdominatorSubdomains.txt" ".amassSubdomains.txt" ".haktrailsSubdomains.txt" ".tmp/.subdomains/.passive"
 
 mv ".dnsgen.txt" ".alterx.txt" ".altdns.txt" ".totalPermuted.txt" ".tmp/.subdomains/.active"
 
 
-# Filtering out false positives
 
-# file1="$domain"
-# file2=".passiveSubdomains.txt"
-
-
-
-
-# while IFS= read -r word; do
-#     grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> ".subdomain.txt"
-# done < "$file1"
 
 
 

@@ -82,45 +82,6 @@ cat .assetfinderSubdomains.txt .subdominatorSubdomains.txt .amassSubdomains.txt 
 activeEnumeration() { 
 
 
-(
-  # Dnsgen will take list of subdomains (.passiveSubdomains.txt) and will permute between them
-
-  cat ".passiveSubdomains.txt" | dnsgen - | tee -a .dnsgen.txt 2> err
-  lines=$(cat .dnsgen.txt | wc -l)
-  echo -e "    |---\e[32m[Dnsgen Done] [Lines: $lines]\e[0m"
-) &
-
-(
-  # Alterx takes subdomains (.passiveSubdomains.txt) and will permute between them, on behalf of specified rules
-  cat ".passiveSubdomains.txt" | alterx -o .alterx.txt 2> err
-  lines=$(cat .alterx.txt | wc -l)
-  echo -e "    |---\e[32m[Alterx Done] [Lines: $lines]\e[0m"
-) &
-
-(
-  # Altdns will permute assetnote wordlist with domain name
-
-  altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o .altdns.txt 2> err
-  lines=$(cat .altdns.txt | wc -l)
-  echo -e "    |---\e[32m[Altdns (Assetnote wordlist) Done] [Lines: $lines]\e[0m"
-) & 
-
-wait
-
-cat .dnsgen.txt .alterx.txt .altdns.txt | sort -u | tee -a .totalPermuted.txt 2> err
-
-
-# Puredns will resolve the permuted subdomains 
-puredns resolve ".totalPermuted.txt" -q | tee -a .activeSubdomains.txt
-lines=$(cat .activeSubdomains.txt | wc -l)
-echo -e "    |---\e[32m[Active Enumeration Done] [Active Subdomains: $lines]\e[0m"
-
-
-}
-
-
-checkWordlist() {
-
   # Getting wordlist name to know it's last updated date
   wordlistDate=$(ls $wordlistsDir | grep httparchive_subdomains | sed -e 's/httparchive_subdomains_//' -e 's/.txt//')
   currentDate=$(date +%Y_%m_%d)
@@ -146,10 +107,45 @@ checkWordlist() {
   fi
 
 
+  (
+    # Dnsgen will take list of subdomains (.passiveSubdomains.txt) and will permute between them
+
+    cat ".passiveSubdomains.txt" | dnsgen - | tee -a .dnsgen.txt 2> err
+    lines=$(cat .dnsgen.txt | wc -l)
+    echo -e "    |---\e[32m[Dnsgen Done] [Lines: $lines]\e[0m"
+  ) &
+
+  (
+    # Alterx takes subdomains (.passiveSubdomains.txt) and will permute between them, on behalf of specified rules
+    cat ".passiveSubdomains.txt" | alterx -o .alterx.txt 2> err
+    lines=$(cat .alterx.txt | wc -l)
+    echo -e "    |---\e[32m[Alterx Done] [Lines: $lines]\e[0m"
+  ) &
+
+  (
+    # Altdns will permute assetnote wordlist with domain name
+
+    altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o .altdns.txt 2> err
+    lines=$(cat .altdns.txt | wc -l)
+    echo -e "    |---\e[32m[Altdns (Assetnote wordlist) Done] [Lines: $lines]\e[0m"
+  ) & 
+
+  wait
+
+  cat .dnsgen.txt .alterx.txt .altdns.txt | sort -u | tee -a .totalPermuted.txt 2> err
+
+
+  # Puredns will resolve the permuted subdomains 
+  puredns resolve ".totalPermuted.txt" -q | tee -a .activeSubdomains.txt
+  lines=$(cat .activeSubdomains.txt | wc -l)
+  echo -e "    |---\e[32m[Active Enumeration Done] [Active Subdomains: $lines]\e[0m"
+
+
 }
 
+
 passiveEnumeration
-checkWordlist
+activeEnumeration
 
 cat .passiveSubdomains.txt .activeSubdomains.txt | sort -u | tee -a subdomains.txt
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx")
+allTools=("assetfinder" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
 commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
 
@@ -37,6 +37,19 @@ installmissingTools(){
             "subfinder")
                 /usr/local/go/bin/go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
                 ;;
+            "dnsgen")
+                python -m pip install dnsgen
+                ;;
+            "altdns")
+                pip3 install "py-altdns==1.0.2"
+                ;;
+            "alterx")
+                go install github.com/projectdiscovery/alterx/cmd/alterx@latest
+                ;;
+            "puredns")
+                go install github.com/d3mondev/puredns/v2@latest
+                ;;
+
 
         # URL gathering tools
             "gau")

@@ -12,7 +12,7 @@ allPresent=0
 
 mkdir -p ~/tools
 
-
+isDebian=0
 
 
 installmissingTools(){
@@ -32,16 +32,28 @@ installmissingTools(){
                 /usr/local/go/bin/go install -v github.com/hakluke/haktrails@latest
                 ;;
             "subdominator")
-                pip3 install git+https://github.com/RevoltSecurities/Subdominator
+                if [[ isDebian -eq 1 ]]; then
+                    pipx install git+https://github.com/RevoltSecurities/Subdominator
+                else
+                    pip3 install git+https://github.com/RevoltSecurities/Subdominator
+                fi
                 ;;
             "subfinder")
                 /usr/local/go/bin/go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
                 ;;
             "dnsgen")
-                python -m pip install dnsgen
+                if [[ isDebian -eq 1 ]]; then
+                    pipx install dnsgen
+                else
+                    python -m pip install dnsgen
+                fi
                 ;;
             "altdns")
-                pip3 install "py-altdns==1.0.2"
+                if [[ isDebian -eq 1 ]]; then
+                    pipx install "py-altdns"
+                else
+                    pip3 install "py-altdns"
+                fi
                 ;;
             "alterx")
                 go install github.com/projectdiscovery/alterx/cmd/alterx@latest
@@ -62,14 +74,22 @@ installmissingTools(){
                 /usr/local/go/bin/go install -v github.com/tomnomnom/waybackurls@latest
                 ;;
             "waymore")
-                pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
+                if [[ isDebian -eq 1 ]]; then
+                    pipx install git+https://github.com/xnl-h4ck3r/waymore.git -v
+                else
+                    pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
+                fi
                 ;;
 
 
 
         # Misc Tools
             "dirsearch")
-                pip3 install dirsearch
+                if [[ isDebian -eq 1 ]]; then
+                    pipx install dirsearch
+                else
+                    pip3 install dirsearch
+                fi
                 ;;
             "kxss")
                 /usr/local/go/bin/go install -v github.com/Emoe/kxss@latest
@@ -181,6 +201,8 @@ checkTools(){
 updateUpgrade() {
 
     if [ -f /etc/debian_version ]; then
+
+        isDebian=1
 
         echo "[+] OS: Debian"
         

@@ -7,3 +7,6 @@ secretsOnly.txt
 urlsOnly.txt
 *.com
 domain*
+2m-subdomains*
+httparchive_subdomains_*
+assetnoteSubdomains*

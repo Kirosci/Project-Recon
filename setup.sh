@@ -309,7 +309,7 @@ checkTools
 if isDebian; then
     clear
     echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
-
+fi
 }
 
 

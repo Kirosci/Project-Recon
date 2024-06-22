@@ -12,8 +12,6 @@ allPresent=0
 
 mkdir -p ~/tools
 
-isDebian=0
-
 
 installmissingTools(){
 
@@ -32,28 +30,17 @@ installmissingTools(){
                 /usr/local/go/bin/go install -v github.com/hakluke/haktrails@latest
                 ;;
             "subdominator")
-                if [[ isDebian -eq 1 ]]; then
-                    pipx install git+https://github.com/RevoltSecurities/Subdominator
-                else
-                    pip3 install git+https://github.com/RevoltSecurities/Subdominator
-                fi
+                pip3 install git+https://github.com/RevoltSecurities/Subdominator
                 ;;
             "subfinder")
                 /usr/local/go/bin/go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
                 ;;
             "dnsgen")
-                if [[ isDebian -eq 1 ]]; then
-                    pipx install dnsgen
-                else
-                    python -m pip install dnsgen
-                fi
+                python -m pip install dnsgen
+
                 ;;
             "altdns")
-                if [[ isDebian -eq 1 ]]; then
-                    pipx install "py-altdns"
-                else
-                    pip3 install "py-altdns"
-                fi
+                pip3 install "py-altdns"
                 ;;
             "alterx")
                 go install github.com/projectdiscovery/alterx/cmd/alterx@latest
@@ -74,22 +61,14 @@ installmissingTools(){
                 /usr/local/go/bin/go install -v github.com/tomnomnom/waybackurls@latest
                 ;;
             "waymore")
-                if [[ isDebian -eq 1 ]]; then
-                    pipx install git+https://github.com/xnl-h4ck3r/waymore.git -v
-                else
-                    pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
-                fi
+                pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
                 ;;
 
 
 
         # Misc Tools
             "dirsearch")
-                if [[ isDebian -eq 1 ]]; then
-                    pipx install dirsearch
-                else
-                    pip3 install dirsearch
-                fi
+                pip3 install dirsearch
                 ;;
             "kxss")
                 /usr/local/go/bin/go install -v github.com/Emoe/kxss@latest
@@ -209,6 +188,9 @@ updateUpgrade() {
         echo "y" | sudo apt update
         echo "y" | sudo apt full-upgrade -y
         echo "y" | sudo apt autoremove -y
+        apt install python3-pip
+        python3 -m venv .venvPython
+        source .venvPython/bin/activate
 
         for utility in ${commonUtilties[@]}; do
 

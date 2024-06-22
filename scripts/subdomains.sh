@@ -89,6 +89,8 @@ while IFS= read -r word; do
     grep -E "\\b${word//./\\.}\\b" "$file2" | awk '{print$1}' | sort -u >> "passiveSubdomains.txt"
 done < "$file1"
 
+  cat activeSubdomains.txt passiveSubdomains.txt | sort -u | tee -a active+passive.txt 2> /dev/null
+
 }
 
 activeEnumeration() { 
@@ -174,10 +176,10 @@ activeEnumeration() {
   lines=$(cat activeSubdomains.txt | wc -l)
   echo -e "    |---\e[32m[Active Enumeration Done] [Active Subdomains: $lines]\e[0m"
 
-
+  cat activeSubdomains.txt passiveSubdomains.txt | sort -u | tee -a active+passive.txt 2> /dev/null
 }
 
-orgainse() {
+organise() {
 
 cat active+passive.txt | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 | tee subdomains.txt 
 cat subdomains.txt | httpx > liveSubdomains.txt 2> /dev/null
@@ -190,40 +192,28 @@ mv "active+passive.txt" ".tmp/subdomains/"
 
 
 if [ "$3" == "passive" ]; then
-
-passiveEnumeration
-cat passiveSubdomains.txt | sort -u | tee -a active+passive.txt
-orgainse
-
+  passiveEnumeration
+  cat passiveSubdomains.txt | sort -u | tee -a active+passive.txt
+  organise
 elif [ "$3" == "active" ]; then
-
   if [ -f "passiveSubdomains.txt" ]; then
     activeEnumeration
-    orgainse
+    organise
   else
     passiveEnumeration
     activeEnumeration
     cat passiveSubdomains.txt activeSubdomains.txt | sort -u | tee -a active+passive.txt
-    orgainse
+    organise
   fi
-
 elif [ "$3" == "both" ]; then
-
     passiveEnumeration
     activeEnumeration
     cat passiveSubdomains.txt activeSubdomains.txt | sort -u | tee -a active+passive.txt
-    orgainse
-
+    organise
 else
-
-passiveEnumeration
-cat passiveSubdomains.txt | sort -u | tee -a active+passive.txt
-orgainse
-
+  passiveEnumeration
+  cat passiveSubdomains.txt | sort -u | tee -a active+passive.txt
+  organise
 fi
 
-
-
-
-# Use "chmod 777 script.sh" to give it permissions for soomth run
 

@@ -291,6 +291,9 @@ updateUpgrade() {
         export PATH=$PATH:/usr/local/go/bin
     fi
 
+    rm go1.22.3.linux-amd64.tar.gz 2> /dev/null
+
+
 }
 
 

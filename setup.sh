@@ -189,8 +189,18 @@ updateUpgrade() {
         echo "y" | sudo apt full-upgrade -y
         echo "y" | sudo apt autoremove -y
         apt install python3-pip
+        dir=$(pwd)
+        cd ~
         python3 -m venv .venvPython
         source .venvPython/bin/activate
+        cd $dir
+        echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
+        echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
+        chmod +x ~/.activatePythonVenv.sh
+        echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
+        source ~/.bashrc
+
+
 
         for utility in ${commonUtilties[@]}; do
 
@@ -295,6 +305,11 @@ fi
 
 updateUpgrade
 checkTools
+
+if isDebian; then
+    clear
+    echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
+
 }
 
 

@@ -306,14 +306,12 @@ fi
 updateUpgrade
 checkTools
 
-if isDebian; then
+if [ $isDebian -eq 1 ]; then
     clear
-    echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
+    echo -e "[+] Please logout and login again, or use below command:\nsource ~/.bashrc"
 fi
 }
 
 
 # Calling mainFunction
 mainFunction
-
-

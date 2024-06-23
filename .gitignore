@@ -1,6 +1,7 @@
 test.*
 test/*
 domain.txt
+domains.txt
 jsSource
 linked.txt
 secretsOnly.txt

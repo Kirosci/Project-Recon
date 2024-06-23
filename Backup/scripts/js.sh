@@ -17,4 +17,4 @@ bash "$currentDir/../scripts/jsRecon/downloadJS.sh" -f jsUrls.txt -t 10 -r 2 -x 
 wait
 
 sleep 10
-bash "$currentDir/../scripts/jsRecon/main.sh" -dir js
+bash "$currentDir/../scripts/jsRecon/main.sh" -dir=js

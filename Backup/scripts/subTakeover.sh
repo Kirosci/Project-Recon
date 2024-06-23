@@ -16,6 +16,10 @@ while read -r line; do
 dig "$line" | grep -a "CNAME" | grep -a "$line" >> subTakeovers.txt 
 done <$file
 
+lines=$(wc -l subTakeovers.txt | awk '{print$1}')
+
+echo -e "    |---\e[32m[Subomain Takeover Done] [Potentially Vulnerable: $lines]\e[0m"
+
 rm 404.txt
 
-cd ../
+

@@ -189,8 +189,6 @@ def pseudoMain():
                 errorMessage("Pass`ac` for active | `ps` for passive | `both` for both active & passive with `-urls` flag")
                 sys.exit(1)
 
-
-
             cmdSubTakeover = f"bash scripts/subTakeover.sh {domain}"
             cmdSsrf = f"bash scripts/ssrf.sh {domain} {link}"
             cmdXss = f"bash scripts/xss.sh {domain}"

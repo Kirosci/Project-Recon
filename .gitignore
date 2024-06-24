@@ -16,6 +16,8 @@ assetnoteSubdomains.txt
 httparchive_subdomains_2024_05_28.txt
 result*
 ipRanges.txt
+best-dns-wordlist*
+best-dns-wordlist.txt
 nmapNormal
 r
 nmapGrepable

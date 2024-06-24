@@ -28,6 +28,8 @@ There will be two files `subdomains.txt` this will contain all subdomains found 
   * Gather domains from passive sources. (Securitytrails, Assetfinder, Subdominator, Subfinder)
 * -sub ac (Active Gathering)
   * Makes a custom wordlists of subdomains, and resolves them.
+  
+**By Default it will gather only from passive sources, until explicitly specified with `ac`**
 * Amass Timeout (-amass_t):
   * Added amass timeout feature thet you can use with -sub or -all argument to specify timeout for amass tool.
   * By default amass will not run
@@ -43,6 +45,8 @@ Check `urls.txt` file for all the URLs and `jsUrls.txt`  will contain all the *J
   * Gather urls from passive sources. (wayback, gau, waymore)
 * -urls ac (Active Gathering)
   * Gather urls by crawling. (katana)
+  
+**By Default it will gather only from passive sources, until explicitly specified with `ac`**
 
 ---
 

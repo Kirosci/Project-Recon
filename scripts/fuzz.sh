@@ -13,7 +13,7 @@ while IFS= read -r domain; do
 
 
     (
-    dirsearch -l subdomains.txt  -w wordlists/mixedBig.txt -t 10 -i 200 -o fuzz_mixedBig.txt
+    dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
     ) &
 
     (

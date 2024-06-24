@@ -1,1 +1,0 @@
-FIX why -urls for second domain is not working properly, it adds urls found from waymore in the url of first domain, rest gau wayback doesn't works

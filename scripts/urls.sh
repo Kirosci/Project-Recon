@@ -18,7 +18,7 @@ passive() {
     ) &
     (
         cat subdomains.txt | gau > gau_urls.txt 2> /dev/null
-        echo -e "\t\t|---${GREEN}[Gau: $(wc -l gau_urls.txt | awk '{print$1}')$]{RESET}"
+        echo -e "\t\t|---${GREEN}[Gau: $(wc -l gau_urls.txt | awk '{print$1}')]${RESET}"
     ) &
     (
         cat subdomains.txt | sed 's/^/https:\/\//' > for_waymore.txt
@@ -39,11 +39,11 @@ active() {
 
 organise(){
     # Filtering url with 200 OK
-    cat wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt 2> /dev/null | sort -u | httpx -t 100 -mc 200 -o urls.txt 2> /dev/null 1> /dev/null
+    cat wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt 2> /dev/null | sort -u > urls.txt
     # Separating Js and json urls
     cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u > tmpJsUrls.txt 1> /dev/null
     # Separating js urls 
-    cat tmpJsUrls.txt | httpx -t 500 -mc 200 -o jsUrls.txt 2> /dev/null 1> /dev/null
+    cat tmpJsUrls.txt | httpx -t 100 -mc 200 -o jsUrls.txt 2> /dev/null 1> /dev/null
     # Moving unnecessary to .tmp dir
     mkdir -p .tmp/urls/
     mv wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt for_waymore.txt tmpJsUrls.txt .tmp/urls/ 2> /dev/null
@@ -54,8 +54,8 @@ organise(){
 for domain in $(cat "$domainFile"); do
     dir="results/$domain"
     cd "$dir"
-    # rm urls.txt 2> /dev/null
-    echo -e "\t|---${ORANGE}[Started URL Gathering for $domain]${RESET}"
+    rm urls.txt 2> /dev/null
+    echo -e "\t${ORANGE}[$domain]${RESET}"
 
     if [ "$2" == "passive" ]; then
         passive
@@ -71,7 +71,7 @@ for domain in $(cat "$domainFile"); do
         passive
         organise
     fi
-    echo -e "\t|---${GREEN}[Total URLs $domain: $(wc -l urls.txt | awk '{print$1}')]${RESET}"
+    echo -e "\t${GREEN}[Found: $(wc -l urls.txt | awk '{print$1}')]${RESET}"
     # Go back to base directory at last 
     cd "$baseDir"
 done

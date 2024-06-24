@@ -18,12 +18,12 @@ domainFile=$1
 baseDir="$(pwd)"
 
 while IFS= read -r domain; do
-  echo -e "\t${ORANGE}[Started Subdomain Enumeration for $domain]${RESET}"
 
   dir="results/$domain"
   mkdir -p "$dir" 
-
   cd $dir
+
+  echo -e "\t${ORANGE}[$domain]${RESET}"
   
   mkdir -p .tmp/subdomains
   mkdir -p .tmp/subdomains/passive
@@ -223,7 +223,8 @@ while IFS= read -r domain; do
     organise
   fi
 
-  echo -e "\t${GREEN}[Total Subdomains $domain: $(wc -l subdomains.txt | awk '{print$1}')]${RESET}"
+  echo -e "\t${GREEN}[Found: $(wc -l subdomains.txt | awk '{print$1}')]${RESET}"
+  
 # Go back to Project-Recon dir at last 
   cd $baseDir
 done < $domainFile

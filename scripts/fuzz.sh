@@ -1,22 +1,34 @@
 #!/bin/bash
 
-read domain
-dir=$(head -1 $domain)
-cd $dir || exit 1
+
+domainFile=$1
+
+baseDir="$(pwd)"
 
 
-(
-dirsearch -l subdomains.txt  -w wordlists/mixedBig.txt -t 10 -i 200 -o fuzz_mixedBig.txt
-) &
+while IFS= read -r domain; do 
 
-(
-dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
-) &
+    dir="results/$domain"
+    cd $dir
 
-wait
 
-cat fuzz_mixedBig.txt fuzz_dirSmall.txt | sort -u | fuzz.txt
+    (
+    dirsearch -l subdomains.txt  -w wordlists/mixedBig.txt -t 10 -i 200 -o fuzz_mixedBig.txt
+    ) &
 
-mkdir fuzz
-mv fuzz_mixedBig.txt fuzz/
-mv fuzz_dirSmall.txt fuzz/
+    (
+    dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
+    ) &
+
+    wait
+
+    cat fuzz_mixedBig.txt fuzz_dirSmall.txt | sort -u | fuzz.txt
+
+    mkdir fuzz
+    mv fuzz_mixedBig.txt fuzz/
+    mv fuzz_dirSmall.txt fuzz/
+
+    # Go back to Project-Recon dir at last 
+    cd $baseDir
+
+done < $domainFile

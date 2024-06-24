@@ -1,25 +1,36 @@
 #!/bin/bash
 
-read domain
-dir=$(head -1 $domain)
-cd $dir || exit 1
-rm subTakeovers.txt 2> /dev/null
-rm 404.txt 2> /dev/null
 
-# Read subdomains and filter out 404 ones
-file="subdomains.txt"
-cat $file | httpx -mc 404 2> /dev/null | sed 's/https\?:\/\///' > 404.txt
+domainFile=$1
 
-# Checking for cname of all filtered subdomains
-file="404.txt"
-while read -r line; do
-dig "$line" | grep -a "CNAME" | grep -a "$line" >> subTakeovers.txt 
-done <$file
+baseDir="$(pwd)"
 
-lines=$(wc -l subTakeovers.txt | awk '{print$1}')
+GREEN="\e[32m"
+RED="\e[31m"
+RESET="${RESET}"
 
-echo -e "    |---\e[32m[Subomain Takeover Done] [Potentially Vulnerable: $lines]\e[0m"
+while IFS= read -r domain; do 
 
-rm 404.txt
+    dir="results/$domain"
+    cd $dir
+    rm subTakeovers.txt 2> /dev/null
+    rm 404.txt 2> /dev/null
+
+    # Read subdomains and filter out 404 ones
+    cat "subdomains.txt" | httpx -mc 404 2> /dev/null | sed 's/https\?:\/\///' > 404.txt
+
+    # Checking for cname of all filtered subdomains
+    file="404.txt"
+    while read -r line; do
+    dig "$line" | grep -a "CNAME" | grep -a "$line" >> subTakeovers.txt 
+    done <$file
+
+    lines=$(wc -l subTakeovers.txt 2> /dev/null | awk '{print$1}')
+
+    rm 404.txt
 
 
+    # Go back to Project-Recon dir at last 
+    cd $baseDir
+
+done < $domainFile

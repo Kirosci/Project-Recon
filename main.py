@@ -141,7 +141,7 @@ def pseudoMain():
 
             if args.f:
                 domain = args.f
-                print(Back.WHITE, Fore.RED + '[~Automating the hunt, so I can hunt more and sleep less]', Style.RESET_ALL)
+                print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
 
             else:
                 errorMessage("Provide a file containing domains")
@@ -184,12 +184,12 @@ def pseudoMain():
 
 
 
-            cmdSubTakeover = f"echo {domain} | bash scripts/subTakeover.sh"
+            cmdSubTakeover = f"bash scripts/subTakeover.sh {domain}"
             cmdSsrf = f"bash scripts/ssrf.sh {domain} {link}"
-            cmdXss = f"echo {domain} | bash scripts/xss.sh"
-            cmdNuclei = f"echo {domain} | bash scripts/nuclei.sh"
-            cmdFuzz = f"echo {domain} | bash scripts/fuzz.sh"
-            cmdJs = f"echo {domain} | bash scripts/js.sh"
+            cmdXss = f"bash scripts/xss.sh {domain}"
+            cmdNuclei = f"bash scripts/nuclei.sh {domain}"
+            cmdFuzz = f"bash scripts/fuzz.sh {domain}"
+            cmdJs = f"bash scripts/js.sh {domain}"
 
 
             if args.all:
@@ -233,27 +233,29 @@ def pseudoMain():
 
             else:
 
+        # Commented else for each argument, it was looking too chaotic and messy
+
                 # Enumerating Subdomains thread start AND WAIT
                 if args.sub:
                     thread_subdomains = threading.Thread(target=subdomains, args=(cmdSubdomains,))
                     thread_subdomains.start()
                     thread_subdomains.join()
-                else:
-                    notProvided("Subdomains Enumeration")
+                # else:
+                #     notProvided("Subdomains Enumeration")
 
                 # Fuzzing subdomains
                 if args.fuzz:
                     thread_fuzz = threading.Thread(target=fuzz, args=(cmdFuzz,))
                     thread_fuzz.start()
-                else:
-                    notProvided("Fuzzing")
+                # else:
+                #     notProvided("Fuzzing")
  
                 # Subdomain Takeover thread start 
                 if args.tkovr:
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(cmdSubTakeover,))
                     thread_subTakeover.start()
-                else:
-                    notProvided("Subdomain Takeover")
+                # else:
+                #     notProvided("Subdomain Takeover")
 
  
                 # URL Enumeration thread start AND WAIT
@@ -261,37 +263,37 @@ def pseudoMain():
                     thread_urls = threading.Thread(target=urls, args=(cmdUrls,))
                     thread_urls.start()
                     thread_urls.join()
-                else:
-                    notProvided("URL Gathering")
+                # else:
+                #     notProvided("URL Gathering")
 
                 # SSRF testing thread start
                 if args.ssrf:
                     link = args.ssrf
                     thread_ssrf = threading.Thread(target=ssrf, args=(cmdSsrf,))
                     thread_ssrf.start()
-                else:
-                    notProvided("SSRF")
+                # else:
+                #     notProvided("SSRF")
 
                 # Nuclei Scan thread start
                 if args.nuclei:
                     thread_nuclei = threading.Thread(target=nuclei, args=(cmdNuclei,))
                     thread_nuclei.start()
-                else:
-                    notProvided("Nuclei")
+                # else:
+                #     notProvided("Nuclei")
 
                 # XSS testing thread start
                 if args.xss:
                     thread_xss = threading.Thread(target=xss, args=(cmdXss,))
                     thread_xss.start()
-                else:
-                    notProvided("XSS")
+                # else:
+                #     notProvided("XSS")
 
                 # JS analyzing thread start
                 if args.js:
                     thread_js = threading.Thread(target=js, args=(cmdJs,))
                     thread_js.start()
-                else:
-                    notProvided("JS")
+                # else:
+                #     notProvided("JS")
         else:
             print("Internet is not working!")
 

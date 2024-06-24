@@ -32,6 +32,8 @@ done < $domainFile
 }
 
 
+# Scan the Ip ranges
+scanRange() {
 
 if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
 
@@ -40,3 +42,9 @@ if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
 
 fi
 
+}
+
+
+# Call of Nmap ;)
+getASN
+scanRange

@@ -18,15 +18,19 @@ Example: `python3 main.py -update`
 
 This will work same as the below command, It will do each and every task.
 
-`python3 main.py -f domains.txt -sub -tkovr -urls -fuzz -xss -ssrf https://burpcollaborator.link`
+`python3 main.py -f domains.txt -sub -tkovr -urls -fuzz -xss -nmap -js -nuclei -ssrf https://burpcollaborator.link`
 
 ---
 
 ### > Subdomains (-sub):
-There will be two files `subdomains.txt` this will contain all subdomains found using various tool, and `live_subdomains.txt` this file will contain all live subdomains. 
+There will be two files `subdomains.txt` this will contain all subdomains found using various tool, and `liveSubdomains.txt` this file will contain all 200 OK subdomains.
+* -sub ps (Passive Gathering)
+  * Gather domains from passive sources. (Securitytrails, Assetfinder, Subdominator, Subfinder)
+* -sub ac (Active Gathering)
+  * Makes a custom wordlists of subdomains, and resolves them.
 * Amass Timeout (-amass_t):
   * Added amass timeout feature thet you can use with -sub or -all argument to specify timeout for amass tool.
-  * By default it is set to 30 mins
+  * By default amass will not run
   * `-amass_t 0` for not using amass
   * `-amass_t 1` for not setting any timeout, it will run until it gets stoped by itself.
   * `-amass_t 60` for 60 minutes timeout
@@ -34,7 +38,11 @@ There will be two files `subdomains.txt` this will contain all subdomains found 
 ---
 
 ### > URLs (-urls): 
-Check `urls.txt` file for all the URLs and `js_urls.txt`  will contain all the *JavaScript* file URLs found by grepping from the discovered URLs. 
+Check `urls.txt` file for all the URLs and `jsUrls.txt`  will contain all the *JavaScript & Json* file URLs found by grepping from the discovered URLs.
+* -urls ps (Passive Gathering)
+  * Gather urls from passive sources. (wayback, gau, waymore)
+* -urls ac (Active Gathering)
+  * Gather urls by crawling. (katana)
 
 ---
 
@@ -63,22 +71,18 @@ Check `nuclei.txt` file for results.
 ---
 
 ### > Fuzz (-fuzz):
-It uses GodFather's worlisits to fuzz:
-* 1.txt
-* apac.txt
-* cgi-bin.txt
-* fuzz.txt
-* god.txt
-* kibana.txt
-* xml.txt
-* pl.txt
-* fuzz-php.php
+It uses a mix of wordlists to fuzz:
 
 Results are saved in fuzz.txt file, while seperate results for each wordlist are saved in /fuzz
+
 ---
 
-### > Analyze JS file for juicy stuff (-js):
-Check `js/` directory for all the results. 
-  * 
+### > JS recon (-js):
+Check `js/` directory for all the results, It will contain paths, urls and juicy stuff found from js files
+
+---
+
+### > Nmap (-nmap):
+Check `nmap/` directory for results
 
 ---

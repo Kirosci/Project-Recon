@@ -24,7 +24,8 @@ passiveEnumeration(){
 
     (
         if [ -f ".tmp/subdomains/passive/assetfinderSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
+            echo -e "\t\t|---${GREEN}[Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)]${RESET} \t$(printf "%s" "$time")"
+            # echo -e "\t\t|---${GREEN}[Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
         else
             echo "$domain" | assetfinder >> assetfinderSubdomains.txt
             echo -e "\t\t|---${GREEN}[Assetfinder: $(cat 'assetfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
@@ -32,7 +33,7 @@ passiveEnumeration(){
     ) &
     (
         if [ -f ".tmp/subdomains/passive/haktrailsSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Haktrails results are already there: $(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' | wc -l)]${RESET} \t$time"
+            echo -e "\t\t|---${GREEN}[Haktrails results are already there: $(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' | wc -l)]${RESET} \t$(printf "%s" "$time")"
         else
             echo "$domain" | haktrails subdomains >> haktrailsSubdomains.txt
             echo -e "\t\t|---${GREEN}[Haktrails: $(cat 'haktrailsSubdomains.txt' | wc -l)]${RESET} \t$time"
@@ -40,7 +41,7 @@ passiveEnumeration(){
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subfinderSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Subfinder results are already there: $(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
+            echo -e "\t\t|---${GREEN}[Subfinder results are already there: $(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
         else
             echo "$domain" | subfinder -o subfinderSubdomains.txt 2> /dev/null 1> /dev/null
             echo -e "\t\t|---${GREEN}[Subfinder: $(cat 'subfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
@@ -48,7 +49,7 @@ passiveEnumeration(){
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)]${RESET} \t$time"
+            echo -e "\t\t|---${GREEN}[Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
         else
            subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
            echo -e "\t\t|---${GREEN}[Subdominator: $(cat 'subdominatorSubdomains.txt' | wc -l)]${RESET} \t$time" 
@@ -57,7 +58,7 @@ passiveEnumeration(){
 
     (
         if [ -f ".tmp/subdomains/passive/amassSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Amass results are already there: $(cat '.tmp/subdomains/passive/amassSubdomains.txt' | wc -l)]${RESET} \t$time"
+            echo -e "\t\t|---${GREEN}[Amass results are already there: $(cat '.tmp/subdomains/passive/amassSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
         else
             if [[ "$2" -eq 1 ]]; then   
                 amass enum -d "$domain" -o amassSubdomains.txt 2> /dev/null 1> /dev/null
@@ -66,7 +67,7 @@ passiveEnumeration(){
                 echo -e "\t\t|---${RED}[Skipping Amass]${RESET} \t$time"    
             else    
                 amass enum -d "$domain" -timeout $timeout -o amassSubdomains.txt 2> /dev/null
-                echo -e "\t\t|---${GREEN}[Amass: $(cat amassSubdomains.txt | wc -l)] [Timeout: $2 minutes]${RESET} \t$time"   
+                echo -e "\t\t|---${GREEN}[Amass: $(cat amassSubdomains.txt | wc -l)] [Timeout: $2 minutes] ${RESET} \t$time"   
             fi
         fi
     ) &
@@ -193,7 +194,7 @@ screenshot() {
 
 # ---
 
-while IFS= read -r domain; do
+for domain in $(cat "$domainFile"); do
 
     dir="results/$domain"
     mkdir -p "$dir" 
@@ -240,8 +241,8 @@ while IFS= read -r domain; do
         screenshot
     fi  
     # Message last
-    echo -e "\t${GREEN}[Found: $(wc -l subdomains.txt | awk '{print$1}')]${RESET} \t$timeDate"
+    echo -e "\t${GREEN}[Found: $(cat subdomains.txt | wc -l)]${RESET} \t$timeDate"
 
 # Go back to Project-Recon dir at last 
     cd $baseDir
-done < $domainFile
+done

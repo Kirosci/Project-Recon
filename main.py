@@ -148,12 +148,12 @@ def pseudoMain():
 
             if args.f:
                 domain = args.f
-                if not args.update:
-                    print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
+                print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
 
             else:
-                errorMessage("Provide a file containing domains")
-                sys.exit(1) 
+                if not args.update:
+                    errorMessage("Provide a file containing domains")
+                    sys.exit(1) 
 
             link = args.ssrf
             if args.amass_t:

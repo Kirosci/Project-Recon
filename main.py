@@ -142,6 +142,7 @@ def pseudoMain():
                 thre_update = threading.Thread(target=update, args=(cmdUpdate,))
                 thre_update.start()
                 thre_update.join()
+                sys.exit(1)
             else:
                 pass
                 
@@ -153,7 +154,7 @@ def pseudoMain():
             else:
                 if not args.update:
                     errorMessage("Provide a file containing domains")
-                    sys.exit(1) 
+                sys.exit(1) 
 
             link = args.ssrf
             if args.amass_t:

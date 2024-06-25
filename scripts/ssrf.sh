@@ -1,5 +1,12 @@
 #!/bin/bash
 
+GREEN="\e[32m"
+RED="\e[31m"
+ORANGE="\e[38;5;214m"
+RESET="\e[0m"
+
+timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
+time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
 
 domainFile=$1
 link=$2
@@ -14,6 +21,9 @@ while IFS= read -r domain; do
   rm openRedirects.txt 2> /dev/null
   rm ssrfUrls.txt 2> /dev/null
   file="urls.txt"
+
+  # Message main
+  echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
   # For getting firdst 20 charachters of $link so we can grep for it to get proper open redirects.
   first_20="${link:0:20}"
@@ -37,8 +47,16 @@ while IFS= read -r domain; do
   # Filtering out proper Open Redirects
   cat openredirectUrls.txt 2> /dev/null | grep -- "---> $first_20" > openRedirects.txt
 
+  if ! [ $(wc -l < "openRedirects.txt") -eq 0 ]; then
+    # Message
+    echo -e "\t\t|---${GREEN}[Open redirects found: $(wc -l openRedirects.txt | awk '{print$1}')]${RESET} \t$time"
+  else
+    rm openRedirects.txt 2> /dev/null
+  fi
+
   rm openredirectUrls.txt 2> /dev/null
 
+  # Go back to Project-Recon dir at last 
   cd $baseDir
 
 done < $domainFile

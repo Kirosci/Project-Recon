@@ -179,6 +179,7 @@ while IFS= read -r domain; do
   mkdir -p "$dir" 
   cd $dir
 
+  # Message main
   echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
   
   mkdir -p .tmp/subdomains
@@ -225,6 +226,7 @@ while IFS= read -r domain; do
     organise
   fi
 
+  # Message last
   echo -e "\t${GREEN}[Found: $(wc -l subdomains.txt | awk '{print$1}')]${RESET} \t$timeDate"
   
 # Go back to Project-Recon dir at last 

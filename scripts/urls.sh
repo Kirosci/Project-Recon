@@ -58,6 +58,8 @@ for domain in $(cat "$domainFile"); do
     dir="results/$domain"
     cd "$dir"
     rm urls.txt 2> /dev/null
+
+    # Message main
     echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
     if [ "$2" == "passive" ]; then
@@ -74,6 +76,8 @@ for domain in $(cat "$domainFile"); do
         passive
         organise
     fi
+
+    # Message last
     echo -e "\t${GREEN}[Found: $(wc -l urls.txt | awk '{print$1}')]${RESET} \t$timeDate"
     # Go back to base directory at last 
     cd "$baseDir"

@@ -114,7 +114,7 @@ def js(cmd):
 def nmap(cmd):
     messageBefore("Nmap")
     p_urls= subprocess.Popen(cmd,shell=True).wait()
-    messageAfter("Nmap", "Results Saved")
+    messageAfter("Nmap", "Results Saved in nmap/ directory")
 
 # Check internet connection 
 def check_internet():

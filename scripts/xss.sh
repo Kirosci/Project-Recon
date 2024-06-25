@@ -16,22 +16,24 @@ while IFS= read -r domain; do
 
     dir="results/$domain"
     cd $dir
-    rm xss.txt 2> /dev/null
     
     # Message main
     echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
-    cat "urls.txt" | grep = | kxss | grep '>\|<\|"' > xss.txt
-
-    # Message
-    if ! [ $(wc -l < "xss.txt") -eq 0 ]; then
-        lines=$(wc -l xss.txt 2> /dev/null | awk '{print$1}')
-        echo -e "\t\t|---${GREEN}[Potentially vulnerable found: $lines]${RESET} \t$time"   
+    if [ -f "xss.txt" ]; then
+        echo -e "\t\t|---${GREEN}[XSS results are already there: $(cat 'xss.txt' | wc -l)]${RESET} \t$time"
     else
-        rm xss.txt 2> /dev/null
+        cat "urls.txt" | grep = | kxss | grep '>\|<\|"' > xss.txt
+
+        # Message
+        if ! [ $(wc -l < "xss.txt") -eq 0 ]; then
+            lines=$(wc -l xss.txt 2> /dev/null | awk '{print$1}')
+            echo -e "\t\t|---${GREEN}[Potentially vulnerable found: $lines]${RESET} \t$time"   
+        else
+            rm xss.txt 2> /dev/null
+        fi
     fi
 
     # Go back to Project-Recon dir at last 
     cd $baseDir
-
 done < $domainFile

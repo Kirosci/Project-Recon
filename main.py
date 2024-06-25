@@ -148,7 +148,8 @@ def pseudoMain():
 
             if args.f:
                 domain = args.f
-                print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
+                if not args.update:
+                    print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
 
             else:
                 errorMessage("Provide a file containing domains")

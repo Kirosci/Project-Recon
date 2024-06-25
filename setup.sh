@@ -160,7 +160,8 @@ checkTools(){
         continue
     else
         echo "[+] All required tools are installed"
-        echo "[+] Set API Keys in config file for waymore & subfinder"
+        echo "[+] Set API keys in config file for waymore & subfinder"
+        echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
     fi
 
 # Printing name of tools, that were unable to install
@@ -168,6 +169,8 @@ checkTools(){
     
         if ! command -v $tool &>/dev/null; then
             echo "[+] Not Installed, Install manually $tool"
+            echo "[+] Don't forget to set API keys in config file for waymore & subfinder"
+            echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
             
         fi
     done
@@ -308,6 +311,9 @@ checkTools
 
 if [ $isDebian -eq 1 ]; then
     clear
+    echo "[+] All required tools are installed"
+    echo "[+] Set API keys in config file for waymore & subfinder"
+    echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
     echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
 fi
 }

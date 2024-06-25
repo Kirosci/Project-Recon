@@ -7,23 +7,26 @@ baseDir="$(pwd)"
 GREEN="\e[32m"
 RED="\e[31m"
 ORANGE="\e[38;5;214m"
-RESET="${RESET}"
+RESET="\e[0m"
+
+timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
+time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
 
 # ---
 
 passive() {
     (
         cat subdomains.txt | waybackurls > wayback_urls.txt 2> /dev/null
-        echo -e "\t\t|---${GREEN}[Waybackurls: $(wc -l wayback_urls.txt | awk '{print$1}')]${RESET}"
+        echo -e "\t\t|---${GREEN}[Waybackurls: $(wc -l wayback_urls.txt | awk '{print$1}')]${RESET} \t$time"
     ) &
     (
         cat subdomains.txt | gau > gau_urls.txt 2> /dev/null
-        echo -e "\t\t|---${GREEN}[Gau: $(wc -l gau_urls.txt | awk '{print$1}')]${RESET}"
+        echo -e "\t\t|---${GREEN}[Gau: $(wc -l gau_urls.txt | awk '{print$1}')]${RESET} \t$time"
     ) &
     (
         cat subdomains.txt | sed 's/^/https:\/\//' > for_waymore.txt
         waymore -n -xwm -urlr 0 -r 2 -i for_waymore.txt -mode U -oU waymore_urls.txt 2> /dev/null 1> /dev/null
-        echo -e "\t\t|---${GREEN}[Waymore: $(wc -l waymore_urls.txt | awk '{print$1}')]${RESET}"
+        echo -e "\t\t|---${GREEN}[Waymore: $(wc -l waymore_urls.txt | awk '{print$1}')]${RESET} \t$time"
     ) &
     wait
 }
@@ -32,7 +35,7 @@ passive() {
 
 active() {
     cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image > katana_urls.txt
-    echo -e "\t\t|---${GREEN}[Katana: $(wc -l katana_urls.txt | awk '{print$1}')]${RESET}"
+    echo -e "\t\t|---${GREEN}[Katana: $(wc -l katana_urls.txt | awk '{print$1}')]${RESET} \t$time"
 }
 
 # ---
@@ -55,7 +58,7 @@ for domain in $(cat "$domainFile"); do
     dir="results/$domain"
     cd "$dir"
     rm urls.txt 2> /dev/null
-    echo -e "\t${ORANGE}[$domain]${RESET}"
+    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
     if [ "$2" == "passive" ]; then
         passive
@@ -71,7 +74,7 @@ for domain in $(cat "$domainFile"); do
         passive
         organise
     fi
-    echo -e "\t${GREEN}[Found: $(wc -l urls.txt | awk '{print$1}')]${RESET}"
+    echo -e "\t${GREEN}[Found: $(wc -l urls.txt | awk '{print$1}')]${RESET} \t$timeDate"
     # Go back to base directory at last 
     cd "$baseDir"
 done

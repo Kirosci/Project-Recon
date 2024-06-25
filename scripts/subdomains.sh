@@ -12,6 +12,8 @@ RED="\e[31m"
 ORANGE="\e[38;5;214m"
 RESET="\e[0m"
 
+timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
+time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
 
 domainFile=$1
 
@@ -24,22 +26,22 @@ passiveEnumeration(){
 (
   echo "$domain" | assetfinder >> assetfinderSubdomains.txt
   lines=$(cat assetfinderSubdomains.txt | wc -l)
-  echo -e "\t\t|---${GREEN}[Assetfinder: $lines]${RESET}"
+  echo -e "\t\t|---${GREEN}[Assetfinder: $lines]${RESET} \t$time"
 ) &
 (
   echo "$domain" | haktrails subdomains >> haktrailsSubdomains.txt
   lines=$(cat haktrailsSubdomains.txt | wc -l)
-  echo -e "\t\t|---${GREEN}[Haktrails: $lines]${RESET}"
+  echo -e "\t\t|---${GREEN}[Haktrails: $lines]${RESET} \t$time"
 ) &
 (
   echo "$domain" | subfinder -o subfinderSubdomains.txt 2> /dev/null 1> /dev/null
   lines=$(cat subfinderSubdomains.txt | wc -l)
-  echo -e "\t\t|---${GREEN}[Subfinder: $lines]${RESET}"
+  echo -e "\t\t|---${GREEN}[Subfinder: $lines]${RESET} \t$time"
 ) &
 (
   subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null & wait
   lines=$(cat subdominatorSubdomains.txt | wc -l)
-  echo -e "\t\t|---${GREEN}[Subdominator: $lines]${RESET}" 
+  echo -e "\t\t|---${GREEN}[Subdominator: $lines]${RESET} \t$time" 
 ) &
 
 (
@@ -47,17 +49,17 @@ passiveEnumeration(){
 
     amass enum -d "$domain" -o amassSubdomains.txt 2> /dev/null 1> /dev/null
     lines=$(cat amassSubdomains.txt | wc -l)
-    echo -e "\t\t|---${GREEN}[Amass: $lines]${RESET}"
+    echo -e "\t\t|---${GREEN}[Amass: $lines]${RESET} \t$time"
 
   elif [[ "$2" -eq 0 ]]; then
 
-  echo -e "\t\t|---${RED}[Excluded Amass]${RESET}" 
+  echo -e "\t\t|---${RED}[Excluded Amass]${RESET} \t$time"
 
   else
 
     amass enum -d "$domain" -timeout $timeout -o amassSubdomains.txt 2> /dev/null
     lines=$(cat amassSubdomains.txt | wc -l)
-    echo -e "\t\t|---${GREEN}[Amass: $lines] [Timeout: $2 minutes]${RESET}" 
+    echo -e "\t\t|---${GREEN}[Amass: $lines] [Timeout: $2 minutes]${RESET} \t$time"
 
   fi
 ) &
@@ -127,19 +129,19 @@ activeEnumeration() {
   #   # Dnsgen will take list of subdomains (passiveSubdomains.txt) and will permute between them
   #   dnsgen "passiveSubdomains.txt" -f | tee -a dnsgen.txt
   #   lines=$(cat dnsgen.txt | wc -l)
-  #   echo -e "\t\t|---${GREEN}[Dnsgen: $lines]${RESET}"
+  #   echo -e "\t\t|---${GREEN}[Dnsgen: $lines]${RESET} \t$time"
   # ) &
   (
     # Alterx takes subdomains (passiveSubdomains.txt) and will permute between them, on behalf of specified rules
     cat "passiveSubdomains.txt" | alterx -o alterx.txt 2> /dev/null
     lines=$(cat alterx.txt | wc -l)
-    echo -e "\t\t|---${GREEN}[Alterx: $lines]${RESET}"
+    echo -e "\t\t|---${GREEN}[Alterx: $lines]${RESET} \t$time"
   ) &
   # (
   #   # Altdns will permute assetnote wordlist with domain name
   #   altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o altdns.txt
   #   lines=$(cat altdns.txt | wc -l)
-  #   echo -e "\t\t|---${GREEN}[Altdns (Assetnote wordlist): $lines]${RESET}"
+  #   echo -e "\t\t|---${GREEN}[Altdns (Assetnote wordlist): $lines]${RESET} \t$time"
   # ) & 
   wait
 
@@ -148,7 +150,7 @@ activeEnumeration() {
   # Puredns will resolve the permuted subdomains 
   puredns resolve "totalPermuted.txt" -q > tee -a activeSubdomains.txt
   lines=$(cat activeSubdomains.txt | wc -l)
-  echo -e "\t\t|---${GREEN}[Active Enumeration Done] [Active Subdomains: $lines]${RESET}"
+  echo -e "\t\t|---${GREEN}[Active Enumeration Done] [Active Subdomains: $lines]${RESET} \t$time"
   cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
 
 }
@@ -177,7 +179,7 @@ while IFS= read -r domain; do
   mkdir -p "$dir" 
   cd $dir
 
-  echo -e "\t${ORANGE}[$domain]${RESET}"
+  echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
   
   mkdir -p .tmp/subdomains
   mkdir -p .tmp/subdomains/passive
@@ -223,7 +225,7 @@ while IFS= read -r domain; do
     organise
   fi
 
-  echo -e "\t${GREEN}[Found: $(wc -l subdomains.txt | awk '{print$1}')]${RESET}"
+  echo -e "\t${GREEN}[Found: $(wc -l subdomains.txt | awk '{print$1}')]${RESET} \t$timeDate"
   
 # Go back to Project-Recon dir at last 
   cd $baseDir

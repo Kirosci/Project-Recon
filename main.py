@@ -142,11 +142,9 @@ def pseudoMain():
                 thre_update = threading.Thread(target=update, args=(cmdUpdate,))
                 thre_update.start()
                 thre_update.join()
-            else:
-                pass
                 
 
-            if args.f:
+            elif args.f:
                 domain = args.f
                 print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
 

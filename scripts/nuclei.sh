@@ -12,24 +12,24 @@ domainFile=$1
 
 baseDir="$(pwd)"
 
-
 while IFS= read -r domain; do 
 
     dir="results/$domain"
     cd $dir
+    if [ -f "nuclei.txt" ]; then
+        echo -e "\t\t|---${GREEN}[Nuclei results are already there: $(cat 'nuclei.txt' | wc -l)]${RESET} \t$time"
+    else
+        # Message main
+        echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
-    rm nuclei.txt 2> /dev/null
+    # Calling Nuclei
+        nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt -t cent-nuclei-templates
 
-    # Message main
-    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
+        # Message
+        echo -e "\t\t|---${GREEN}[Finished, lines in nuclei.txt: $(wc -l nuclei.txt | awk '{print$1}')]${RESET} \t$time"
 
-# Calling Nuclei
-    nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt -t cent-nuclei-templates
-
-    # Message
-    echo -e "\t\t|---${GREEN}[Finished, lines in nuclei.txt: $(wc -l nuclei.txt | awk '{print$1}')]${RESET} \t$time"
+    fi
 
     # Go back to Project-Recon dir at last 
     cd $baseDir
-
 done < $domainFile

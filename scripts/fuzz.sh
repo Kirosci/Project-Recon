@@ -24,30 +24,33 @@ while IFS= read -r domain; do
     # Message
     echo -e "\t\t|---${GREEN}[Fuzzing started]${RESET} \t$time"
 
-    (
-    dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
-    ) &
+    if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
+        echo -e "\t\t|---${GREEN}[Fuzz results are already there: $(cat fuzz/fuzz_mixedBig.txt | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt | wc -l)]${RESET} \t$time"
+    else
 
-    (
-    dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
-    ) &
+        (
+        dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
+        ) &
 
-    wait
+        (
+        dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
+        ) &
 
-    cat fuzz_mixedBig.txt fuzz_dirSmall.txt | sort -u | fuzz.txt
+        wait
+
+        cat fuzz_mixedBig.txt fuzz_dirSmall.txt | sort -u | fuzz.txt
 
 
-    mkdir fuzz
-    mv fuzz_mixedBig.txt fuzz/
-    mv fuzz_dirSmall.txt fuzz/
+        mkdir fuzz
+        mv fuzz_mixedBig.txt fuzz/
+        mv fuzz_dirSmall.txt fuzz/
 
-    # Message
-    echo -e "\t\t|---${GREEN}[Fuzzing finished]${RESET} \t$time"
+        # Message
+        echo -e "\t\t|---${GREEN}[Fuzzing finished]${RESET} \t$time"
 
-    # Message last
-    echo -e "\t${ORANGE}[fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt | wc -l)]${RESET} \t$timeDate"
-    
+        # Message last
+        echo -e "\t${ORANGE}[fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt | wc -l)]${RESET} \t$timeDate"
+    fi
     # Go back to Project-Recon dir at last 
     cd $baseDir
-
 done < $domainFile

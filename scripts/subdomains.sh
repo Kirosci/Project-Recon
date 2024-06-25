@@ -50,7 +50,7 @@ passiveEnumeration(){
         if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
             echo -e "\t\t|---${GREEN}[Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)]${RESET} \t$time"
         else
-           subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null & wait
+           subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
            echo -e "\t\t|---${GREEN}[Subdominator: $(cat 'subdominatorSubdomains.txt' | wc -l)]${RESET} \t$time" 
         fi
     ) &

@@ -123,13 +123,14 @@ checkWordlist() {
     currentDate=$(date +%Y_%m_%d)
     # Convert the dates to the format YYYYMMDD for comparison
     wordlistDate_converted=$(date -d "${wordlistDate//_/}" +%Y%m%d)
-    currentDate_converted=$(date -d "${currentDate//_/}" +%Y%m%d)   
+    currentDate_converted=$(date -d "${currentDate//_/}" +%Y%m%d)
+    dirBackToTarget="$(dirname "$(pwd)")/results/$domain"
 # Downloading '2m-subdomains.txt' wordlist if not there
     cd $wordlistsDir
     if ! [ -f "2m-subdomains.txt" ]; then
         wget "https://wordlists-cdn.assetnote.io/data/manual/2m-subdomains.txt" 1> /dev/null
     fi
-    cd $dir 
+    cd $dirBackToTarget 
 # Downloading in http_archive wordlist is not there
     cd $wordlistsDir
     wordlistName=$(ls | grep httparchive_subdomains_)   
@@ -149,13 +150,13 @@ checkWordlist() {
             fi
         fi
     fi
-    cd $dir
+    cd $dirBackToTarget
 # Generating 'assetnoteSubdomains' wordlist if not there
     cd $wordlistsDir
     if ! [ -f "assetnoteSubdomains.txt" ]; then
         cat httparchive_subdomains_* 2m-subdomains.txt | sort -u > assetnoteSubdomains.txt
     fi
-    cd $dir
+    cd $dirBackToTarget
 
 }
 

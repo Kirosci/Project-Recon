@@ -56,8 +56,7 @@ while IFS= read -r domain; do
         printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
     # Calling Nuclei
-        nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt -t cent-nuclei-templates
-
+        nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt
         # Message
         print_message "$ORANGE" "Finished; lines in nuclei.txt: "$(cat nuclei.txt 2> /dev/null | wc -l)""
 

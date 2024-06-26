@@ -198,7 +198,7 @@ updateUpgrade() {
         python3 -m venv .venvPython
         source .venvPython/bin/activate
         cd $dir
-        echo "\#!/bin/bash" >> ~/.activatePythonVenv.sh
+        echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
         echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
         chmod +x ~/.activatePythonVenv.sh
 

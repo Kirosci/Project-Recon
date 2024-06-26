@@ -6,6 +6,12 @@ else
     timeout="0"
 fi
 
+domainFile=$1
+
+baseDir="$(pwd)"
+
+# ---
+
 GREEN=$(tput setaf 2)
 RED=$(tput setaf 1)
 ORANGE=$(tput setaf 3)
@@ -13,12 +19,6 @@ RESET=$(tput sgr0)
 
 timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
 time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
-
-domainFile=$1
-
-baseDir="$(pwd)"
-
-# ---
 
 # Function to calculate visible length of the message (excluding color codes)
 calculate_visible_length() {

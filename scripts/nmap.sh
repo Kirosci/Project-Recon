@@ -1,14 +1,46 @@
 #!/bin/bash
 
-GREEN="\e[32m"
-RED="\e[31m"
-ORANGE="\e[38;5;214m"
-RESET="\e[0m"
+domainFile=$1
+
+# ---
+
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+ORANGE=$(tput setaf 3)
+RESET=$(tput sgr0) 
 
 timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
 time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
 
-domainFile=$1
+# Function to calculate visible length of the message (excluding color codes)
+calculate_visible_length() {
+  local message=$1
+  # Remove color codes
+  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
+  echo ${#clean_message}
+}
+
+# Function to print the message with aligned time
+print_message() {
+  local color=$1
+  local message=$2
+  local count=$3
+  local time=$(date +"%H:%M:%S")
+
+  if [ -n "$count" ]; then
+    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
+  else
+    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
+  fi
+
+  visible_length=$(calculate_visible_length "$formatted_message")
+  total_length=80
+  spaces=$((total_length - visible_length))
+  
+  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
+}
+
+# ---
 
 getASN() {
 # Find Ip Rnages from ASN
@@ -18,26 +50,25 @@ while IFS= read -r domain; do
     cd $dir
 
     # Message main
-    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
+    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
 # Getting ASN
     # Message
-    echo -e "\t\t|---${GREEN}[Gathering ASN]${RESET} \t$time"   
+    print_message "$GREEN" "Gathering ASN"
 
     # Calling python file responsible of rgetting ASN
     python3 $baseDir/scripts/getAsn.py $domain 1> /dev/null
     sort -u asn.txt -o asn.txt 2> /dev/null 1> /dev/null
 
     # Message
-    lines=$(cat asn.txt | wc -l)
-    echo -e "\t\t|---${GREEN}[ASN found: $lines]${RESET} \t$time"
+    print_message "$GREEN" "ASN found "$(cat 'asn.txt' 2> /dev/null | wc -l)""
 
 
 # Extracting IP Ranges, if any ASN found
     if ! [ $(wc -l < "asn.txt") -eq 0 ]; then
 
         # Message
-        echo -e "\t\t|---${GREEN}[Extracting IP ranges for $domain]${RESET} \t$time"
+        print_message "$GREEN" "Extracting IP ranges for $domain"
 
         while IFS= read -r ASN; do
             whois -h whois.radb.net -- '-i origin' "$ASN" | grep -Eo "([0-9.]+){4}/[0-9]+" | uniq  | tee -a ipRanges.txt 1> /dev/null
@@ -45,8 +76,7 @@ while IFS= read -r domain; do
         sort -u ipRanges.txt -o ipRanges.txt 2> /dev/null 1> /dev/null
 
         # Message
-        lines=$(cat ipRanges.txt | wc -l)
-        echo -e "\t\t|---${GREEN}[IP ranges found: $lines]${RESET} \t$time"
+        print_message "$GREEN" "IP ranges found "$(cat ipRanges.txt 2> /dev/null | wc -l)""
 
     fi
     
@@ -65,7 +95,7 @@ scanRange() {
 if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
 
     # Message
-    echo -e "\t\t|---${GREEN}[Nmap scan started]${RESET} \t$timeDate"
+    print_message "$GREEN" "Nmap scan started"
 
 # Calling NMAP
     python3 $baseDir/scripts/nmap.py $domainFile 1> /dev/null

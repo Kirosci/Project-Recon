@@ -47,30 +47,27 @@ print_message() {
 passive() {
     (
         if [ -f ".tmp/urls/wayback_urls.txt" ]; then
-            print_message "$GREEN" "Waybackurls results are already there: " "$(cat '.tmp/urls/wayback_urls.txt' 2> /dev/null | wc -l)"
+            print_message "$GREEN" "Waybackurls results are already there: " "$(cat '.tmp/urls/wayback_urls.txt' | wc -l)"
         else
             cat subdomains.txt | waybackurls > wayback_urls.txt 2> /dev/null
-
-            print_message "$GREEN" "Waybackurls:" "$(cat 'wayback_urls.txt' 2> /dev/null | wc -l)]"
+            echo -e "\t\t|---${GREEN}[Waybackurls: $(wc -l wayback_urls.txt | awk '{print$1}')]${RESET} \t$time"
         fi
     ) &
     (
         if [ -f ".tmp/urls/gau_urls.txt" ]; then
-            print_message "$GREEN" "Gau results are already there: " "$(cat '.tmp/urls/gau_urls.txt' 2> /dev/null | wc -l)"
+            echo -e "\t\t|---${GREEN}[Gau results are already there: $(cat '.tmp/urls/gau_urls.txt' | wc -l)]${RESET} \t$time"
         else
             cat subdomains.txt | gau > gau_urls.txt 2> /dev/null
-
-            print_message "$GREEN" "Gau:" "$(cat 'gau_urls.txt' 2> /dev/null | wc -l)]"
+            echo -e "\t\t|---${GREEN}[Gau: $(wc -l gau_urls.txt | awk '{print$1}')]${RESET} \t$time"
         fi
     ) &
     (
         if [ -f ".tmp/urls/waymore_urls.txt" ]; then
-            print_message "$GREEN" "Waymore results are already there: " "$(cat '.tmp/urls/waymore_urls.txt' 2> /dev/null | wc -l)"
+            echo -e "\t\t|---${GREEN}[Waymore results are already there: $(cat '.tmp/urls/waymore_urls.txt' | wc -l)]${RESET} \t$time"
         else
             cat subdomains.txt | sed 's/^/https:\/\//' > for_waymore.txt
             waymore -n -xwm -urlr 0 -r 2 -i for_waymore.txt -mode U -oU waymore_urls.txt 2> /dev/null 1> /dev/null
-
-            print_message "$GREEN" "Waymore:" "$(cat 'waymore_urls.txt' 2> /dev/null | wc -l)]"
+            echo -e "\t\t|---${GREEN}[Waymore: $(wc -l waymore_urls.txt | awk '{print$1}')]${RESET} \t$time"
         fi
     ) &
     wait
@@ -80,11 +77,10 @@ passive() {
 
 active() {
     if [ -f ".tmp/urls/katana_urls.txt" ]; then
-        print_message "$GREEN" "Katana results are already there: " "$(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
+        echo -e "\t\t|---${GREEN}[Katana results are already there: $(cat '.tmp/urls/katana_urls.txt' | wc -l)]${RESET} \t$time"
     else
         cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image > katana_urls.txt
-        
-        print_message "$GREEN" "Katana:" "$(cat 'katana_urls.txt' 2> /dev/null | wc -l)]"
+        echo -e "\t\t|---${GREEN}[Katana: $(wc -l katana_urls.txt | awk '{print$1}')]${RESET} \t$time"
     fi
 }
 
@@ -114,7 +110,7 @@ for domain in $(cat "$domainFile"); do
 
 
     # Message main
-    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
+    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
 
     if [ "$2" == "passive" ]; then
         passive
@@ -132,7 +128,7 @@ for domain in $(cat "$domainFile"); do
     fi
 
     # Message last
-    printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat urls.txt 2> /dev/null | wc -l)" "$RESET" "$timeDate"
+    echo -e "\t${GREEN}[Found: $(wc -l urls.txt | awk '{print$1}')]${RESET} \t$timeDate"
     # Go back to base directory at last 
     cd "$baseDir"
 done

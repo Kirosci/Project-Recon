@@ -54,49 +54,49 @@ passiveEnumeration(){
 
     (
         if [ -f ".tmp/subdomains/passive/assetfinderSubdomains.txt" ]; then
-            print_message "$GREEN" "Assetfinder results are already there: " "$(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)"
+            print_message "$GREEN" "Assetfinder results are already there: " "$(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' 2> /dev/null | wc -l)"
         else
             echo "$domain" | assetfinder >> assetfinderSubdomains.txt
-            print_message "$GREEN" "Assetfinder:" "$(cat 'assetfinderSubdomains.txt' | wc -l)]"
+            print_message "$GREEN" "Assetfinder:" "$(cat 'assetfinderSubdomains.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/haktrailsSubdomains.txt" ]; then
-            print_message "$GREEN" "Haktrails results are already there: " "$(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' | wc -l)"
+            print_message "$GREEN" "Haktrails results are already there: " "$(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' 2> /dev/null | wc -l)"
         else
             echo "$domain" | haktrails subdomains >> haktrailsSubdomains.txt
-            print_message "$GREEN" "Haktrails:" "$(cat 'haktrailsSubdomains.txt' | wc -l)]"
+            print_message "$GREEN" "Haktrails:" "$(cat 'haktrailsSubdomains.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subfinderSubdomains.txt" ]; then
-            print_message "$GREEN" "Subfinder results are already there: " "$(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' | wc -l)"
+            print_message "$GREEN" "Subfinder results are already there: " "$(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' 2> /dev/null | wc -l)"
         else
             echo "$domain" | subfinder -o subfinderSubdomains.txt 2> /dev/null 1> /dev/null
-            print_message "$GREEN" "Subfinder:" "$(cat 'subfinderSubdomains.txt' | wc -l)]"
+            print_message "$GREEN" "Subfinder:" "$(cat 'subfinderSubdomains.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
-            print_message "$GREEN" "Subdominator results are already there: " "$(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)"
+            print_message "$GREEN" "Subdominator results are already there: " "$(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' 2> /dev/null | wc -l)"
         else
             subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
-            print_message "$GREEN" "Subdominator:" "$(cat 'subdominatorSubdomains.txt' | wc -l)]"
+            print_message "$GREEN" "Subdominator:" "$(cat 'subdominatorSubdomains.txt' 2> /dev/null | wc -l)"
         fi
     ) &
 
     (
         if [ -f ".tmp/subdomains/passive/amassSubdomains.txt" ]; then
-            print_message "$GREEN" "Amass results are already there: " "$(cat '.tmp/subdomains/passive/amassSubdomains.txt' | wc -l)"
+            print_message "$GREEN" "Amass results are already there: " "$(cat '.tmp/subdomains/passive/amassSubdomains.txt' 2> /dev/null | wc -l)"
         else
             if [[ "$2" -eq 1 ]]; then   
                 amass enum -d "$domain" -o amassSubdomains.txt 2> /dev/null 1> /dev/null
-                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' | wc -l)]"
+                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' 2> /dev/null | wc -l)"
             elif [[ "$2" -eq 0 ]]; then 
                 print_message "$RED" "Skipping Amass"
             else    
                 amass enum -d "$domain" -timeout $timeout -o amassSubdomains.txt 2> /dev/null
-                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' | wc -l)]"
+                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' 2> /dev/null | wc -l)"
             fi
         fi
     ) &
@@ -167,20 +167,20 @@ activeEnumeration() {
     # (
     #     # Dnsgen will take list of subdomains (passiveSubdomains.txt) and will permute between them
     #     if [ -f ".tmp/subdomains/active/dnsgen.txt" ]; then
-    #         print_message "$GREEN" "Dnsgen results are already there: " "$(cat '.tmp/subdomains/active/dnsgen.txt' | wc -l)"                            
+    #         print_message "$GREEN" "Dnsgen results are already there: " "$(cat '.tmp/subdomains/active/dnsgen.txt' 2> /dev/null | wc -l)"                            
     #     else
     #         dnsgen "passiveSubdomains.txt" -f | tee -a dnsgen.txt 1> /dev/null 2> /dev/null
-    #         print_message "$GREEN" "Dnsgen:" "$(cat 'dnsgen.txt' | wc -l)]"
+    #         print_message "$GREEN" "Dnsgen:" "$(cat 'dnsgen.txt' 2> /dev/null | wc -l)"
     #     fi
     # ) &
 
     # (
     # # Altdns will permute assetnote wordlist with domain name
     #     if [ -f ".tmp/subdomains/active/altdns.txt" ]; then
-    #         print_message "$GREEN" "Altdns results are already there: " "$(cat '.tmp/subdomains/active/altdns.txt' | wc -l)"                            
+    #         print_message "$GREEN" "Altdns results are already there: " "$(cat '.tmp/subdomains/active/altdns.txt' 2> /dev/null | wc -l)"                            
     #     else
     #         altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o altdns.txt
-    #         print_message "$GREEN" "Altdns (Assetnote wordlist):" "$(cat 'altdns.txt' | wc -l)]"
+    #         print_message "$GREEN" "Altdns (Assetnote wordlist):" "$(cat 'altdns.txt' 2> /dev/null | wc -l)"
     #     fi
     # ) & 
 
@@ -190,10 +190,10 @@ activeEnumeration() {
     (
     # Alterx takes subdomains (passiveSubdomains.txt) and will permute between them, on behalf of specified rules
         if [ -f ".tmp/subdomains/active/alterx.txt" ]; then
-            print_message "$GREEN" "Alterx results are already there: " "$(cat '.tmp/subdomains/active/alterx.txt' | wc -l)"                            
+            print_message "$GREEN" "Alterx results are already there: " "$(cat '.tmp/subdomains/active/alterx.txt' 2> /dev/null | wc -l)"                            
         else
             cat "passiveSubdomains.txt" | alterx -o alterx.txt 2> /dev/null
-            print_message "$GREEN" "Alterx:" "$(cat 'alterx.txt' | wc -l)]"
+            print_message "$GREEN" "Alterx:" "$(cat 'alterx.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     wait
@@ -202,7 +202,7 @@ activeEnumeration() {
 
     # Puredns will resolve the permuted subdomains 
     puredns resolve "totalPermuted.txt" -q > tee -a activeSubdomains.txt
-    print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: " "$(cat 'activeSubdomains.txt' | wc -l)"                            
+    print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: " "$(cat 'activeSubdomains.txt' 2> /dev/null | wc -l)"                            
     cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
 
 }
@@ -271,7 +271,7 @@ for domain in $(cat "$domainFile"); do
         screenshot
     fi  
     # Message last
-    printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt | wc -l)" "$RESET" "$timeDate"
+    printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt 2> /dev/null | wc -l)" "$RESET" "$timeDate"
 
 # Go back to Project-Recon dir at last 
     cd "$baseDir"

@@ -1,32 +1,65 @@
 #!/bin/bash
 
-GREEN="\e[32m"
-RED="\e[31m"
-ORANGE="\e[38;5;214m"
-RESET="\e[0m"
+domainFile=$1
+
+baseDir="$(pwd)"
+
+# ---
+
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+ORANGE=$(tput setaf 3)
+RESET=$(tput sgr0) 
 
 timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
 time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
 
-domainFile=$1
+# Function to calculate visible length of the message (excluding color codes)
+calculate_visible_length() {
+  local message=$1
+  # Remove color codes
+  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
+  echo ${#clean_message}
+}
 
-baseDir="$(pwd)"
+# Function to print the message with aligned time
+print_message() {
+  local color=$1
+  local message=$2
+  local count=$3
+  local time=$(date +"%H:%M:%S")
+
+  if [ -n "$count" ]; then
+    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
+  else
+    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
+  fi
+
+  visible_length=$(calculate_visible_length "$formatted_message")
+  total_length=80
+  spaces=$((total_length - visible_length))
+  
+  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
+}
+
+# ---
 
 while IFS= read -r domain; do 
 
     dir="results/$domain"
     cd $dir
     if [ -f "nuclei.txt" ]; then
-        echo -e "\t\t|---${GREEN}[Nuclei results are already there: $(cat 'nuclei.txt' | wc -l)]${RESET} \t$time"
+        # Message
+        print_message "$GREEN" "Nuclei results are already there: "$(cat 'nuclei.txt' 2> /dev/null | wc -l)""
     else
         # Message main
-        echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
+        printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
     # Calling Nuclei
         nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt -t cent-nuclei-templates
 
         # Message
-        echo -e "\t\t|---${GREEN}[Finished, lines in nuclei.txt: $(wc -l nuclei.txt | awk '{print$1}')]${RESET} \t$time"
+        print_message "$ORANGE" "Finished; lines in nuclei.txt: "$(cat nuclei.txt 2> /dev/null | wc -l)""
 
     fi
 

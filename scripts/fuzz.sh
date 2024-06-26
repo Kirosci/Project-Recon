@@ -1,17 +1,48 @@
 #!/bin/bash
 
-GREEN="\e[32m"
-RED="\e[31m"
-ORANGE="\e[38;5;214m"
-RESET="\e[0m"
-
-timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
-time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
-
 domainFile=$1
 
 baseDir="$(pwd)"
 
+# ---
+
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+ORANGE=$(tput setaf 3)
+RESET=$(tput sgr0) 
+
+timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
+time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
+
+# Function to calculate visible length of the message (excluding color codes)
+calculate_visible_length() {
+  local message=$1
+  # Remove color codes
+  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
+  echo ${#clean_message}
+}
+
+# Function to print the message with aligned time
+print_message() {
+  local color=$1
+  local message=$2
+  local count=$3
+  local time=$(date +"%H:%M:%S")
+
+  if [ -n "$count" ]; then
+    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
+  else
+    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
+  fi
+
+  visible_length=$(calculate_visible_length "$formatted_message")
+  total_length=80
+  spaces=$((total_length - visible_length))
+  
+  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
+}
+
+# ---
 
 while IFS= read -r domain; do 
 
@@ -19,13 +50,10 @@ while IFS= read -r domain; do
     cd $dir
 
     # Message main
-    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
-
-    # Message
-    echo -e "\t\t|---${GREEN}[Fuzzing started]${RESET} \t$time"
+    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
     if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
-        echo -e "\t\t|---${GREEN}[Fuzz results are already there: $(cat fuzz/fuzz_mixedBig.txt | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt | wc -l)]${RESET} \t$time"
+        print_message "$GREEN" "Fuzz results are already there: fuzz_mixedBig.txt=$(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt=$(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
     else
 
         (
@@ -38,7 +66,7 @@ while IFS= read -r domain; do
 
         wait
 
-        cat fuzz_mixedBig.txt fuzz_dirSmall.txt | sort -u | fuzz.txt
+        cat fuzz_mixedBig.txt fuzz_dirSmall.txt 2> /dev/null | sort -u | fuzz.txt
 
 
         mkdir fuzz
@@ -46,10 +74,8 @@ while IFS= read -r domain; do
         mv fuzz_dirSmall.txt fuzz/
 
         # Message
-        echo -e "\t\t|---${GREEN}[Fuzzing finished]${RESET} \t$time"
+        print_message "$GREEN" "fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
 
-        # Message last
-        echo -e "\t${ORANGE}[fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt | wc -l)]${RESET} \t$timeDate"
     fi
     # Go back to Project-Recon dir at last 
     cd $baseDir

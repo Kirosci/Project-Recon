@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
+allTools=("assetfinder" "massdns" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
 commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
 
@@ -37,7 +37,6 @@ installmissingTools(){
                 ;;
             "dnsgen")
                 python -m pip install dnsgen
-
                 ;;
             "altdns")
                 pip3 install "py-altdns"
@@ -47,6 +46,9 @@ installmissingTools(){
                 ;;
             "puredns")
                 go install github.com/d3mondev/puredns/v2@latest
+                ;;
+            "massdns")
+                git clone https://github.com/blechschmidt/massdns.git && cd massdns && make
                 ;;
 
 

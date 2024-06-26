@@ -240,7 +240,7 @@ for domain in $(cat "$domainFile"); do
     mkdir -p .tmp/subdomains/active
     mkdir -p screenshots    
 
-    wordlistsDir="$(pwd)/wordlists" 
+    wordlistsDir="$(dirname "$(dirname "$(pwd)")")/wordlists" 
     if [ "$3" == "passive" ]; then
         passiveEnumeration
         cat passiveSubdomains.txt | sort -u > active+passive.txt

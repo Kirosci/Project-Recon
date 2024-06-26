@@ -287,13 +287,21 @@ updateUpgrade() {
 
             fi
             
-        done               
+        done  
 
     fi
 
+# Installing resolvers for Puredns from trickest
+    if [ -f '~/.config/puredns/resolvers.txt' ]; then
+        wget "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt" 1> /dev/null
+        wait
+        mv resolvers.txt ~/.config/puredns/resolvers.txt
+    fi
+    
+
     
 # Checking & Installing Go Lang
-
+ 
     if ! command -v /usr/local/go/bin/go &> /dev/null; then
         echo "Go is not installed. Installing..."
         curl https://go.dev/dl/go1.22.3.linux-amd64.tar.gz -L --output go1.22.3.linux-amd64.tar.gz &

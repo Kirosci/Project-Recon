@@ -82,7 +82,7 @@ active() {
     if [ -f ".tmp/urls/katana_urls.txt" ]; then
         print_message "$GREEN" "Katana results are already there: $(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
     else
-        cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image > katana_urls.txt
+        cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image -o katana_urls.txt 2> /dev/null 1> /dev/null
         
         print_message "$GREEN" "Katana: $(cat 'katana_urls.txt' 2> /dev/null | wc -l)"
     fi

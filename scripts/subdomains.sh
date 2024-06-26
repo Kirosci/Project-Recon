@@ -202,7 +202,8 @@ activeEnumeration() {
     cat dnsgen.txt alterx.txt altdns.txt 2> /dev/null | sort -u > totalPermuted.txt
 
     # Puredns will resolve the permuted subdomains 
-    puredns resolve "totalPermuted.txt" -q > tee -a activeSubdomains.txt
+    puredns resolve "totalPermuted.txt" -q >> activeSubdomains.txt
+    sort -u activeSubdomains.txt -o activeSubdomains.txt
     print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: $(cat 'activeSubdomains.txt' 2> /dev/null | wc -l)"                            
     cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
 

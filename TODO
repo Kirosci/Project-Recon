@@ -1,2 +1,1 @@
-remove activeVenv from setup.sh, and set it in main.py to activate
-add flag to update all tools
+Fix -sub ac and -urls ac in ryanair.com

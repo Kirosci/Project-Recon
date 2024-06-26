@@ -1,1 +1,2 @@
-Fix -sub ac and -urls ac in ryanair.com
+To check if a tolls gets stuck:
+    make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it

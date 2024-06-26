@@ -271,7 +271,6 @@ for domain in $(cat "$domainFile"); do
         screenshot
     fi  
     # Message last
-    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
     printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt | wc -l)" "$RESET" "$timeDate"
 
 # Go back to Project-Recon dir at last 

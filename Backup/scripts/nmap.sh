@@ -2,8 +2,6 @@
 
 domainFile=$1
 
-baseDir="$(pwd)"
-
 # ---
 
 GREEN=$(tput setaf 2)
@@ -44,6 +42,8 @@ print_message() {
 
 # ---
 
+getASN() {
+# Find Ip Rnages from ASN
 while IFS= read -r domain; do 
 
     dir="results/$domain"
@@ -52,31 +52,60 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
-        print_message "$GREEN" "Fuzz results are already there: fuzz_mixedBig.txt=$(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt=$(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
-    else
+# Getting ASN
+    # Message
+    print_message "$GREEN" "Gathering ASN"
 
-        (
-        dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
-        ) &
+    # Calling python file responsible of rgetting ASN
+    python3 $baseDir/scripts/getAsn.py $domain 1> /dev/null
+    sort -u asn.txt -o asn.txt 2> /dev/null 1> /dev/null
 
-        (
-        dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
-        ) &
-
-        wait
-
-        cat fuzz_mixedBig.txt fuzz_dirSmall.txt 2> /dev/null | sort -u | fuzz.txt
+    # Message
+    print_message "$GREEN" "ASN found "$(cat 'asn.txt' 2> /dev/null | wc -l)""
 
 
-        mkdir fuzz
-        mv fuzz_mixedBig.txt fuzz/
-        mv fuzz_dirSmall.txt fuzz/
+# Extracting IP Ranges, if any ASN found
+    if ! [ $(wc -l < "asn.txt") -eq 0 ]; then
 
         # Message
-        print_message "$GREEN" "fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
+        print_message "$GREEN" "Extracting IP ranges for $domain"
+
+        while IFS= read -r ASN; do
+            whois -h whois.radb.net -- '-i origin' "$ASN" | grep -Eo "([0-9.]+){4}/[0-9]+" | uniq  | tee -a ipRanges.txt 1> /dev/null
+        done < "asn.txt"
+        sort -u ipRanges.txt -o ipRanges.txt 2> /dev/null 1> /dev/null
+
+        # Message
+        print_message "$GREEN" "IP ranges found "$(cat ipRanges.txt 2> /dev/null | wc -l)""
 
     fi
+    
+
     # Go back to Project-Recon dir at last 
     cd $baseDir
+
 done < $domainFile
+
+}
+
+
+# Scan the Ip ranges
+scanRange() {
+
+if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
+
+    # Message
+    print_message "$GREEN" "Nmap scan started"
+
+# Calling NMAP
+    python3 $baseDir/scripts/nmap.py $domainFile 1> /dev/null
+
+fi
+
+}
+
+
+# Call of Nmap ;)
+getASN
+scanRange
+

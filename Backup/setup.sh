@@ -160,7 +160,8 @@ checkTools(){
         continue
     else
         echo "[+] All required tools are installed"
-        echo "[+] Set API Keys in config file for waymore & subfinder"
+        echo "[+] Set API keys in config file for waymore & subfinder"
+        echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
     fi
 
 # Printing name of tools, that were unable to install
@@ -168,6 +169,8 @@ checkTools(){
     
         if ! command -v $tool &>/dev/null; then
             echo "[+] Not Installed, Install manually $tool"
+            echo "[+] Don't forget to set API keys in config file for waymore & subfinder"
+            echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
             
         fi
     done
@@ -197,8 +200,17 @@ updateUpgrade() {
         echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
         echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
         chmod +x ~/.activatePythonVenv.sh
-        echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
-        source ~/.bashrc
+
+        if [ "$(echo $SHELL)" = "/bin/bash" ]; then
+            echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
+            source ~/.bashrc
+        elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
+            echo 'source ~/.activatePythonVenv.sh' >> ~/.zshrc
+            source ~/.zshrc
+        else
+            echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"
+        fi 
+
 
 
 
@@ -275,13 +287,22 @@ updateUpgrade() {
 
             fi
             
-        done               
+        done  
 
     fi
 
+# Installing resolvers for Puredns from trickest
+    if ! [ -f '~/.config/puredns/resolvers.txt' ]; then
+        mkdir -p ~/.config/puredns
+        wget "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt" 1> /dev/null
+        wait
+        mv resolvers.txt ~/.config/puredns/resolvers.txt
+    fi
+    
+
     
 # Checking & Installing Go Lang
-
+ 
     if ! command -v /usr/local/go/bin/go &> /dev/null; then
         echo "Go is not installed. Installing..."
         curl https://go.dev/dl/go1.22.3.linux-amd64.tar.gz -L --output go1.22.3.linux-amd64.tar.gz &
@@ -290,9 +311,6 @@ updateUpgrade() {
         wait
         export PATH=$PATH:/usr/local/go/bin
     fi
-
-    rm go1.22.3.linux-amd64.tar.gz 2> /dev/null
-
 
 }
 
@@ -309,9 +327,18 @@ fi
 updateUpgrade
 checkTools
 
-if [ $isDebian -eq 1 ]; then
+if [[ $isDebian -eq 1 ]]; then
     clear
-    echo -e "[+] Please logout and login again, or use below command:\nsource ~/.bashrc"
+    echo "[+] All required tools are installed"
+    echo "[+] Set API keys in config file for waymore & subfinder"
+    echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
+    if [ "$(echo $SHELL)" = "/bin/bash" ]; then
+        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bachrc"
+    elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
+        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.zshrc"
+    else
+        echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"
+    fi 
 fi
 }
 
@@ -319,8 +346,4 @@ fi
 # Calling mainFunction
 mainFunction
 
-
-# Install docker in debian
-# sudo apt update
-# sudo apt install docker-compose
 

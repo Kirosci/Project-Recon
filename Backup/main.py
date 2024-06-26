@@ -22,6 +22,7 @@ parser.add_argument("-js", action='store_true', help="Analyse JS files for juicy
 parser.add_argument("-urls", nargs='?', const='ps', help="URL Enumeration, ac: for crawling, ps: for passive gathering, provide no value for both")
 parser.add_argument("-sub", nargs='?', const='ps', help="Enumerating Subdomains, ac: for active, ps: for passive, provide no value for both")
 
+parser.add_argument("-nmap", action='store_true', help="Nmap Scan")
 parser.add_argument("-amass_t", help="Amass timeout [Default 30 mins] [Use 0 for no timeout] [-amass_t 30 for 30 min timeout ]")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 
@@ -109,6 +110,12 @@ def js(cmd):
     p_urls= subprocess.Popen(cmd,shell=True).wait()
     messageAfter("JS", "Results Saved in js/")
 
+# Nmap
+def nmap(cmd):
+    messageBefore("Nmap")
+    p_urls= subprocess.Popen(cmd,shell=True).wait()
+    messageAfter("Nmap", "Results Saved in nmap/ directory")
+
 # Check internet connection 
 def check_internet():
     try:
@@ -135,16 +142,18 @@ def pseudoMain():
                 thre_update = threading.Thread(target=update, args=(cmdUpdate,))
                 thre_update.start()
                 thre_update.join()
+                sys.exit(1)
             else:
                 pass
                 
 
             if args.f:
                 domain = args.f
-                print(Back.WHITE, Fore.RED + '[~Automating the hunt, so I can hunt more and sleep less]', Style.RESET_ALL)
+                print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
 
             else:
-                errorMessage("Provide a file containing domains")
+                if not args.update:
+                    errorMessage("Provide a file containing domains")
                 sys.exit(1) 
 
             link = args.ssrf
@@ -182,14 +191,13 @@ def pseudoMain():
                 errorMessage("Pass`ac` for active | `ps` for passive | `both` for both active & passive with `-urls` flag")
                 sys.exit(1)
 
-
-
-            cmdSubTakeover = f"echo {domain} | bash scripts/subTakeover.sh"
+            cmdSubTakeover = f"bash scripts/subTakeover.sh {domain}"
             cmdSsrf = f"bash scripts/ssrf.sh {domain} {link}"
-            cmdXss = f"echo {domain} | bash scripts/xss.sh"
-            cmdNuclei = f"echo {domain} | bash scripts/nuclei.sh"
-            cmdFuzz = f"echo {domain} | bash scripts/fuzz.sh"
-            cmdJs = f"echo {domain} | bash scripts/js.sh"
+            cmdXss = f"bash scripts/xss.sh {domain}"
+            cmdNuclei = f"bash scripts/nuclei.sh {domain}"
+            cmdFuzz = f"bash scripts/fuzz.sh {domain}"
+            cmdJs = f"bash scripts/js.sh {domain}"
+            cmdNmap = f"bash scripts/nmap.sh {domain}"
 
 
             if args.all:
@@ -229,31 +237,39 @@ def pseudoMain():
                 thread_js = threading.Thread(target=js, args=(cmdJs,))
                 thread_js.start()
 
+                #Nmap
+                thread_nmap = threading.Thread(target=nmap, args=(cmdNmap,))
+                thread_nmap.start()
+
 
 
             else:
+
+        # Commented else for each argument, it was looking too chaotic and messy
 
                 # Enumerating Subdomains thread start AND WAIT
                 if args.sub:
                     thread_subdomains = threading.Thread(target=subdomains, args=(cmdSubdomains,))
                     thread_subdomains.start()
                     thread_subdomains.join()
-                else:
-                    notProvided("Subdomains Enumeration")
+                # else:
+                #     notProvided("Subdomains Enumeration")
+
 
                 # Fuzzing subdomains
                 if args.fuzz:
                     thread_fuzz = threading.Thread(target=fuzz, args=(cmdFuzz,))
                     thread_fuzz.start()
-                else:
-                    notProvided("Fuzzing")
+                # else:
+                #     notProvided("Fuzzing")
+
  
                 # Subdomain Takeover thread start 
                 if args.tkovr:
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(cmdSubTakeover,))
                     thread_subTakeover.start()
-                else:
-                    notProvided("Subdomain Takeover")
+                # else:
+                #     notProvided("Subdomain Takeover")
 
  
                 # URL Enumeration thread start AND WAIT
@@ -261,37 +277,52 @@ def pseudoMain():
                     thread_urls = threading.Thread(target=urls, args=(cmdUrls,))
                     thread_urls.start()
                     thread_urls.join()
-                else:
-                    notProvided("URL Gathering")
+                # else:
+                #     notProvided("URL Gathering")
+
 
                 # SSRF testing thread start
                 if args.ssrf:
                     link = args.ssrf
                     thread_ssrf = threading.Thread(target=ssrf, args=(cmdSsrf,))
                     thread_ssrf.start()
-                else:
-                    notProvided("SSRF")
+                # else:
+                #     notProvided("SSRF")
+
 
                 # Nuclei Scan thread start
                 if args.nuclei:
                     thread_nuclei = threading.Thread(target=nuclei, args=(cmdNuclei,))
                     thread_nuclei.start()
-                else:
-                    notProvided("Nuclei")
+                # else:
+                #     notProvided("Nuclei")
+
 
                 # XSS testing thread start
                 if args.xss:
                     thread_xss = threading.Thread(target=xss, args=(cmdXss,))
                     thread_xss.start()
-                else:
-                    notProvided("XSS")
+                # else:
+                #     notProvided("XSS")
+
 
                 # JS analyzing thread start
                 if args.js:
                     thread_js = threading.Thread(target=js, args=(cmdJs,))
                     thread_js.start()
-                else:
-                    notProvided("JS")
+                # else:
+                #     notProvided("JS")
+
+                
+                #Nmap
+                if args.nmap:
+                    thread_nmap = threading.Thread(target=nmap, args=(cmdNmap,))
+                    thread_nmap.start()
+                # else:
+                #     notProvided("JS")
+
+
+
         else:
             print("Internet is not working!")
 

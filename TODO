@@ -1,2 +1,4 @@
-To check if a tolls gets stuck:
+- To check if a tolls gets stuck:
     make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it
+
+- Add logic to check if there is no line in any file, like subdomain.txt or assetfinder.txt in tmp folder or any file containing result, then run the tool, as when it checks if the file exists then it doesn't runs and even overwrites the file with no value

@@ -1,17 +1,15 @@
 #!/bin/bash
 
-current_dir=$(basename "$PWD")
+REPO_PATH="$(dirname "$(realpath "$0")")"
+BRANCH="main"
 
-if [ "$current_dir" == "Project-Recon" ]; then
 
-    rm -rf main.py .git scripts Backup readme.md    
-  
-    git clone https://github.com/shivpratapsingh111/Project-Recon.git 2> /dev/null 
-    mv Project-Recon/* ./
-    mv Project-Recon/.* ./
-    rm -rf Project-Recon
-    rm -rf Backup TODO 1&>2 /dev/null
+update_repo() {
+    echo "Updating the repository..."
+    cd $REPO_PATH || { echo "Failed to change directory to $REPO_PATH"; exit 1; }
+    git fetch origin $BRANCH || { echo "Failed to fetch updates from the remote repository"; exit 1; }
+    git reset --hard origin/$BRANCH || { echo "Failed to reset the local repository"; exit 1; }
+    echo "Repository updated successfully."
+}
 
-else
-    echo "The current directory is not named 'Project-recon'."
-fi
+update_repo

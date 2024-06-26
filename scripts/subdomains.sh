@@ -216,7 +216,7 @@ activeEnumeration() {
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
-    cat active+passive.txt | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 -o subdomains.txt 2> /dev/null 1> /dev/null
+    cat active+passive.txt 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 -o subdomains.txt 2> /dev/null 1> /dev/null
     cat subdomains.txt | httpx -o liveSubdomains.txt 2> /dev/null 1> /dev/null
     mv "assetfinderSubdomains.txt" "combinedPassiveSubdomains.txt" "subfinderSubdomains.txt" "subdominatorSubdomains.txt" "amassSubdomains.txt" "haktrailsSubdomains.txt" "passiveSubdomains.txt " ".tmp/subdomains/passive" 2> /dev/null
     mv "dnsgen.txt" "alterx.txt" "altdns.txt" "totalPermuted.txt" "activeSubdomains.txt" ".tmp/subdomains/active" 2> /dev/null

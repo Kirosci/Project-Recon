@@ -47,30 +47,30 @@ print_message() {
 passive() {
     (
         if [ -f ".tmp/urls/wayback_urls.txt" ]; then
-            print_message "$GREEN" "Waybackurls results are already there: " "$(cat '.tmp/urls/wayback_urls.txt' 2> /dev/null | wc -l)"
+            print_message "$GREEN" "Waybackurls results are already there: $(cat '.tmp/urls/wayback_urls.txt' 2> /dev/null | wc -l)"
         else
             cat subdomains.txt | waybackurls > wayback_urls.txt 2> /dev/null
 
-            print_message "$GREEN" "Waybackurls:" "$(cat 'wayback_urls.txt' 2> /dev/null | wc -l)]"
+            print_message "$GREEN" "Waybackurls: $(cat 'wayback_urls.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     (
         if [ -f ".tmp/urls/gau_urls.txt" ]; then
-            print_message "$GREEN" "Gau results are already there: " "$(cat '.tmp/urls/gau_urls.txt' 2> /dev/null | wc -l)"
+            print_message "$GREEN" "Gau results are already there: $(cat '.tmp/urls/gau_urls.txt' 2> /dev/null | wc -l)"
         else
             cat subdomains.txt | gau > gau_urls.txt 2> /dev/null
 
-            print_message "$GREEN" "Gau:" "$(cat 'gau_urls.txt' 2> /dev/null | wc -l)]"
+            print_message "$GREEN" "Gau: $(cat 'gau_urls.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     (
         if [ -f ".tmp/urls/waymore_urls.txt" ]; then
-            print_message "$GREEN" "Waymore results are already there: " "$(cat '.tmp/urls/waymore_urls.txt' 2> /dev/null | wc -l)"
+            print_message "$GREEN" "Waymore results are already there: $(cat '.tmp/urls/waymore_urls.txt' 2> /dev/null | wc -l)"
         else
             cat subdomains.txt | sed 's/^/https:\/\//' > for_waymore.txt
             waymore -n -xwm -urlr 0 -r 2 -i for_waymore.txt -mode U -oU waymore_urls.txt 2> /dev/null 1> /dev/null
 
-            print_message "$GREEN" "Waymore:" "$(cat 'waymore_urls.txt' 2> /dev/null | wc -l)]"
+            print_message "$GREEN" "Waymore: $(cat 'waymore_urls.txt' 2> /dev/null | wc -l)"
         fi
     ) &
     wait
@@ -80,11 +80,11 @@ passive() {
 
 active() {
     if [ -f ".tmp/urls/katana_urls.txt" ]; then
-        print_message "$GREEN" "Katana results are already there: " "$(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
+        print_message "$GREEN" "Katana results are already there: $(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
     else
         cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image > katana_urls.txt
         
-        print_message "$GREEN" "Katana:" "$(cat 'katana_urls.txt' 2> /dev/null | wc -l)]"
+        print_message "$GREEN" "Katana: $(cat 'katana_urls.txt' 2> /dev/null | wc -l)"
     fi
 }
 
@@ -92,6 +92,7 @@ active() {
 
 organise(){
     # Filtering url with 200 OK
+    print_message "$GREEN" "Organising collected urls"
     cat wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt 2> /dev/null | sort -u >> urls.txt
     cat .tmp/urls/wayback_urls.txt .tmp/urls/gau_urls.txt .tmp/urls/waymore_urls.txt .tmp/urls/katana_urls.txt 2> /dev/null | sort -u >> urls.txt
 
@@ -102,6 +103,7 @@ organise(){
     cat tmpJsUrls.txt | httpx -t 100 -mc 200 -o jsUrls.txt 2> /dev/null 1> /dev/null
     # Moving unnecessary to .tmp dir
     mv wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt for_waymore.txt tmpJsUrls.txt .tmp/urls/ 2> /dev/null
+    print_message "$GREEN" "Organising finished"
 }
 
 # ---

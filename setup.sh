@@ -292,7 +292,7 @@ updateUpgrade() {
     fi
 
 # Installing resolvers for Puredns from trickest
-    if [ -f '~/.config/puredns/resolvers.txt' ]; then
+    if ! [ -f '~/.config/puredns/resolvers.txt' ]; then
         mkdir -p ~/.config/puredns
         wget "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt" 1> /dev/null
         wait

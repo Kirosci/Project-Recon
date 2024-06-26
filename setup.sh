@@ -200,8 +200,17 @@ updateUpgrade() {
         echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
         echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
         chmod +x ~/.activatePythonVenv.sh
-        echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
-        source ~/.bashrc
+
+        if [ "$(echo $SHELL)" = "/bin/bash" ]; then
+            echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
+            source ~/.bashrc
+        elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
+            echo 'source ~/.activatePythonVenv.sh' >> ~/.zshrc
+            source ~/.zshrc
+        else
+            echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"
+        fi 
+
 
 
 
@@ -309,7 +318,7 @@ fi
 updateUpgrade
 checkTools
 
-if [ $isDebian -eq 1 ]; then
+if [[ $isDebian -eq 1 ]]; then
     clear
     echo "[+] All required tools are installed"
     echo "[+] Set API keys in config file for waymore & subfinder"

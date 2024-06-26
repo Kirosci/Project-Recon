@@ -209,6 +209,7 @@ activeEnumeration() {
         sort -u activeSubdomains.txt -o activeSubdomains.txt
         print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: $(cat 'activeSubdomains.txt' 2> /dev/null | wc -l)"                            
         cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
+    fi
 
 }
 # ---

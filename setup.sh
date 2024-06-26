@@ -193,6 +193,7 @@ updateUpgrade() {
         echo "y" | sudo apt autoremove -y
         apt install python3-pip
         apt install python3.11-venv
+        pip3 install colorama
         dir=$(pwd)
         cd ~
         python3 -m venv .venvPython

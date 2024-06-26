@@ -332,7 +332,13 @@ if [[ $isDebian -eq 1 ]]; then
     echo "[+] All required tools are installed"
     echo "[+] Set API keys in config file for waymore & subfinder"
     echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
-    echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
+    if [ "$(echo $SHELL)" = "/bin/bash" ]; then
+        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bachrc"
+    elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
+        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.zshrc"
+    else
+        echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"
+    fi 
 fi
 }
 

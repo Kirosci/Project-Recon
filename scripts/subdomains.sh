@@ -124,7 +124,7 @@ checkWordlist() {
     # Convert the dates to the format YYYYMMDD for comparison
     wordlistDate_converted=$(date -d "${wordlistDate//_/}" +%Y%m%d)
     currentDate_converted=$(date -d "${currentDate//_/}" +%Y%m%d)
-    dirBackToTarget="$(dirname "$(pwd)")/results/$domain"
+    dirBackToTarget="$(dirname "$(pwd)")/$domain"
 # Downloading '2m-subdomains.txt' wordlist if not there
     cd $wordlistsDir
     if ! [ -f "2m-subdomains.txt" ]; then

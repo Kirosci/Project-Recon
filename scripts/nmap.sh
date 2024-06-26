@@ -79,8 +79,32 @@ while IFS= read -r domain; do
         print_message "$GREEN" "IP ranges found "$(cat ipRanges.txt 2> /dev/null | wc -l)""
 
     fi
-    
 
+# Getting IPs of found subdomains
+    # Message
+    print_message "$GREEN" "Extracting IPs from subdomains $domain"
+    while IFS= read -r subdomain; do
+
+        dig +short "$subdomain" 2> /dev/null 1> subdomainIps.txt
+
+    done < ".tmp/subdomains/active+passive.txt"
+    # Message
+    print_message "$GREEN" "IPs found "$(cat subdomainIps.txt 2> /dev/null | wc -l)""
+
+
+# Scan through nmap    
+    if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
+
+        # Message
+        print_message "$GREEN" "Nmap scan started"
+
+    # Calling NMAP
+        python3 $baseDir/scripts/nmap.py $domainFile 1> /dev/null
+
+    fi
+    
+  mkdir -p network
+  mv ipRanges.txt subdomainIps.txt asn.txt network 2> /dev/null
     # Go back to Project-Recon dir at last 
     cd $baseDir
 
@@ -89,23 +113,6 @@ done < $domainFile
 }
 
 
-# Scan the Ip ranges
-scanRange() {
-
-if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
-
-    # Message
-    print_message "$GREEN" "Nmap scan started"
-
-# Calling NMAP
-    python3 $baseDir/scripts/nmap.py $domainFile 1> /dev/null
-
-fi
-
-}
-
-
 # Call of Nmap ;)
 getASN
-scanRange
 

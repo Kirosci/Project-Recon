@@ -6,10 +6,10 @@ else
     timeout="0"
 fi
 
-GREEN="\e[32m"
-RED="\e[31m"
-ORANGE="\e[38;5;214m"
-RESET="\e[0m"
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+ORANGE=$(tput setaf 3)
+RESET=$(tput sgr0) 
 
 timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
 time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
@@ -20,54 +20,83 @@ baseDir="$(pwd)"
 
 # ---
 
+# Function to calculate visible length of the message (excluding color codes)
+calculate_visible_length() {
+  local message=$1
+  # Remove color codes
+  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
+  echo ${#clean_message}
+}
+
+# Function to print the message with aligned time
+print_message() {
+  local color=$1
+  local message=$2
+  local count=$3
+  local time=$(date +"%H:%M:%S")
+
+  if [ -n "$count" ]; then
+    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
+  else
+    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
+  fi
+
+  visible_length=$(calculate_visible_length "$formatted_message")
+  total_length=80
+  spaces=$((total_length - visible_length))
+  
+  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
+}
+
+# ---
+
 passiveEnumeration(){
 
     (
         if [ -f ".tmp/subdomains/passive/assetfinderSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)]${RESET} \t$(printf "%s" "$time")"
-            # echo -e "\t\t|---${GREEN}[Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Assetfinder results are already there: " "$(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' | wc -l)"
         else
             echo "$domain" | assetfinder >> assetfinderSubdomains.txt
-            echo -e "\t\t|---${GREEN}[Assetfinder: $(cat 'assetfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Assetfinder:" "$(cat 'assetfinderSubdomains.txt' | wc -l)]"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/haktrailsSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Haktrails results are already there: $(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' | wc -l)]${RESET} \t$(printf "%s" "$time")"
+            print_message "$GREEN" "Haktrails results are already there: " "$(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' | wc -l)"
         else
             echo "$domain" | haktrails subdomains >> haktrailsSubdomains.txt
-            echo -e "\t\t|---${GREEN}[Haktrails: $(cat 'haktrailsSubdomains.txt' | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Haktrails:" "$(cat 'haktrailsSubdomains.txt' | wc -l)]"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subfinderSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Subfinder results are already there: $(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
+            print_message "$GREEN" "Subfinder results are already there: " "$(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' | wc -l)"
         else
             echo "$domain" | subfinder -o subfinderSubdomains.txt 2> /dev/null 1> /dev/null
-            echo -e "\t\t|---${GREEN}[Subfinder: $(cat 'subfinderSubdomains.txt' | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Subfinder:" "$(cat 'subfinderSubdomains.txt' | wc -l)]"
         fi
     ) &
     (
         if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
+            print_message "$GREEN" "Subdominator results are already there: " "$(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' | wc -l)"
         else
-           subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
-           echo -e "\t\t|---${GREEN}[Subdominator: $(cat 'subdominatorSubdomains.txt' | wc -l)]${RESET} \t$time" 
+            subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
+            print_message "$GREEN" "Subdominator:" "$(cat 'subdominatorSubdomains.txt' | wc -l)]"
         fi
     ) &
 
     (
         if [ -f ".tmp/subdomains/passive/amassSubdomains.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Amass results are already there: $(cat '.tmp/subdomains/passive/amassSubdomains.txt' | wc -l)] ${RESET} \t$(printf "%s" "$time")"
+            print_message "$GREEN" "Amass results are already there: " "$(cat '.tmp/subdomains/passive/amassSubdomains.txt' | wc -l)"
         else
             if [[ "$2" -eq 1 ]]; then   
                 amass enum -d "$domain" -o amassSubdomains.txt 2> /dev/null 1> /dev/null
-                echo -e "\t\t|---${GREEN}[Amass: $(cat amassSubdomains.txt | wc -l)]${RESET} \t$time" 
+                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' | wc -l)]"
             elif [[ "$2" -eq 0 ]]; then 
-                echo -e "\t\t|---${RED}[Skipping Amass]${RESET} \t$time"    
+                print_message "$RED" "Skipping Amass"
             else    
                 amass enum -d "$domain" -timeout $timeout -o amassSubdomains.txt 2> /dev/null
-                echo -e "\t\t|---${GREEN}[Amass: $(cat amassSubdomains.txt | wc -l)] [Timeout: $2 minutes] ${RESET} \t$time"   
+                print_message "$GREEN" "Amass:" "$(cat 'amassSubdomains.txt' | wc -l)]"
             fi
         fi
     ) &
@@ -138,32 +167,33 @@ activeEnumeration() {
     # (
     #     # Dnsgen will take list of subdomains (passiveSubdomains.txt) and will permute between them
     #     if [ -f ".tmp/subdomains/active/dnsgen.txt" ]; then
-    #         echo -e "\t\t|---${GREEN}[Dnsgen results are already there: $(cat '.tmp/subdomains/active/dnsgen.txt' | wc -l)]${RESET} \t$time"
+    #         print_message "$GREEN" "Dnsgen results are already there: " "$(cat '.tmp/subdomains/active/dnsgen.txt' | wc -l)"                            
     #     else
-    #         dnsgen "passiveSubdomains.txt" -f | tee -a dnsgen.txt 1> /dev/null 2> /dev/null 
-    #         echo -e "\t\t|---${GREEN}[Dnsgen: $(cat dnsgen.txt | wc -l)]${RESET} \t$time"
+    #         dnsgen "passiveSubdomains.txt" -f | tee -a dnsgen.txt 1> /dev/null 2> /dev/null
+    #         print_message "$GREEN" "Dnsgen:" "$(cat 'dnsgen.txt' | wc -l)]"
     #     fi
     # ) &
 
     # (
     # # Altdns will permute assetnote wordlist with domain name
     #     if [ -f ".tmp/subdomains/active/altdns.txt" ]; then
-    #         echo -e "\t\t|---${GREEN}[Altdns results are already there: $(cat '.tmp/subdomains/active/altdns.txt' | wc -l)]${RESET} \t$time"
+    #         print_message "$GREEN" "Altdns results are already there: " "$(cat '.tmp/subdomains/active/altdns.txt' | wc -l)"                            
     #     else
     #         altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o altdns.txt
-    #         echo -e "\t\t|---${GREEN}[Altdns (Assetnote wordlist): $(cat altdns.txt | wc -l)]${RESET} \t$time"
+    #         print_message "$GREEN" "Altdns (Assetnote wordlist):" "$(cat 'altdns.txt' | wc -l)]"
     #     fi
     # ) & 
 
 #    These abvove 2 tool generate a lot of subdomains, and puredns can't handle that, they generate nearly around 33 GB of files to resolve, That's a lot!!
 # ---
+
     (
     # Alterx takes subdomains (passiveSubdomains.txt) and will permute between them, on behalf of specified rules
         if [ -f ".tmp/subdomains/active/alterx.txt" ]; then
-            echo -e "\t\t|---${GREEN}[Alterx results are already there: $(cat '.tmp/subdomains/active/alterx.txt' | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Alterx results are already there: " "$(cat '.tmp/subdomains/active/alterx.txt' | wc -l)"                            
         else
             cat "passiveSubdomains.txt" | alterx -o alterx.txt 2> /dev/null
-            echo -e "\t\t|---${GREEN}[Alterx: $(cat alterx.txt | wc -l)]${RESET} \t$time"
+            print_message "$GREEN" "Alterx:" "$(cat 'alterx.txt' | wc -l)]"
         fi
     ) &
     wait
@@ -172,7 +202,7 @@ activeEnumeration() {
 
     # Puredns will resolve the permuted subdomains 
     puredns resolve "totalPermuted.txt" -q > tee -a activeSubdomains.txt
-    echo -e "\t\t|---${GREEN}[Active Enumeration Done] [Active Subdomains: $(cat activeSubdomains.txt | wc -l)]${RESET} \t$time"
+    print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: " "$(cat 'activeSubdomains.txt' | wc -l)"                            
     cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
 
 }
@@ -200,7 +230,7 @@ for domain in $(cat "$domainFile"); do
     mkdir -p "$dir" 
     cd $dir 
     # Message main
-    echo -e "\t${ORANGE}[$domain]${RESET} \t$timeDate"
+    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
     mkdir -p .tmp/subdomains
     mkdir -p .tmp/subdomains/passive
@@ -241,8 +271,9 @@ for domain in $(cat "$domainFile"); do
         screenshot
     fi  
     # Message last
-    echo -e "\t${GREEN}[Found: $(cat subdomains.txt | wc -l)]${RESET} \t$timeDate"
+    printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
+    printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt | wc -l)" "$RESET" "$timeDate"
 
 # Go back to Project-Recon dir at last 
-    cd $baseDir
+    cd "$baseDir"
 done

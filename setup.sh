@@ -192,6 +192,7 @@ updateUpgrade() {
         echo "y" | sudo apt full-upgrade -y
         echo "y" | sudo apt autoremove -y
         apt install python3-pip
+        apt install python3.11-venv
         dir=$(pwd)
         cd ~
         python3 -m venv .venvPython
@@ -333,7 +334,7 @@ if [[ $isDebian -eq 1 ]]; then
     echo "[+] Set API keys in config file for waymore & subfinder"
     echo -e "[+] Run below command to change timezone if you are using a VPS:\nsudo timedatectl set-timezone Asia/Kolkata"
     if [ "$(echo $SHELL)" = "/bin/bash" ]; then
-        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bachrc"
+        echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.bashrc"
     elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
         echo -e "[+] Please log out and log in again, or use below command:\nsource ~/.zshrc"
     else

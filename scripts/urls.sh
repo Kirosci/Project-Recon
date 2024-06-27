@@ -84,13 +84,27 @@ passive() {
 # ---
 
 active() {
-    # if [ -f ".tmp/urls/katana_urls.txt" ]; then
-    #     print_message "$GREEN" "Katana results are already there: $(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
-    # else
-        cat subdomains.txt | katana scan -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 15 -p 15 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image -o katana_urls.txt 2> /dev/null 1> /dev/null
-        
-        print_message "$GREEN" "Katana: $(cat 'katana_urls.txt' 2> /dev/null | wc -l)"
-    # fi
+    (
+        # if [ -f ".tmp/urls/katana_urls.txt" ]; then
+        #     print_message "$GREEN" "Katana results are already there: $(cat '.tmp/urls/katana_urls.txt' 2> /dev/null | wc -l)"
+        # else
+            cat subdomains.txt | katana scan -hl -duc -nc -silent -d 5 -aff -retry 2 -iqp -c 20 -p 20 -xhr -jc -kf -ef css,jpg,jpeg,png,svg,img,gif,mp4,flv,ogv,webm,webp,mov,mp3,m4a,m4p,scss,tif,tiff,ttf,otf,woff,woff2,bmp,ico,eot,htc,rtf,swf,image -o katana_urls.txt 2> /dev/null 1> /dev/null
+
+            print_message "$GREEN" "Katana: $(cat 'katana_urls.txt' 2> /dev/null | wc -l)"
+        # fi
+    ) &
+
+    (
+        # if [ -f ".tmp/urls/hakrawler_urls.txt" ]; then
+        #     print_message "$GREEN" "Hakrawler results are already there: $(cat '.tmp/urls/hakrawler_urls.txt' 2> /dev/null | wc -l)"
+        # else
+            cat urls.txt | hakrawler -d 5 -insecure -subs -t 40 > hakrawler_urls.txt 2> /dev/null
+
+            print_message "$GREEN" "Hakrawler: $(cat 'hakrawler_urls.txt' 2> /dev/null | wc -l)"
+        # fi
+    ) &
+
+
 }
 
 # ---
@@ -98,16 +112,16 @@ active() {
 organise(){
     # Filtering url with 200 OK
     print_message "$GREEN" "Organising collected urls"
-    cat wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt 2> /dev/null | sort -u >> urls.txt
-    cat .tmp/urls/wayback_urls.txt .tmp/urls/gau_urls.txt .tmp/urls/waymore_urls.txt .tmp/urls/katana_urls.txt 2> /dev/null | sort -u >> urls.txt
+    cat wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt hakrawler_urls.txt 2> /dev/null | sort -u >> urls.txt
+    cat .tmp/urls/wayback_urls.txt .tmp/urls/gau_urls.txt .tmp/urls/waymore_urls.txt .tmp/urls/katana_urls.txt .tmp/urls/hakrawler_urls.txt 2> /dev/null | sort -u >> urls.txt
 
     sort -u urls.txt -o urls.txt 1> /dev/null
     # Separating Js and json urls
     cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u > tmpJsUrls.txt 1> /dev/null
     # Separating js urls 
-    cat tmpJsUrls.txt | httpx -t 100 -mc 200 -o jsUrls.txt 2> /dev/null 1> /dev/null
+    cat tmpJsUrls.txt | httpx -t 100 -mc 200 -o jsUrlsPassive.txt 2> /dev/null 1> /dev/null
     # Moving unnecessary to .tmp dir
-    mv wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt for_waymore.txt tmpJsUrls.txt .tmp/urls/ 2> /dev/null
+    mv wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt hakrawler_urls.txt for_waymore.txt tmpJsUrls.txt .tmp/urls/ 2> /dev/null
     print_message "$GREEN" "Organising finished"
 }
 

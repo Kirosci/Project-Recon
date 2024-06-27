@@ -4,3 +4,15 @@
 - Add logic to check if there is no line in any file, like subdomain.txt or assetfinder.txt in tmp folder or any file containing result, then run the tool, as when it checks if the file exists then it doesn't runs and even overwrites the file with no value
 
 - Fix, why gau and wayback aren't working
+
+
+- Add these in setup.sh:
+go install github.com/tomnomnom/unfurl@latest
+go install -v github.com/lc/subjs@latest
+go install github.com/hakluke/hakrawler@latest
+go install github.com/tomnomnom/fff@latest
+
+- Implement JS methodology in Project-Recon
+
+
+NEED to continue from saving js files, check fff and meg

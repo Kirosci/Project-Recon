@@ -42,6 +42,14 @@ print_message() {
   printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
 }
 
+
+jsActive(){
+
+
+
+}
+
+
 # ---
 
 
@@ -53,25 +61,12 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-# Checking if jsUrls doesn't exists
-    if ! [ -f "jsUrls.txt" ]; then
-    
-
-        # Message
-        print_message "$ORANGE" "jsUrls.txt not found, creating..."
-
-        cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u | tee tmpJsUrls.txt 2> /dev/null 1> /dev/null 
-
-        # Separating js urls 
-        cat tmpJsUrls.txt | httpx -t 100 -mc 200 > jsUrls.txt 2> /dev/null
-
-        # Message
-        print_message "$GREEN" "Created jsUrls.txt, Lines: "$(cat jsUrls.txt 2> /dev/null | wc -l)""
-
-        mv tmpJsUrls.txt .tmp/urls 2> /dev/null
-
-    fi
-
+# subjs tool
+  # Message
+  print_message "$GREEN" "Gathering JS Urls from subjs tool"
+  subjs -i urls.txt > subjs.txt
+  cat subjs.txt | grep -F .js | cut -d "?" -f 1 | sort -u >>  jsUrlsPassive.txt
+  sort -u jsUrlsPassive.txt -o jsUrls.txt
 
 # Downloading JS files, from collected endpoints
 
@@ -98,6 +93,7 @@ while IFS= read -r domain; do
         echo "js/jsSourceFiles" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt
     ) &
     wait
+
 
 
     # Go back to Project-Recon dir at last 

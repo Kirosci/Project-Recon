@@ -110,7 +110,7 @@ passiveEnumeration(){
     sort -u combinedPassiveSubdomains.txt -o combinedPassiveSubdomains.txt 1> /dev/null 
     # Filtering out false positives
     grep -E "\\b${domain//./\\.}\\b" "combinedPassiveSubdomains.txt" | awk '{print$1}' | sort -u >> "passiveSubdomains.txt"
-    cat activeSubdomains.txt passiveSubdomains.txt 2> /dev/null | sort -u > active+passive.txt 2> /dev/null
+    cat activeSubdomains.txt passiveSubdomains.txt 2> /dev/null | sort -u >> active+passive.txt 2> /dev/null
 
 }
 
@@ -199,7 +199,8 @@ activeEnumeration() {
     ) &
     wait
 
-    cat dnsgen.txt alterx.txt altdns.txt 2> /dev/null | sort -u > totalPermuted.txt
+    cat dnsgen.txt alterx.txt altdns.txt 2> /dev/null | sort -u >> totalPermuted.txt
+    sort -u totalPermuted.txt -o totalPermuted.txt
 
     # Puredns will resolve the permuted subdomains 
     # if [ -f ".tmp/subdomains/active/activeSubdomains.txt" ]; then
@@ -208,7 +209,7 @@ activeEnumeration() {
         puredns resolve "totalPermuted.txt" -q >> activeSubdomains.txt
         sort -u activeSubdomains.txt -o activeSubdomains.txt
         print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: $(cat 'activeSubdomains.txt' 2> /dev/null | wc -l)"                            
-        cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
+        cat activeSubdomains.txt passiveSubdomains.txt | sort -u >> active+passive.txt
     # fi
 
 }
@@ -217,8 +218,10 @@ activeEnumeration() {
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
-    cat active+passive.txt 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 -o subdomains.txt 2> /dev/null 1> /dev/null
-    cat subdomains.txt | httpx -o liveSubdomains.txt 2> /dev/null 1> /dev/null
+    cat active+passive.txt 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> subdomains.txt 2> /dev/null
+    sort -u subdomains.txt -o subdomains.txt
+    cat subdomains.txt | httpx >> liveSubdomains.txt 2> /dev/null
+    sort -u liveSubdomains.txt -o liveSubdomains.txt
     mv "assetfinderSubdomains.txt" "combinedPassiveSubdomains.txt" "subfinderSubdomains.txt" "subdominatorSubdomains.txt" "amassSubdomains.txt" "haktrailsSubdomains.txt" "passiveSubdomains.txt" ".tmp/subdomains/passive" 2> /dev/null
     mv "dnsgen.txt" "alterx.txt" "altdns.txt" "totalPermuted.txt" "activeSubdomains.txt" ".tmp/subdomains/active" 2> /dev/null
     mv "active+passive.txt" ".tmp/subdomains/" 2> /dev/null

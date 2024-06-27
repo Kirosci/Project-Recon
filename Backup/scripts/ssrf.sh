@@ -54,10 +54,10 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if [ -f "ssrfUrls.txt" ]; then
-        # Message
-        print_message "$GREEN" "SSRF results are already saved"
-    else
+    # if [ -f "ssrfUrls.txt" ]; then
+    #     # Message
+    #     print_message "$GREEN" "SSRF results are already saved"
+    # else
         # For getting firdst 20 charachters of $link so we can grep for it to get proper open redirects.
         first_20="${link:0:20}"
 
@@ -88,7 +88,7 @@ while IFS= read -r domain; do
         fi  
 
         rm openredirectUrls.txt 2> /dev/null
-    fi    
+    # fi    
 
     # Go back to Project-Recon dir at last 
     cd $baseDir

@@ -48,20 +48,19 @@ while IFS= read -r domain; do
 
     dir="results/$domain"
     cd $dir
-    if [ -f "nuclei.txt" ]; then
-        # Message
-        print_message "$GREEN" "Nuclei results are already there: "$(cat 'nuclei.txt' 2> /dev/null | wc -l)""
-    else
+    # if [ -f "nuclei.txt" ]; then
+    #     # Message
+    #     print_message "$GREEN" "Nuclei results are already there: "$(cat 'nuclei.txt' 2> /dev/null | wc -l)""
+    # else
         # Message main
         printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
     # Calling Nuclei
-        nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt -t cent-nuclei-templates
-
+        nuclei -l subdomains.txt -c 50 -fr -rl 20 -timeout 20 -o nuclei.txt
         # Message
         print_message "$ORANGE" "Finished; lines in nuclei.txt: "$(cat nuclei.txt 2> /dev/null | wc -l)""
 
-    fi
+    # fi
 
     # Go back to Project-Recon dir at last 
     cd $baseDir

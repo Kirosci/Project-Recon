@@ -52,9 +52,9 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if [ -f "xss.txt" ]; then
-        print_message "$GREEN" "XSS results are already there: "$(cat xss.txt 2> /dev/null | wc -l)""
-    else
+    # if [ -f "xss.txt" ]; then
+    #     print_message "$GREEN" "XSS results are already there: "$(cat xss.txt 2> /dev/null | wc -l)""
+    # else
         cat "urls.txt" | grep = | kxss | grep '>\|<\|"' > xss.txt
 
         # Message
@@ -63,7 +63,7 @@ while IFS= read -r domain; do
         else
             rm xss.txt 2> /dev/null
         fi
-    fi
+    # fi
 
     # Go back to Project-Recon dir at last 
     cd $baseDir

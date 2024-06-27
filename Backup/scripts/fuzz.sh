@@ -52,9 +52,9 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
-        print_message "$GREEN" "Fuzz results are already there: fuzz_mixedBig.txt=$(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt=$(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
-    else
+    # if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
+    #     print_message "$GREEN" "Fuzz results are already there: fuzz_mixedBig.txt=$(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt=$(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
+    # else
 
         (
         dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
@@ -76,7 +76,7 @@ while IFS= read -r domain; do
         # Message
         print_message "$GREEN" "fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
 
-    fi
+    # fi
     # Go back to Project-Recon dir at last 
     cd $baseDir
 done < $domainFile

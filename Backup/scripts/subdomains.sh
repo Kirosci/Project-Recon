@@ -53,42 +53,42 @@ print_message() {
 passiveEnumeration(){
 
     (
-        if [ -f ".tmp/subdomains/passive/assetfinderSubdomains.txt" ]; then
-            print_message "$GREEN" "Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' 2> /dev/null | wc -l)"
-        else
+        # if [ -f ".tmp/subdomains/passive/assetfinderSubdomains.txt" ]; then
+        #     print_message "$GREEN" "Assetfinder results are already there: $(cat '.tmp/subdomains/passive/assetfinderSubdomains.txt' 2> /dev/null | wc -l)"
+        # else
             echo "$domain" | assetfinder >> assetfinderSubdomains.txt
             print_message "$GREEN" "Assetfinder: $(cat 'assetfinderSubdomains.txt' 2> /dev/null | wc -l)"
-        fi
+        # fi
     ) &
     (
-        if [ -f ".tmp/subdomains/passive/haktrailsSubdomains.txt" ]; then
-            print_message "$GREEN" "Haktrails results are already there: $(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' 2> /dev/null | wc -l)"
-        else
+        # if [ -f ".tmp/subdomains/passive/haktrailsSubdomains.txt" ]; then
+        #     print_message "$GREEN" "Haktrails results are already there: $(cat '.tmp/subdomains/passive/haktrailsSubdomains.txt' 2> /dev/null | wc -l)"
+        # else
             echo "$domain" | haktrails subdomains >> haktrailsSubdomains.txt
             print_message "$GREEN" "Haktrails: $(cat 'haktrailsSubdomains.txt' 2> /dev/null | wc -l)"
-        fi
+        # fi
     ) &
     (
-        if [ -f ".tmp/subdomains/passive/subfinderSubdomains.txt" ]; then
-            print_message "$GREEN" "Subfinder results are already there: $(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' 2> /dev/null | wc -l)"
-        else
+        # if [ -f ".tmp/subdomains/passive/subfinderSubdomains.txt" ]; then
+        #     print_message "$GREEN" "Subfinder results are already there: $(cat '.tmp/subdomains/passive/subfinderSubdomains.txt' 2> /dev/null | wc -l)"
+        # else
             echo "$domain" | subfinder -o subfinderSubdomains.txt 2> /dev/null 1> /dev/null
             print_message "$GREEN" "Subfinder: $(cat 'subfinderSubdomains.txt' 2> /dev/null | wc -l)"
-        fi
+        # fi
     ) &
     (
-        if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
-            print_message "$GREEN" "Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' 2> /dev/null | wc -l)"
-        else
+        # if [ -f ".tmp/subdomains/passive/subdominatorSubdomains.txt" ]; then
+        #     print_message "$GREEN" "Subdominator results are already there: $(cat '.tmp/subdomains/passive/subdominatorSubdomains.txt' 2> /dev/null | wc -l)"
+        # else
             subdominator -d "$domain" -o subdominatorSubdomains.txt 2> /dev/null 1> /dev/null
             print_message "$GREEN" "Subdominator: $(cat 'subdominatorSubdomains.txt' 2> /dev/null | wc -l)"
-        fi
+        # fi
     ) &
 
     (
-        if [ -f ".tmp/subdomains/passive/amassSubdomains.txt" ]; then
-            print_message "$GREEN" "Amass results are already there: $(cat '.tmp/subdomains/passive/amassSubdomains.txt' 2> /dev/null | wc -l)"
-        else
+        # if [ -f ".tmp/subdomains/passive/amassSubdomains.txt" ]; then
+        #     print_message "$GREEN" "Amass results are already there: $(cat '.tmp/subdomains/passive/amassSubdomains.txt' 2> /dev/null | wc -l)"
+        # else
             if [[ "$2" -eq 1 ]]; then   
                 amass enum -d "$domain" -o amassSubdomains.txt 2> /dev/null 1> /dev/null
                 print_message "$GREEN" "Amass: $(cat 'amassSubdomains.txt' 2> /dev/null | wc -l)"
@@ -98,7 +98,7 @@ passiveEnumeration(){
                 amass enum -d "$domain" -timeout $timeout -o amassSubdomains.txt 2> /dev/null
                 print_message "$GREEN" "Amass: $(cat 'amassSubdomains.txt' 2> /dev/null | wc -l)"
             fi
-        fi
+        # fi
     ) &
 
     wait
@@ -110,7 +110,7 @@ passiveEnumeration(){
     sort -u combinedPassiveSubdomains.txt -o combinedPassiveSubdomains.txt 1> /dev/null 
     # Filtering out false positives
     grep -E "\\b${domain//./\\.}\\b" "combinedPassiveSubdomains.txt" | awk '{print$1}' | sort -u >> "passiveSubdomains.txt"
-    cat activeSubdomains.txt passiveSubdomains.txt 2> /dev/null | sort -u > active+passive.txt 2> /dev/null
+    cat activeSubdomains.txt passiveSubdomains.txt 2> /dev/null | sort -u >> active+passive.txt 2> /dev/null
 
 }
 
@@ -190,35 +190,39 @@ activeEnumeration() {
 
     (
     # Alterx takes subdomains (passiveSubdomains.txt) and will permute between them, on behalf of specified rules
-        if [ -f ".tmp/subdomains/active/alterx.txt" ]; then
-            print_message "$GREEN" "Alterx results are already there: $(cat '.tmp/subdomains/active/alterx.txt' 2> /dev/null | wc -l)"                            
-        else
+        # if [ -f ".tmp/subdomains/active/alterx.txt" ]; then
+        #     print_message "$GREEN" "Alterx results are already there: $(cat '.tmp/subdomains/active/alterx.txt' 2> /dev/null | wc -l)"                            
+        # else
             cat "passiveSubdomains.txt" | alterx -o alterx.txt 2> /dev/null
             print_message "$GREEN" "Alterx: $(cat 'alterx.txt' 2> /dev/null | wc -l)"
-        fi
+        # fi
     ) &
     wait
 
-    cat dnsgen.txt alterx.txt altdns.txt 2> /dev/null | sort -u > totalPermuted.txt
+    cat dnsgen.txt alterx.txt altdns.txt 2> /dev/null | sort -u >> totalPermuted.txt
+    sort -u totalPermuted.txt -o totalPermuted.txt
 
     # Puredns will resolve the permuted subdomains 
-    if [ -f ".tmp/subdomains/active/activeSubdomains.txt" ]; then
-        print_message "$GREEN" "Puredns results are already there: $(cat '.tmp/subdomains/active/activeSubdomains.txt' 2> /dev/null | wc -l)"                            
-    else
+    # if [ -f ".tmp/subdomains/active/activeSubdomains.txt" ]; then
+    #     print_message "$GREEN" "Puredns results are already there: $(cat '.tmp/subdomains/active/activeSubdomains.txt' 2> /dev/null | wc -l)"                            
+    # else
         puredns resolve "totalPermuted.txt" -q >> activeSubdomains.txt
         sort -u activeSubdomains.txt -o activeSubdomains.txt
         print_message "$GREEN" "Active Enumeration Done] [Active Subdomains: $(cat 'activeSubdomains.txt' 2> /dev/null | wc -l)"                            
-        cat activeSubdomains.txt passiveSubdomains.txt | sort -u > active+passive.txt
-    fi
+        cat activeSubdomains.txt passiveSubdomains.txt | sort -u >> active+passive.txt
+    # fi
 
 }
+
 # ---
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
-    cat active+passive.txt 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 -o subdomains.txt 2> /dev/null 1> /dev/null
-    cat subdomains.txt | httpx -o liveSubdomains.txt 2> /dev/null 1> /dev/null
-    mv "assetfinderSubdomains.txt" "combinedPassiveSubdomains.txt" "subfinderSubdomains.txt" "subdominatorSubdomains.txt" "amassSubdomains.txt" "haktrailsSubdomains.txt" "passiveSubdomains.txt " ".tmp/subdomains/passive" 2> /dev/null
+    cat active+passive.txt 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> subdomains.txt 2> /dev/null
+    sort -u subdomains.txt -o subdomains.txt
+    cat subdomains.txt | httpx >> liveSubdomains.txt 2> /dev/null
+    sort -u liveSubdomains.txt -o liveSubdomains.txt
+    mv "assetfinderSubdomains.txt" "combinedPassiveSubdomains.txt" "subfinderSubdomains.txt" "subdominatorSubdomains.txt" "amassSubdomains.txt" "haktrailsSubdomains.txt" "passiveSubdomains.txt" ".tmp/subdomains/passive" 2> /dev/null
     mv "dnsgen.txt" "alterx.txt" "altdns.txt" "totalPermuted.txt" "activeSubdomains.txt" ".tmp/subdomains/active" 2> /dev/null
     mv "active+passive.txt" ".tmp/subdomains/" 2> /dev/null
     print_message "$GREEN" "Organising finished"

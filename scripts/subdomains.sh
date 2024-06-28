@@ -250,42 +250,46 @@ for domain in $(cat "$domainFile"); do
     mkdir -p .tmp/subdomains/active
     mkdir -p screenshots    
 
-    wordlistsDir="$(dirname "$(dirname "$(pwd)")")/wordlists" 
-    if [ "$3" == "passive" ]; then
-        passiveEnumeration
-        cat passiveSubdomains.txt | sort -u > active+passive.txt
-        organise
-        screenshot
-    elif [ "$3" == "active" ]; then
-        if [ -f "passiveSubdomains.txt" ]; then
-            checkWordlist
-            activeEnumeration
+    if ! [[ "$(cat subdomains.txt|wc -l)" -eq 0 ]]; then
+        print_message "$GREEN" "Subdomain results are already there: $(cat 'subdomains.txt' 2> /dev/null | wc -l)"
+    else
+        wordlistsDir="$(dirname "$(dirname "$(pwd)")")/wordlists" 
+        if [ "$3" == "passive" ]; then
+            passiveEnumeration
+            cat passiveSubdomains.txt | sort -u > active+passive.txt
             organise
             screenshot
-        else
+        elif [ "$3" == "active" ]; then
+            if [ -f "passiveSubdomains.txt" ]; then
+                checkWordlist
+                activeEnumeration
+                organise
+                screenshot
+            else
+                passiveEnumeration
+                checkWordlist
+                activeEnumeration
+                cat passiveSubdomains.txt activeSubdomains.txt | sort -u > active+passive.txt
+                organise
+                screenshot
+            fi
+        elif [ "$3" == "both" ]; then
             passiveEnumeration
             checkWordlist
             activeEnumeration
             cat passiveSubdomains.txt activeSubdomains.txt | sort -u > active+passive.txt
             organise
             screenshot
-        fi
-    elif [ "$3" == "both" ]; then
-        passiveEnumeration
-        checkWordlist
-        activeEnumeration
-        cat passiveSubdomains.txt activeSubdomains.txt | sort -u > active+passive.txt
-        organise
-        screenshot
-    else
-        passiveEnumeration
-        cat passiveSubdomains.txt | sort -u > active+passive.txt
-        organise
-        screenshot
-    fi  
-    # Message last
-    printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt 2> /dev/null | wc -l)" "$RESET" "$timeDate"
+        else
+            passiveEnumeration
+            cat passiveSubdomains.txt | sort -u > active+passive.txt
+            organise
+            screenshot
+        fi  
+        # Message last
+        printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat subdomains.txt 2> /dev/null | wc -l)" "$RESET" "$timeDate"
 
+    fi 
 # Go back to Project-Recon dir at last 
     cd "$baseDir"
 done

@@ -137,21 +137,24 @@ for domain in $(cat "$domainFile"); do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if [ "$2" == "passive" ]; then
-        passive
-        organise
-    elif [ "$2" == "active" ]; then
-        active
-        organise
-    elif [ "$2" == "both" ]; then
-        passive
-        active
-        organise
+    if ! [[ "$(cat urls.txt|wc -l)" -eq 0 ]]; then
+        print_message "$GREEN" "URL results are already there: $(cat 'urls.txt' 2> /dev/null | wc -l)"
     else
-        passive
-        organise
+        if [ "$2" == "passive" ]; then
+            passive
+            organise
+        elif [ "$2" == "active" ]; then
+            active
+            organise
+        elif [ "$2" == "both" ]; then
+            passive
+            active
+            organise
+        else
+            passive
+            organise
+        fi
     fi
-
     # Message last
     printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat urls.txt 2> /dev/null | wc -l)" "$RESET" "$timeDate"
     # Go back to base directory at last 

@@ -42,13 +42,13 @@ installmissingTools(){
                 pip3 install "py-altdns"
                 ;;
             "alterx")
-                go install github.com/projectdiscovery/alterx/cmd/alterx@latest
+                /usr/local/go/bin/go install github.com/projectdiscovery/alterx/cmd/alterx@latest
                 ;;
             "puredns")
-                go install github.com/d3mondev/puredns/v2@latest
+                /usr/local/go/bin/go install github.com/d3mondev/puredns/v2@latest
                 ;;
             "massdns")
-                git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && mv bin/massdns /usr/local/bin/
+                git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && mv bin/massdns /usr/local/bin/ && cd ../ && rm -rf massdns
                 ;;
 
 

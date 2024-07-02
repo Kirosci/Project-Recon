@@ -73,7 +73,7 @@ while IFS= read -r domain; do
     print_message "$GREEN" "Saving JavaScript files locally"
 
 # Calling bash file to download js files
-    fetcher -u jsUrls.txt -t 120 -x 15 1> /dev/null
+    fetcher -f jsUrls.txt -t 120 -x 15 1> /dev/null
     # bash "$baseDir/scripts/jsRecon/downloadJS.sh" -f jsUrls.txt -t 10 -r 2 -x 12
     mv fetched js/fetched
     # Message
@@ -83,11 +83,11 @@ while IFS= read -r domain; do
     print_message "$GREEN" "Extracting juicy stuff"
 
     (
-        bash "$baseDir/scripts/jsRecon/main.sh" -dir=js/fetched
+        bash "$baseDir/scripts/jsRecon/main.sh" -dir=js/fetched 1> /dev/null
     ) &
     
     (
-        echo "js/fetched" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt
+        echo "js/fetched" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt 1> /dev/null 2> /dev/null
     ) &
     wait
 

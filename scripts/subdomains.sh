@@ -250,7 +250,7 @@ for domain in $(cat "$domainFile"); do
     mkdir -p .tmp/subdomains/active
     mkdir -p screenshots    
 
-    if ! [[ "$(cat subdomains.txt|wc -l)" -eq 0 ]]; then
+    if ! [[ "$(cat subdomains.txt  2> /dev/null |wc -l)" -eq 0 ]]; then
         print_message "$GREEN" "Subdomain results are already there: $(cat 'subdomains.txt' 2> /dev/null | wc -l)"
     else
         wordlistsDir="$(dirname "$(dirname "$(pwd)")")/wordlists" 

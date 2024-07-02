@@ -48,7 +48,7 @@ installmissingTools(){
                 go install github.com/d3mondev/puredns/v2@latest
                 ;;
             "massdns")
-                git clone https://github.com/blechschmidt/massdns.git && cd massdns && make
+                git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && mv bin/massdns /usr/local/bin/
                 ;;
 
 
@@ -326,6 +326,7 @@ updateUpgrade() {
         sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz & 
         wait
         export PATH=$PATH:/usr/local/go/bin
+        rm go1.22.3.linux-amd64.tar.gz
     fi
 
 }

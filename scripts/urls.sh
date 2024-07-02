@@ -117,9 +117,7 @@ organise(){
 
     sort -u urls.txt -o urls.txt 1> /dev/null
     # Separating Js and json urls
-    cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u > tmpJsUrls.txt 1> /dev/null
-    # Separating js urls 
-    cat tmpJsUrls.txt | httpx -t 100 -mc 200 -o jsUrlsPassive.txt 2> /dev/null 1> /dev/null
+    cat urls.txt | grep -F .js | cut -d "?" -f 1 | sort -u >> jsUrls.txt 1> /dev/null
     # Moving unnecessary to .tmp dir
     mv wayback_urls.txt gau_urls.txt waymore_urls.txt katana_urls.txt hakrawler_urls.txt for_waymore.txt tmpJsUrls.txt .tmp/urls/ 2> /dev/null
     print_message "$GREEN" "Organising finished"
@@ -137,7 +135,7 @@ for domain in $(cat "$domainFile"); do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    if ! [[ "$(cat urls.txt|wc -l)" -eq 0 ]]; then
+    if ! [[ "$(cat urls.txt 2> /dev/null |wc -l)" -eq 0 ]]; then
         print_message "$GREEN" "URL results are already there: $(cat 'urls.txt' 2> /dev/null | wc -l)"
     else
         if [ "$2" == "passive" ]; then

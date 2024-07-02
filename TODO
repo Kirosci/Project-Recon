@@ -7,9 +7,7 @@
 
 
 - Add these in setup.sh:
-go install github.com/tomnomnom/unfurl@latest
-go install -v github.com/lc/subjs@latest
-go install github.com/hakluke/hakrawler@latest
+
 go install github.com/tomnomnom/fff@latest
 
 - Implement JS methodology in Project-Recon

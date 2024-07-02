@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "massdns" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
+allTools=("assetfinder" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
 commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
 
@@ -65,6 +65,9 @@ installmissingTools(){
             "waymore")
                 pip3 install git+https://github.com/xnl-h4ck3r/waymore.git -v
                 ;;
+            "hakrawler")
+                /usr/local/go/bin/go install -v github.com/hakluke/hakrawler@latest
+                ;;
 
 
 
@@ -83,6 +86,15 @@ installmissingTools(){
                 ;;
             "httpx")
                 /usr/local/go/bin/go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+                ;;
+            "fetcher")
+                /usr/local/go/bin/go install -v github.com/shivpratapsingh111/fetcher@latest
+                ;;
+            "unfurl")
+                /usr/local/go/bin/go install -v github.com/tomnomnom/unfurl@latest
+                ;;
+            "subjs")
+                /usr/local/go/bin/go install -v github.com/lc/subjs@latest
                 ;;
             *)
                 echo "[+] Installation method not added for: $tool"

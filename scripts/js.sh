@@ -57,7 +57,7 @@ while IFS= read -r domain; do
 
     dir="results/$domain"
     cd $dir
-
+    mkdir -p js
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
@@ -69,28 +69,25 @@ while IFS= read -r domain; do
   sort -u jsUrlsPassive.txt -o jsUrls.txt
 
 # Downloading JS files, from collected endpoints
-
     # Message
     print_message "$GREEN" "Saving JavaScript files locally"
 
 # Calling bash file to download js files
-    bash "$baseDir/scripts/jsRecon/downloadJS.sh" -f jsUrls.txt -t 10 -r 2 -x 12
-    wait
-
+    fetcher -u jsUrls.txt -t 120 -x 15 1> /dev/null
+    # bash "$baseDir/scripts/jsRecon/downloadJS.sh" -f jsUrls.txt -t 10 -r 2 -x 12
+    mv fetched js/fetched
     # Message
-    print_message "$GREEN" "JS file collected: $(ls js/jsSourceFiles | wc -l)"
-
-    sleep 10
+    print_message "$GREEN" "JS file collected: $(ls js/fetched | wc -l)"
 
     # Message
     print_message "$GREEN" "Extracting juicy stuff"
 
     (
-        bash "$baseDir/scripts/jsRecon/main.sh" -dir=js
+        bash "$baseDir/scripts/jsRecon/main.sh" -dir=js/fetched
     ) &
     
     (
-        echo "js/jsSourceFiles" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt
+        echo "js/fetched" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt
     ) &
     wait
 

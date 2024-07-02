@@ -207,39 +207,46 @@ def pseudoMain():
                 thread_subdomains.start()
                 thread_subdomains.join()
 
-                #Fuzzing subdomains
-                thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
-                thread_fuzz.start()
-                
-                # Scanning for potential Subdomain Takeovers
-                thread_subTakeover = threading.Thread(target=subTakeover, args=(cmdSubTakeover,))
-                thread_subTakeover.start()
-
                 # URL Enumeration Start AND WAIT
                 thread_urls = threading.Thread(target=urls, args=(cmdUrls,))
                 thread_urls.start()
                 thread_urls.join()
 
-                # Scanning for potential SSRF
+                #Analyzing JS files Start AND WAIT
+                thread_js = threading.Thread(target=js, args=(cmdJs,))
+                thread_js.start()
+                thread_js.join()
+
+                # Scanning for potential Subdomain Takeovers Start AND WAIT
+                thread_subTakeover = threading.Thread(target=subTakeover, args=(cmdSubTakeover,))
+                thread_subTakeover.start()
+                thread_subTakeover.join()
+
+                # Running Nuclei Start AND WAIT
+                thread_nuclei = threading.Thread(target=nuclei, args=(cmdNuclei,))
+                thread_nuclei.start()
+                thread_nuclei.join()
+
+                #Nmap Start AND WAIT
+                thread_nmap = threading.Thread(target=nmap, args=(cmdNmap,))
+                thread_nmap.start()
+                thread_nmap.join()
+
+                #Fuzzing subdomains Start AND WAIT
+                thread_fuzz = threading.Thread(target=fuzz, args=(domain,))
+                thread_fuzz.start()
+                thread_fuzz.join()
+
+                # Scanning for potential XSS Start AND WAIT
+                thread_xss = threading.Thread(target=xss, args=(cmdXss,))
+                thread_xss.start()
+                thread_xss.join()
+
+                # Scanning for potential SSRF Start AND WAIT
                 link = args.all
                 thread_ssrf = threading.Thread(target=ssrf, args=(cmdSsrf,))
                 thread_ssrf.start()
-
-                # Running Nuclei
-                thread_nuclei = threading.Thread(target=nuclei, args=(cmdNuclei,))
-                thread_nuclei.start()
-
-                # Scanning for potential XSS 
-                thread_xss = threading.Thread(target=xss, args=(cmdXss,))
-                thread_xss.start()
-
-                #Analyzing JS files
-                thread_js = threading.Thread(target=js, args=(cmdJs,))
-                thread_js.start()
-
-                #Nmap
-                thread_nmap = threading.Thread(target=nmap, args=(cmdNmap,))
-                thread_nmap.start()
+                thread_ssrf.join()
 
 
 
@@ -247,7 +254,7 @@ def pseudoMain():
 
         # Commented else for each argument, it was looking too chaotic and messy
 
-                # Enumerating Subdomains thread start AND WAIT
+                # Enumerating Subdomains thread Start AND WAIT
                 if args.sub:
                     thread_subdomains = threading.Thread(target=subdomains, args=(cmdSubdomains,))
                     thread_subdomains.start()
@@ -256,18 +263,20 @@ def pseudoMain():
                 #     notProvided("Subdomains Enumeration")
 
 
-                # Fuzzing subdomains
+                # Fuzzing subdomains Start AND WAIT
                 if args.fuzz:
                     thread_fuzz = threading.Thread(target=fuzz, args=(cmdFuzz,))
                     thread_fuzz.start()
+                    thread_fuzz.join()
                 # else:
                 #     notProvided("Fuzzing")
 
  
-                # Subdomain Takeover thread start 
+                # Subdomain Takeover thread Start AND WAIT
                 if args.tkovr:
                     thread_subTakeover = threading.Thread(target=subTakeover, args=(cmdSubTakeover,))
                     thread_subTakeover.start()
+                    thread_subTakeover.join()
                 # else:
                 #     notProvided("Subdomain Takeover")
 
@@ -281,43 +290,48 @@ def pseudoMain():
                 #     notProvided("URL Gathering")
 
 
-                # SSRF testing thread start
+                # SSRF testing thread Start AND WAIT
                 if args.ssrf:
                     link = args.ssrf
                     thread_ssrf = threading.Thread(target=ssrf, args=(cmdSsrf,))
                     thread_ssrf.start()
+                    thread_ssrf.join()
                 # else:
                 #     notProvided("SSRF")
 
 
-                # Nuclei Scan thread start
+                # Nuclei Scan thread Start AND WAIT
                 if args.nuclei:
                     thread_nuclei = threading.Thread(target=nuclei, args=(cmdNuclei,))
                     thread_nuclei.start()
+                    thread_nuclei.join()
                 # else:
                 #     notProvided("Nuclei")
 
 
-                # XSS testing thread start
+                # XSS testing thread Start AND WAIT
                 if args.xss:
                     thread_xss = threading.Thread(target=xss, args=(cmdXss,))
                     thread_xss.start()
+                    thread_xss.join()
                 # else:
                 #     notProvided("XSS")
 
 
-                # JS analyzing thread start
+                # JS analyzing thread Start AND WAIT
                 if args.js:
                     thread_js = threading.Thread(target=js, args=(cmdJs,))
                     thread_js.start()
+                    thread_js.join()
                 # else:
                 #     notProvided("JS")
 
                 
-                #Nmap
+                #Nmap Start AND WAIT
                 if args.nmap:
                     thread_nmap = threading.Thread(target=nmap, args=(cmdNmap,))
                     thread_nmap.start()
+                    thread_nmap.join()
                 # else:
                 #     notProvided("JS")
 

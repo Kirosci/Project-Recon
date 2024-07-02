@@ -16,7 +16,7 @@ usage() {
 scanDirectory() {
     directory=$1
     cd "$directory" || exit
-    mkdir -p jsSourceFiles
+    # mkdir -p jsSourceFiles
     local output_index=1
     for file in *.js; do
         if jsluice urls "$file" | jq | tee "${output_index}_urls.txt"; then
@@ -47,7 +47,8 @@ scanDirectory() {
     cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt &
     cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urls.txt
     wait
-    mv *.js jsSourceFiles
+    # mv *.js jsSourceFiles
+    mv *.txt ../
 }
 
 # Function for a single javascript (-f)

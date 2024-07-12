@@ -17,18 +17,17 @@ scanDirectory() {
     directory=$1
     cd "$directory" || exit
     # mkdir -p jsSourceFiles
-    local output_index=1
     for file in *.js; do
-        if jsluice urls "$file" | jq | tee "${output_index}_urls.txt"; then
-            ((output_index++))
+        if jsluice urls "$file" | jq | tee "${file}_urls.txt"; then
+        echo "1" 1> /dev/null
         else
             continue
         fi
     done &
 
     for file in *.js; do
-        if jsluice secrets "$file" | jq | tee "${output_index}_secrets.txt"; then
-            ((output_index++))
+        if jsluice secrets "$file" | jq | tee "${file}_secrets.txt"; then
+        echo "1" 1> /dev/null
         else
             continue
         fi
@@ -36,7 +35,7 @@ scanDirectory() {
 
     wait
 
-    cat *_urls.txt > .jsLuiceCombinedUrls.txt &
+    cat *_urls.txt > .jsLuiceCombinedUrls.txt
     cat *_secrets.txt > secrets.txt
 
     rm *_urls.txt
@@ -44,7 +43,7 @@ scanDirectory() {
 
     wait
 
-    cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt &
+    cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt
     cat .jsLuiceCombinedUrls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urls.txt
     wait
     # mv *.js jsSourceFiles
@@ -57,15 +56,14 @@ scanFile() {
         echo "File $1 not found."
         exit 1
     fi
-    jsluice urls "$1" | jq | tee "urls.txt" &
+    jsluice urls "$1" | jq | tee "urls.txt"
     jsluice secrets "$1" | jq | tee "secrets.txt"
     wait
 
-    cat urls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt &
+    cat urls.txt | jq -r '.url' | grep -v -E '^(https?:)?//' | awk 'length($0) < 50000 && /^\// {print}' | sort -u | tee paths.txt
     cat urls.txt | jq -r '.url' | grep -Eo 'https?://[^[:space:]]+' | sort -u | tee urls.txt
     wait
-
-    rm urls.txt
+    
 }
 
 # Function to find provided string in directory of js files (-find and -d)

@@ -9,22 +9,27 @@ from colorama import Fore, Back, Style
 import argparse
 
 parser = argparse.ArgumentParser()
+
+# Config
 parser.add_argument("-update", action='store_true', help="Update to latest version")
-parser.add_argument("-f", help="Give file name consisting of target domains")
+parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
+parser.add_argument("-org", action='store_true', help="Organise the results, by combining results of all provided domains into a centralised folder")
+parser.add_argument("-dir", action='store_true', help="provide directory name")
+
+# Flags
 parser.add_argument("-all", help="[Subdomain & URL Enum, Subdomain Takeover, SSRF, XSS, Nuclei]: Provide Link for SSRF Testing")
+parser.add_argument("-f", help="Give file name consisting of target domains")
 parser.add_argument("-ssrf", help="SSRF Testing: Provide Burp Collaborator/Server link")
+parser.add_argument("-nmap", action='store_true', help="Nmap Scan")
 parser.add_argument("-xss", action='store_true', help="XSS testing")
 parser.add_argument("-tkovr", action='store_true', help="Subdomain Takeover check")
 parser.add_argument("-nuclei", action='store_true', help="Use Nuclei")
 parser.add_argument("-fuzz", action='store_true', help="Fuzz for endpoints")
 parser.add_argument("-js", action='store_true', help="Analyse JS files for juicy stuff")
-
 parser.add_argument("-urls", nargs='?', const='ps', help="URL Enumeration, ac: for crawling, ps: for passive gathering, provide no value for both")
 parser.add_argument("-sub", nargs='?', const='ps', help="Enumerating Subdomains, ac: for active, ps: for passive, provide no value for both")
-
-parser.add_argument("-nmap", action='store_true', help="Nmap Scan")
 parser.add_argument("-amass_t", help="Amass timeout [Default 30 mins] [Use 0 for no timeout] [-amass_t 30 for 30 min timeout ]")
-parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
+
 
 args = parser.parse_args()
 
@@ -55,11 +60,30 @@ def errorMessage(msg):
 
 
 
-# For Updating the tool 
+
+# ---
+
+# Template for new flag's function
+
+# # For $YOUR TASK 
+# def $FUNCTION_NAME(cmd):
+#     messageBefore("$YOUR_MESSAGE")
+#     p_$FUNCTION_NAME = subprocess.Popen(cmd, shell=True).wait()
+#     messageAfter("YOUR_MESSAGE", "YOUR_INFO")
+
+# ---
+
+# For updating the tool 
 def update(cmd):
     messageBefore("Update")
     p_update = subprocess.Popen(cmd, shell=True).wait()
     messageAfter("Update", "Updated Project-Recon")
+
+# For organising results 
+def organise(cmd):
+    messageBefore("Organise")
+    p_organise = subprocess.Popen(cmd, shell=True).wait()
+    messageAfter("Organise", "Organising Done")
 
 # For gathering subdomains
 def subdomains(cmd):
@@ -84,13 +108,13 @@ def urls(cmd):
 def ssrf(cmd): 
     messageBefore("SSRF")
     p_urls= subprocess.Popen(cmd,shell=True).wait()
-    messageAfter("SSRF", "Results saved in all_ssrf_urls.txt | Check if you get any pingbacks")
+    messageAfter("SSRF", "Results saved in ssrfUrls.txt | Check if you get any pingbacks")
 
 # Scanning SSRF
 def xss(cmd):
     messageBefore("XSS")
     p_urls= subprocess.Popen(cmd,shell=True).wait()
-    messageAfter("XSS", "Results saved in kxss.txt")
+    messageAfter("XSS", "Results saved in xss.txt")
 
 # Nuclei
 def nuclei(cmd):
@@ -146,7 +170,7 @@ def pseudoMain():
             else:
                 pass
                 
-
+# Check if file containing domains is provided
             if args.f:
                 domain = args.f
                 print(Back.WHITE, Fore.RED + '[Automating to hunt more and sleep less]', Style.RESET_ALL)
@@ -156,11 +180,25 @@ def pseudoMain():
                     errorMessage("Provide a file containing domains")
                 sys.exit(1) 
 
+# Check if value for amass timeout is provided, else set  
             link = args.ssrf
             if args.amass_t:
                 amassTimeout = args.amass_t
             else:
                 amassTimeout = 30
+
+# Check if -org flag is provided without -dir flag
+            if args.org and args.dir:
+                organiseDirectory = args.dir
+            elif args.org:
+                errorMessage("Provide directory name with -dir flag to save organised results in")
+                sys.exit(1)
+            elif args.dir:
+                errorMessage("Why are you using -dir flag? Exiting...")
+                sys.exit(1)
+            else:
+                errorMessage("Something went wrong while organising results")
+                sys.exit(1)
 
 
 
@@ -191,6 +229,7 @@ def pseudoMain():
                 errorMessage("Pass`ac` for active | `ps` for passive | `both` for both active & passive with `-urls` flag")
                 sys.exit(1)
 
+            cmdOrganise = f"bash scripts/organise.sh {domain} {organiseDirectory}"
             cmdSubTakeover = f"bash scripts/subTakeover.sh {domain}"
             cmdSsrf = f"bash scripts/ssrf.sh {domain} {link}"
             cmdXss = f"bash scripts/xss.sh {domain}"
@@ -253,6 +292,14 @@ def pseudoMain():
             else:
 
         # Commented else for each argument, it was looking too chaotic and messy
+
+                # Organising results thread start
+                if args.org:
+                    thread_organise = threading.Thread(target=organise, args=(cmdOrganise,))
+                    thread_organise.start()
+                # else:
+                #     notProvided("Organise results")
+
 
                 # Enumerating Subdomains thread Start AND WAIT
                 if args.sub:

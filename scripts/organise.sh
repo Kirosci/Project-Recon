@@ -3,7 +3,7 @@
 main() {
     while IFS= read -r res; do
         mkdir -p "$2" || { echo "Failed to create directory '$2'"; }
-        cp -r "$res" "$2" || { echo "Failed to move '$res' to '$2'"; }
+        cp -r "results/$res" "$2" || { echo "Failed to move '$res' to '$2'"; }
     done < "$1"
 
     TARGET_DIR="$2"

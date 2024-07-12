@@ -15,7 +15,7 @@ main() {
     echo "Moving files from directories in $TARGET_DIR to $ORGANIZED_FOLDER..."
 
     # Move all files to the 'organized' folder
-    find "$TARGET_DIR" -type f -name *.txt -not -path '*/\.*' -exec cp -r {} "$ORGANIZED_FOLDER" \;
+    find "$TARGET_DIR" -type f -name "*.txt" -not -path '*/\.*' -exec cp -r {} "$ORGANIZED_FOLDER" \;
 
     echo "Sorting and combining files in $ORGANIZED_FOLDER..."
 

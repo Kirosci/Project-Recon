@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-update", action='store_true', help="Update to latest version")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
 parser.add_argument("-org", action='store_true', help="Organise the results, by combining results of all provided domains into a centralised folder")
-parser.add_argument("-dir", action='store_true', help="provide directory name")
+parser.add_argument("-dir", help="provide directory name")
 
 # Flags
 parser.add_argument("-all", help="[Subdomain & URL Enum, Subdomain Takeover, SSRF, XSS, Nuclei]: Provide Link for SSRF Testing")

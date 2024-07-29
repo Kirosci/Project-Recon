@@ -168,6 +168,10 @@ main() {
     rm -rf "$ORGANIZED_DIR"/rest
     
 # ------------
+# Mov   ing all target dirs to a centralised directory
+    while IFS= read -r res; do
+        mv "$TARGET_DIR/$res" "$TARGET_DIR/all" 2> /dev/null
+    done < "$1"
 
 # Removing empty files and directories
     find "$ORGANIZED_DIR" -type f -empty -delete
@@ -177,10 +181,6 @@ main() {
     rm -rf "$TARGET_DIR/organised" 2> /dev/null
     mv -f "$TARGET_DIR/.organised" "$TARGET_DIR/organised"
 
-# Mocing all target dirs to a centralised directory
-    while IFS= read -r res; do
-        mv "$TARGET_DIR/$res" "$TARGET_DIR/all" 2> /dev/null
-    done < "$1"
 
 }
 

@@ -31,7 +31,7 @@ main() {
     # Create screenshots dir to move all screenshots in
     mkdir -p "$ORGANIZED_DIR/screenshots"
 
-    for subdir in "$TARGET_DIR"/*/; do
+    for subdir in "$TARGET_DIR"/*/; doorganisedResults/INDEED/.organised/fuzz/fuzz_mi
 
         find "$subdir"screenshots/ -type f -exec cp {} "$ORGANIZED_DIR/screenshots" \;
 
@@ -54,10 +54,10 @@ main() {
 
 
     done
-    cat "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall
-    cat "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig
+    cat "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall 2> /dev/null
+    cat "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig 2> /dev/null
 
-    rm "$ORGANIZED_DIR"/fuzz/*.txt
+    rm "$ORGANIZED_DIR"/fuzz/*.txt 2> /dev/null
 
 # ------------
 
@@ -80,12 +80,12 @@ main() {
 
 
     done
-    cat "$ORGANIZED_DIR"/js/jsNuclei*.txt > "$ORGANIZED_DIR"/js/jsNuclei
-    cat "$ORGANIZED_DIR"/js/paths*.txt > "$ORGANIZED_DIR"/js/paths
-    cat "$ORGANIZED_DIR"/js/secrets*.txt > "$ORGANIZED_DIR"/js/secrets
-    cat "$ORGANIZED_DIR"/js/urls*.txt > "$ORGANIZED_DIR"/js/urls
+    cat "$ORGANIZED_DIR"/js/jsNuclei*.txt > "$ORGANIZED_DIR"/js/jsNuclei 2> /dev/null
+    cat "$ORGANIZED_DIR"/js/paths*.txt > "$ORGANIZED_DIR"/js/paths 2> /dev/null
+    cat "$ORGANIZED_DIR"/js/secrets*.txt > "$ORGANIZED_DIR"/js/secrets 2> /dev/null
+    cat "$ORGANIZED_DIR"/js/urls*.txt > "$ORGANIZED_DIR"/js/urls 2> /dev/null
 
-    rm "$ORGANIZED_DIR"/js/*.txt
+    rm "$ORGANIZED_DIR"/js/*.txt 2> /dev/null
 
 # ------------
 
@@ -165,7 +165,10 @@ main() {
     
 # ------------
 
+# Removing empty files and directories
     find "$ORGANIZED_DIR" -type f -empty -delete
+    find "$ORGANIZED_DIR" -type d -empty -delete
+
 
     rm -rf "$TARGET_DIR/organised" 2> /dev/null
     mv -f "$TARGET_DIR/.organised" "$TARGET_DIR/organised"

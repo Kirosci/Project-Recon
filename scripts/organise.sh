@@ -31,7 +31,7 @@ main() {
     # Create screenshots dir to move all screenshots in
     mkdir -p "$ORGANIZED_DIR/screenshots"
 
-    for subdir in "$TARGET_DIR"/*/; doorganisedResults/INDEED/.organised/fuzz/fuzz_mi
+    for subdir in "$TARGET_DIR"/*/; do
 
         find "$subdir"screenshots/ -type f -exec cp {} "$ORGANIZED_DIR/screenshots" \;
 

@@ -16,7 +16,7 @@ mkdir -p "organisedResults/$2" || { echo "Failed to create directory $2"; }
 main() {
     # Moving all targets into centralized directory
     while IFS= read -r res; do
-        cp -r "results/$res" "organisedResults/$2" 2> /dev/null || { echo "[+] No results were found for $res"; }
+        cp -r "results/$res" "organisedResults/$2" 2> /dev/null || { echo "$RED[+] No results were found for $res $RESET"; }
     done < "$1"
 
     # Centralized target dir path

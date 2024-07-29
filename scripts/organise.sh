@@ -173,9 +173,10 @@ main() {
     rm -rf "$TARGET_DIR/organised" 2> /dev/null
     mv -f "$TARGET_DIR/.organised" "$TARGET_DIR/organised"
 
+# Mocing all target dirs to a centralised directory
     mkdir all
     while IFS= read -r res; do
-        mv "organisedResults/$2" all || { echo "Failed to move $res to $2"; }
+        mv "$TARGET_DIR/$res" all || { echo "Failed to move $res to $2"; }
     done < "$1"
 
 }

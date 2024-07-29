@@ -11,6 +11,10 @@ mkdir -p organisedResults
 # Making centralized directory for target
 mkdir -p "organisedResults/$2" || { echo "Failed to create directory $2"; }
 
+# Making centralized directory for all target results
+mkdir -p "organisedResults/$2/all"
+
+
 main() {
     # Moving all targets into centralized directory
     while IFS= read -r res; do
@@ -174,9 +178,8 @@ main() {
     mv -f "$TARGET_DIR/.organised" "$TARGET_DIR/organised"
 
 # Mocing all target dirs to a centralised directory
-    mkdir all
     while IFS= read -r res; do
-        mv "$TARGET_DIR/$res" all || { echo "Failed to move $res to $2"; }
+        mv "$TARGET_DIR"/$res "$TARGET_DIR"/all
     done < "$1"
 
 }

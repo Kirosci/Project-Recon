@@ -18,7 +18,7 @@ mkdir -p "organisedResults/$2/all"
 main() {
     # Moving all targets into centralized directory
     while IFS= read -r res; do
-        cp -r "results/$res" "organisedResults/$2" || { echo "Failed to move $res to $2"; }
+        cp -r "results/$res" "organisedResults/$2" 2> /dev/null || { echo "Failed to move $res to $2"; }
     done < "$1"
 
     # Centralized target dir path

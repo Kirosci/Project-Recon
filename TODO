@@ -1,7 +1,7 @@
 Top Priority
 
-Check -nmap and -js flag, fix if something's wrong
-
+- Check -nmap and -js flag, fix if something's wrong
+- Format results of urls and seperate urls by extensions like reconftw
 
 
 

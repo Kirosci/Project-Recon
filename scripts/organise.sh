@@ -179,7 +179,7 @@ main() {
 
 # Mocing all target dirs to a centralised directory
     while IFS= read -r res; do
-        mv "$TARGET_DIR"/$res "$TARGET_DIR"/all 2> /dev/null
+        mv "$TARGET_DIR/$res" "$TARGET_DIR/all" 2> /dev/null
     done < "$1"
 
 }

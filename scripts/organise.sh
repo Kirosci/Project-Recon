@@ -9,7 +9,7 @@ RESET=$(tput sgr0)
 mkdir -p organisedResults
 
 # Making centralized directory for target
-mkdir -p "organisedResults/$2" || { echo "Failed to create directory $2"; }
+mkdir -p "organisedResults/$2" || { echo "$RED [+] Failed to create directory $2 $RESET"; }
 
 
 

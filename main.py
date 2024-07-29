@@ -147,15 +147,22 @@ def check_internet():
         return True
     except requests.ConnectionError:
         return False
-
-
+    
+# Check tools
+def check_tools():
+    command = ["bash", "scripts/checkTools.sh"]
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.stdout.strip() == '0':
+        return False
+    elif result.stdout.strip() == '1':
+        return True
 
 
 def pseudoMain():
         # Handling sudden termination
     try:
         # Check Internet Connection
-        if check_internet():
+        if check_internet() and check_tools():
             # Get Target Domain name
             main_script_directory = os.path.dirname(os.path.abspath(__file__))
             target_directory = os.path.join(main_script_directory, 'Project-Recon')
@@ -196,9 +203,6 @@ def pseudoMain():
             elif args.dir:
                 errorMessage("Why are you using -dir flag? Exiting...")
                 sys.exit(1)
-            else:
-                errorMessage("Something went wrong while organising results")
-                sys.exit(1)
 
 
 
@@ -229,7 +233,10 @@ def pseudoMain():
                 errorMessage("Pass`ac` for active | `ps` for passive | `both` for both active & passive with `-urls` flag")
                 sys.exit(1)
 
-            cmdOrganise = f"bash scripts/organise.sh {domain} {organiseDirectory}"
+            if args.org:
+                cmdOrganise = f"bash scripts/organise.sh {domain} {organiseDirectory}"
+
+
             cmdSubTakeover = f"bash scripts/subTakeover.sh {domain}"
             cmdSsrf = f"bash scripts/ssrf.sh {domain} {link}"
             cmdXss = f"bash scripts/xss.sh {domain}"
@@ -385,7 +392,13 @@ def pseudoMain():
 
 
         else:
-            print("Internet is not working!")
+            if not check_internet() and not check_tools():
+                errorMessage("Internet is not working!")
+                errorMessage("Required tools are not present!")
+            elif not check_internet():
+                errorMessage("Internet is not working!")
+            elif not check_tools():
+                errorMessage("Required tools are not present, Please run setup.sh")
 
     except KeyboardInterrupt:
         print("\n[Terminated: You pressed ctrl+c]")

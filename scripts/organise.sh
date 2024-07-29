@@ -1,7 +1,12 @@
 #!/bin/bash
 
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+ORANGE=$(tput setaf 3)
+RESET=$(tput sgr0) 
+
 # Makiung seperate directory for organised results in main directory (Project-Recon)
-mkdir organisedResults
+mkdir -p organisedResults
 
 # Making centralized directory for target
 mkdir -p "organisedResults/$2" || { echo "Failed to create directory $2"; }
@@ -162,7 +167,8 @@ main() {
 
     find "$ORGANIZED_DIR" -type f -empty -delete
 
-    mv "$ORGANIZED_DIR" "$TARGET_DIR/organised"
+    rm -rf "$TARGET_DIR/organised" 2> /dev/null
+    mv -f "$TARGET_DIR/.organised" "$TARGET_DIR/organised"
 
 }
 

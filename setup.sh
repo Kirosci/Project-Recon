@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
+allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
-commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git")
+commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq")
 
 missingTools=()
 missingAgain=()
@@ -95,6 +95,9 @@ installmissingTools(){
                 ;;
             "subjs")
                 /usr/local/go/bin/go install -v github.com/lc/subjs@latest
+                ;;
+            "jsluice")
+                /usr/local/go/bin/go install github.com/BishopFox/jsluice/cmd/jsluice@latest
                 ;;
             *)
                 echo "[+] Installation method not added for: $tool"

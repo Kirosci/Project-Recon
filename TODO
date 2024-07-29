@@ -1,3 +1,4 @@
+-------
 - To check if a tolls gets stuck:
     make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it
 
@@ -14,3 +15,12 @@ go install github.com/tomnomnom/fff@latest
 
 
 NEED to continue from saving js files, check fff and meg
+--------
+
+Currently on:
+- organise.sh
+    - currently it moves all results of provided domains to a centralised provided folder, and combines results of files that are not in a separate dir, like urls.txt subdomains.txt
+    
+    - TODO
+        - Combine results of dir such as fuzz, nmap, screenshots, etc
+        - Currently working on this in org.sh file in "/home/cyrusop/bugBounty/serber/bugbounty/Project-Recon/VEEPEE/org.sh"

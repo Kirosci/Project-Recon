@@ -1,44 +1,168 @@
 #!/bin/bash
 
+# Makiung seperate directory for organised results in main directory (Project-Recon)
+mkdir organisedResults
+
+# Making centralized directory for target
+mkdir -p "organisedResults/$2" || { echo "Failed to create directory $2"; }
+
 main() {
+    # Moving all targets into centralized directory
     while IFS= read -r res; do
-        mkdir -p "$2" || { echo "Failed to create directory '$2'"; }
-        cp -r "results/$res" "$2" || { echo "Failed to move '$res' to '$2'"; }
+        cp -r "results/$res" "organisedResults/$2" || { echo "Failed to move $res to $2"; }
     done < "$1"
 
-    TARGET_DIR="$2"
+    # Centralized target dir path
+    TARGET_DIR="organisedResults/$2"
 
-    # Create the 'organized' folder in the main directory if it doesn't exist
-    ORGANIZED_FOLDER="${TARGET_DIR}/organized"
-    mkdir -p "$ORGANIZED_FOLDER"
+    # Create the 'organized' folder in the centralized target directory
+    ORGANIZED_DIR="$TARGET_DIR/.organised"
+    mkdir -p "$ORGANIZED_DIR"
 
-    echo "Moving files from directories in $TARGET_DIR to $ORGANIZED_FOLDER..."
 
-    # Move all files to the 'organized' folder
-    find "$TARGET_DIR" -type f -name "*.txt" -not -path '*/\.*' -exec cp -r {} "$ORGANIZED_FOLDER" \;
 
-    echo "Sorting and combining files in $ORGANIZED_FOLDER..."
+# ------------
+# Moving screenshots dir
+    # Create screenshots dir to move all screenshots in
+    mkdir -p "$ORGANIZED_DIR/screenshots"
 
-    # Sort and combine files
-    cd "$ORGANIZED_FOLDER"
-    ls | while read -r file; do
-        # Skip if the file is already sorted and combined
-        if [[ "$file" == *"combined"* ]]; then
-            continue
-        fi
-        
-        # Find all files with the same base name
-        matching_files=$(ls | grep "^${file%.*}")
-        
-        if [ ${#matching_files[@]} -gt 1 ]; then
-            # Read, sort, and write to a combined file
-            cat "${matching_files[@]}" | sort > "${file%.*}combined.txt"
-            
-            echo "Combined '${file}' into '${file%.*}combined.txt'"
-        else
-            echo "No matching files for '${file}', skipping..."
-        fi
+    for subdir in "$TARGET_DIR"/*/; do
+
+        find "$subdir"screenshots/ -type f -exec cp {} "$ORGANIZED_DIR/screenshots" \;
+
     done
+# ------------
+
+
+# ------------
+# Moving Fuzz dir
+    mkdir -p "$ORGANIZED_DIR/fuzz"
+
+    counter=0
+    for subdir in "$TARGET_DIR"/*/; do
+        # Ensure we're working with the screenshots directory within each subdirectory
+
+        cp "$subdir"fuzz/fuzz_dirSmall.txt "$ORGANIZED_DIR/fuzz/fuzz_dirSmall$counter.txt" 2> /dev/null
+        cp "$subdir"fuzz/fuzz_mixedBig.txt "$ORGANIZED_DIR/fuzz/fuzz_mixedBig$counter.txt" 2> /dev/null
+
+        ((counter++))
+
+
+    done
+    cat "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_dirSmall
+    cat "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig*.txt > "$ORGANIZED_DIR"/fuzz/fuzz_mixedBig
+
+    rm "$ORGANIZED_DIR"/fuzz/*.txt
+
+# ------------
+
+
+
+# ------------
+# Moving js dir
+    mkdir -p "$ORGANIZED_DIR/js"
+
+    counter=0
+    for subdir in "$TARGET_DIR"/*/; do
+        # Ensure we're working with the screenshots directory within each subdirectory
+
+        cp "$subdir"js/jsNuclei.txt "$ORGANIZED_DIR/js/jsNuclei$counter.txt" 2> /dev/null
+        cp "$subdir"js/paths.txt "$ORGANIZED_DIR/js/paths$counter.txt" 2> /dev/null
+        cp "$subdir"js/secrets.txt "$ORGANIZED_DIR/js/secrets$counter.txt" 2> /dev/null
+        cp "$subdir"js/urls.txt "$ORGANIZED_DIR/js/urls$counter.txt" 2> /dev/null
+
+        ((counter++))
+
+
+    done
+    cat "$ORGANIZED_DIR"/js/jsNuclei*.txt > "$ORGANIZED_DIR"/js/jsNuclei
+    cat "$ORGANIZED_DIR"/js/paths*.txt > "$ORGANIZED_DIR"/js/paths
+    cat "$ORGANIZED_DIR"/js/secrets*.txt > "$ORGANIZED_DIR"/js/secrets
+    cat "$ORGANIZED_DIR"/js/urls*.txt > "$ORGANIZED_DIR"/js/urls
+
+    rm "$ORGANIZED_DIR"/js/*.txt
+
+# ------------
+
+
+
+# ------------
+# Moving nmap dir
+    mkdir -p "$ORGANIZED_DIR/nmap"
+    for subdir in "$TARGET_DIR"/*/; do
+        # Ensure we're working with the screenshots directory within each subdirectory
+
+        cp "$subdir"nmap/*.txt "$ORGANIZED_DIR"/nmap 2> /dev/null
+
+
+    done
+    cat "$ORGANIZED_DIR"/nmap/*.txt > "$ORGANIZED_DIR"/nmap/nmap 2> /dev/null
+
+    rm "$ORGANIZED_DIR"/nmap/*.txt 2> /dev/null
+    mv nmap "$ORGANIZED_DIR"/nmap.txt 2> /dev/null
+    rm -rf nmap/
+
+# ------------
+
+
+
+# ------------
+# Moving subTakeovers.txt dir
+    mkdir -p "$ORGANIZED_DIR/rest"
+
+    counter=0
+    for subdir in "$TARGET_DIR"/*/; do
+        # Ensure we're working with the screenshots directory within each subdirectory
+
+        cp "$subdir"urls.txt "$ORGANIZED_DIR/rest/urls$counter.txt" 2> /dev/null
+        cp "$subdir"subdomains.txt "$ORGANIZED_DIR/rest/subdomains$counter.txt" 2> /dev/null
+        cp "$subdir"liveSubdomains.txt "$ORGANIZED_DIR/rest/liveSubdomains$counter.txt" 2> /dev/null
+        cp "$subdir"nuclei.txt "$ORGANIZED_DIR/rest/nuclei$counter.txt" 2> /dev/null
+        cp "$subdir"xss.txt "$ORGANIZED_DIR/rest/xss$counter.txt" 2> /dev/null
+        cp "$subdir"jsUrls.txt "$ORGANIZED_DIR/rest/jsUrls$counter.txt" 2> /dev/null
+        cp "$subdir"openRedirects.txt "$ORGANIZED_DIR/rest/openRedirects$counter.txt" 2> /dev/null
+        cp "$subdir"subTakeovers.txt "$ORGANIZED_DIR/rest/subTakeovers$counter.txt" 2> /dev/null
+
+        ((counter++))
+
+
+    done
+    
+
+    cat "$ORGANIZED_DIR"/rest/urls*.txt > "$ORGANIZED_DIR"/rest/urls 2> /dev/null 
+    cat "$ORGANIZED_DIR"/rest/subdomains*.txt > "$ORGANIZED_DIR"/rest/subdomains 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/liveSubdomains*.txt > "$ORGANIZED_DIR"/rest/liveSubdomains 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/nuclei*.txt > "$ORGANIZED_DIR"/rest/nuclei 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/xss*.txt > "$ORGANIZED_DIR"/rest/xss 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/jsUrls*.txt > "$ORGANIZED_DIR"/rest/jsUrls 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/openRedirects*.txt > "$ORGANIZED_DIR"/rest/openRedirects 2> /dev/null
+    cat "$ORGANIZED_DIR"/rest/subTakeovers*.txt > "$ORGANIZED_DIR"/rest/subTakeovers 2> /dev/null
+    
+    rm "$ORGANIZED_DIR"/rest/urls*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/subdomains*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/liveSubdomains*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/nuclei*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/xss*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/jsUrls*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/openRedirects*.txt 2> /dev/null
+    rm "$ORGANIZED_DIR"/rest/subTakeovers*.txt 2> /dev/null
+
+    mv "$ORGANIZED_DIR"/rest/urls "$ORGANIZED_DIR"/urls.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/subdomains "$ORGANIZED_DIR"/subdomains.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/liveSubdomains "$ORGANIZED_DIR"/liveSubdomains.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/nuclei "$ORGANIZED_DIR"/nuclei.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/xss "$ORGANIZED_DIR"/xss.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/jsUrls "$ORGANIZED_DIR"/jsUrls.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/openRedirects "$ORGANIZED_DIR"/openRedirects.txt 2> /dev/null
+    mv "$ORGANIZED_DIR"/rest/subTakeovers "$ORGANIZED_DIR"/subTakeovers.txt 2> /dev/null
+ 
+    rm -rf "$ORGANIZED_DIR"/rest
+    
+# ------------
+
+    find "$ORGANIZED_DIR" -type f -empty -delete
+
+    mv "$ORGANIZED_DIR" "$TARGET_DIR/organised"
 
 }
 
@@ -53,49 +177,3 @@ if [ $# -ne 2 ]; then
 else
     main "$1" "$2"
 fi
-
-
-
-# ----------------------------------------------------------------
-# #!/bin/bash
-
-# # Check if the first argument is provided
-# if [ $# -lt 1 ]; then
-#     echo "Usage: $0 <directory>"
-#     exit 1
-# fi
-
-# TARGET_DIR="$1"
-
-# # Create the 'organized' folder in the main directory if it doesn't exist
-# ORGANIZED_FOLDER="${TARGET_DIR}/organized"
-# mkdir -p "$ORGANIZED_FOLDER"
-
-# echo "Moving files from directories in $TARGET_DIR to $ORGANIZED_FOLDER..."
-
-# # Move all files to the 'organized' folder
-# find "$TARGET_DIR" -type f -name *.txt -not -path '*/\.*' -exec mv {} "$ORGANIZED_FOLDER" \;
-
-# echo "Sorting and combining files in $ORGANIZED_FOLDER..."
-
-# # Sort and combine files
-# cd "$ORGANIZED_FOLDER"
-# ls | while read -r file; do
-#     # Skip if the file is already sorted and combined
-#     if [[ "$file" == *"combined"* ]]; then
-#         continue
-#     fi
-    
-#     # Find all files with the same base name
-#     matching_files=$(ls | grep "^${file%.*}")
-    
-#     if [ ${#matching_files[@]} -gt 1 ]; then
-#         # Read, sort, and write to a combined file
-#         cat "${matching_files[@]}" | sort > "${file%.*}combined.txt"
-        
-#         echo "Combined '${file}' into '${file%.*}combined.txt'"
-#     else
-#         echo "No matching files for '${file}', skipping..."
-#     fi
-# done
-# ----------------------------------------------------------------

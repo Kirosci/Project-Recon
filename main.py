@@ -39,23 +39,23 @@ REPO_URL = 'https://github.com/Kirosci/Project-Recon.git'
 
 def messageBefore(task):
     print(Fore.BLUE + f"[+] [Task: {task}]", end=' ') 
-    print (Fore.YELLOW + "[Status: In progress]", end=' ')
+    print(Fore.YELLOW + "[Status: In progress]", end=' ')
     print(Style.RESET_ALL)
 
 def messageAfter(task, info):
     print(Fore.BLUE + f"[+] [Task: {task}]", end=' ') 
-    print (Fore.GREEN + "[Status: Completed]", end=' ')
-    print (Fore.CYAN + f"[Info: {info}]", end=' ')
+    print(Fore.GREEN + "[Status: Completed]", end=' ')
+    print(Fore.CYAN + f"[Info: {info}]", end=' ')
     print(Style.RESET_ALL)
 
 def notProvided(task):
     print(Fore.RED + f"[+] [Task: {task}]", end=' ') 
-    print (Fore.BLUE + "[Status: Argument Not Provided]")
+    print(Fore.BLUE + "[Status: Argument Not Provided]")
     print(Style.RESET_ALL)
 
 def errorMessage(msg):
     print(Fore.RED + f"[+] [Error]", end=' ') 
-    print (Fore.BLUE + f"[+] [Info: {msg}]")
+    print(Fore.BLUE + f"[+] [Info: {msg}]")
     print(Style.RESET_ALL)
 
 

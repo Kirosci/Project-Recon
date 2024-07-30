@@ -1,6 +1,7 @@
 #!/bin/bash
 
 domainFile=$1
+baseDir=$(pwd)
 
 # ---
 
@@ -19,6 +20,7 @@ calculate_visible_length() {
   local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
   echo ${#clean_message}
 }
+
 
 # Function to print the message with aligned time
 print_message() {
@@ -49,6 +51,10 @@ while IFS= read -r domain; do
     dir="results/$domain"
     cd $dir
 
+  # Removing previous network directory
+    rm -rf network 2> /dev/null
+
+
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
@@ -57,7 +63,7 @@ while IFS= read -r domain; do
     print_message "$GREEN" "Gathering ASN"
 
     # Calling python file responsible of rgetting ASN
-    python3 $baseDir/scripts/getAsn.py $domain 1> /dev/null
+    python3 "$baseDir/scripts/getAsn.py" $domain 1> /dev/null
     sort -u asn.txt -o asn.txt 2> /dev/null 1> /dev/null
 
     # Message
@@ -65,7 +71,7 @@ while IFS= read -r domain; do
 
 
 # Extracting IP Ranges, if any ASN found
-    if ! [ $(wc -l < "asn.txt") -eq 0 ]; then
+    if ! [[ $(wc -l < "asn.txt") -eq 0 ]]; then
 
         # Message
         print_message "$GREEN" "Extracting IP ranges for $domain"
@@ -82,29 +88,45 @@ while IFS= read -r domain; do
 
 # Getting IPs of found subdomains
     # Message
-    print_message "$GREEN" "Extracting IPs from subdomains $domain"
+    print_message "$GREEN" "Extracting IPs from subdomains of $domain"
     while IFS= read -r subdomain; do
-
-        dig +short "$subdomain" 2> /dev/null 1> subdomainIps.txt
+        dig +short "$subdomain" | tee -a subdomainIps.txt > /dev/null
 
     done < ".tmp/subdomains/active+passive.txt"
+
+
+
+    # Use grep with the regex to check if the line contains an IPv4 address (Removing subdomains, as sometimes `dig` command gives subdomains too. for example: status.withsecure.com)
+    while IFS= read -r line; do
+      if echo "$line" | grep -E '^([0-9]{1,3}\.){3,4}[0-9]{1,3}$' > /dev/null; then
+          # If the line is IP then, append it to the subdomainIps.txt file
+          echo "$line" >> "subdomainIpsTemp.txt"
+      fi
+    done < "subdomainIps.txt"
+    
+    sort -u subdomainIpsTemp.txt -o subdomainIps.txt
+
+    rm subdomainIpsTemp.txt
+
     # Message
     print_message "$GREEN" "IPs found "$(cat subdomainIps.txt 2> /dev/null | wc -l)""
 
 
-# Scan through nmap    
-    if ! [ $(wc -l < "ipRanges.txt") -eq 0 ]; then
+# Scan through nmap
+    if ! [[ $(cat "ipRanges.txt" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]] || ! [[ $(cat "subdomainIps.txt" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]]; then
 
-        # Message
-        print_message "$GREEN" "Nmap scan started"
+      # Message
+      print_message "$GREEN" "Nmap scan started"
+
+      mkdir -p network
+      mv ipRanges.txt subdomainIps.txt asn.txt network 2> /dev/null
 
     # Calling NMAP
-        python3 $baseDir/scripts/nmap.py $domainFile 1> /dev/null
-
+      python3 "$baseDir/scripts/nmap.py"
     fi
     
-  mkdir -p network
-  mv ipRanges.txt subdomainIps.txt asn.txt network 2> /dev/null
+    # Message last
+      print_message "$GREEN" "Nmap scan finished"
     # Go back to Project-Recon dir at last 
     cd $baseDir
 

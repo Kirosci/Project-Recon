@@ -65,7 +65,7 @@ while IFS= read -r domain; do
 
 
     # Message
-    print_message "$GREEN" "Potentially vulnerable found: "$(cat subTakeovers.txt 2> /dev/null | wc -l)""
+    print_message "$GREEN" "Subdomain Takeover found: "$(cat subTakeovers.txt 2> /dev/null | wc -l)""
 
     rm 404.txt
 

@@ -59,7 +59,7 @@ while IFS= read -r domain; do
 
         # Message
         if ! [ $(wc -l < "xss.txt") -eq 0 ]; then
-            print_message "$GREEN" "Potentially vulnerable found: "$(cat xss.txt 2> /dev/null | wc -l)""
+            print_message "$GREEN" "RXSS found: "$(cat xss.txt 2> /dev/null | wc -l)""
         else
             rm xss.txt 2> /dev/null
         fi

@@ -1,48 +1,47 @@
 #!/bin/bash
 
+# ==== (INFO)
+
+# This script fuzzes all subdomains of the provided targets.
+
+# Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
+# - $SubdomainResults
+# - $baseDir
+# ==== (INFO)(END)
+
+# ---- (INIT)
+
+# File containing domains to enumerate subdomains for
 domainFile=$1
 
-baseDir="$(pwd)"
+# Importing file responsbile for, decorated ouput.
+source consts/functions.sh
+# Importing file responsible for, holding variables common in several scripts
+source consts/commonVariables.sh
 
-# ---
+# Filename to save combined fuzz results
+FuzzResults='fuzz.txt'
 
-GREEN=$(tput setaf 2)
-RED=$(tput setaf 1)
-ORANGE=$(tput setaf 3)
-RESET=$(tput sgr0) 
+# Directory name for saving results
+fuzz_Directory_Results='fuzz'
 
-timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
-time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
+# Wordlist path for fuzzing
+wordlist_MixedMedium_Path='../../wordlists/mixedMedium.txt'
+wordlist_DirSmall_Path='../../wordlists/dirSmall.txt'
+    
+# Filenames for saving fuzzing results
+fuzz_MixedMedium_Results='fuzz_mixedMedium.txt'
+fuzz_DirSmall_Results='fuzz_dirSmall.txt'
 
-# Function to calculate visible length of the message (excluding color codes)
-calculate_visible_length() {
-  local message=$1
-  # Remove color codes
-  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
-  echo ${#clean_message}
-}
+# ---- (INIT)(END)
 
-# Function to print the message with aligned time
-print_message() {
-  local color=$1
-  local message=$2
-  local count=$3
-  local time=$(date +"%H:%M:%S")
 
-  if [ -n "$count" ]; then
-    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
-  else
-    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
-  fi
 
-  visible_length=$(calculate_visible_length "$formatted_message")
-  total_length=80
-  spaces=$((total_length - visible_length))
-  
-  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
-}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# ---
+
+
+# --- (Sort of Main function)
 
 while IFS= read -r domain; do 
 
@@ -52,31 +51,34 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    # if [ -f "fuzz/fuzz_mixedBig.txt" ] && [ -f "fuzz/fuzz_dirSmall.txt" ]; then
-    #     print_message "$GREEN" "Fuzz results are already there: fuzz_mixedBig.txt=$(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt=$(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
+    # if [ -f "${fuzz_Directory_Results}/${fuzz_MixedMedium_Results}" ] && [ -f "${fuzz_Directory_Results}/${fuzz_DirSmall_Results}" ]; then
+    #     print_message "$GREEN" "Fuzz results are already there: ${fuzz_MixedMedium_Results}=$(cat ${fuzz_Directory_Results}/${fuzz_MixedMedium_Results} 2> /dev/null | wc -l) | ${fuzz_DirSmall_Results}=$(cat ${fuzz_Directory_Results}/${fuzz_DirSmall_Results} 2> /dev/null | wc -l)"
     # else
 
         (
-        dirsearch -l subdomains.txt  -w wordlists/mixedMedium.txt -t 10 -i 200 -o fuzz_mixedBig.txt
+        dirsearch -l ${SubdomainResults}  -w ${wordlist_MixedMedium_Path} -t 10 -i 200 -o "${fuzz_MixedMedium_Results}" 2> /dev/null
         ) &
 
         (
-        dirsearch -l subdomains.txt  -w wordlists/dirSmall.txt -t 10 -i 200 -o fuzz_dirSmall.txt
+        dirsearch -l ${SubdomainResults}  -w ${wordlist_MixedMedium_Path} -t 10 -i 200 -o ${fuzz_DirSmall_Results} 2> /dev/null
         ) &
 
         wait
 
-        cat fuzz_mixedBig.txt fuzz_dirSmall.txt 2> /dev/null | sort -u | fuzz.txt
+      # Combining fuzzed results
+        cat ${fuzz_MixedMedium_Results} ${fuzz_DirSmall_Results} 2> /dev/null | sort -u | tee -a ${FuzzResults}
 
-
-        mkdir fuzz
-        mv fuzz_mixedBig.txt fuzz/
-        mv fuzz_dirSmall.txt fuzz/
+      # Make dir and move results into
+        mkdir -p ${fuzz_Directory_Results}
+        mv ${fuzz_MixedMedium_Results} ${fuzz_Directory_Results}
+        mv ${fuzz_DirSmall_Results} ${fuzz_Directory_Results}
 
         # Message
-        print_message "$GREEN" "fuzz_mixedBig.txt: $(cat fuzz/fuzz_mixedBig.txt 2> /dev/null | wc -l) | fuzz_dirSmall.txt: $(cat fuzz/fuzz_dirSmall.txt 2> /dev/null | wc -l)"
+        print_message "$GREEN" "${fuzz_MixedMedium_Results}: $(cat ${fuzz_Directory_Results}/${fuzz_MixedMedium_Results} 2> /dev/null | wc -l) | ${fuzz_DirSmall_Results}: $(cat ${fuzz_Directory_Results}/${fuzz_DirSmall_Results} 2> /dev/null | wc -l)"
 
     # fi
     # Go back to Project-Recon dir at last 
     cd $baseDir
 done < $domainFile
+
+# --- (Main function)(END)

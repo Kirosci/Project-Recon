@@ -1,57 +1,49 @@
 #!/bin/bash
 
+# ==== (INFO)
+
+# This script fuzzes all subdomains of the provided targets.
+
+# Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
+# - $UrlResults
+# - $baseDir
+# - $jsUrls
+# ==== (INFO)(END)
+
+# ---- (INIT)
+
+# File containing domains to enumerate subdomains for
 domainFile=$1
 
-baseDir="$(pwd)"
+# Importing file responsbile for, decorated ouput.
+source consts/functions.sh
+# Importing file responsible for, holding variables common in several scripts
+source consts/commonVariables.sh
 
-# ---
+# Js main directory name to save results in
+js_Directory_Results=''
 
-GREEN=$(tput setaf 2)
-RED=$(tput setaf 1)
-ORANGE=$(tput setaf 3)
-RESET=$(tput sgr0) 
+# Filename to save results
+subjs_JsResults='subjs.txt'
 
-timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
-time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
+# Js Fetched directory name
+jsFetched_Directory='js/fetched'
 
-# Function to calculate visible length of the message (excluding color codes)
-calculate_visible_length() {
-  local message=$1
-  # Remove color codes
-  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
-  echo ${#clean_message}
-}
+# Fetched directory name
+fetched_Directory='fetched'
 
-# Function to print the message with aligned time
-print_message() {
-  local color=$1
-  local message=$2
-  local count=$3
-  local time=$(date +"%H:%M:%S")
+# Js Nuclei results
+jsNuclei_Results='js/jsNuclei.txt'
 
-  if [ -n "$count" ]; then
-    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
-  else
-    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
-  fi
-
-  visible_length=$(calculate_visible_length "$formatted_message")
-  total_length=80
-  spaces=$((total_length - visible_length))
-  
-  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
-}
-
-
-# jsActive(){
+# ---- (INIT)(END)
 
 
 
-# }
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-# ---
 
+# --- (Sort of Main function)
 
 while IFS= read -r domain; do 
 
@@ -64,30 +56,30 @@ while IFS= read -r domain; do
 # subjs tool
   # Message
   print_message "$GREEN" "Gathering JS Urls from subjs tool"
-  subjs -i urls.txt > subjs.txt
-  cat subjs.txt | grep -F .js | cut -d "?" -f 1 | sort -u >>  jsUrlsPassive.txt
-  sort -u jsUrlsPassive.txt -o jsUrls.txt
+  subjs -i ${UrlResults} > ${subjs_JsResults}
+  cat ${subjs_JsResults} | grep -F .js | cut -d "?" -f 1 | sort -u >>  ${jsUrls}
+  sort -u ${jsUrls} -o ${jsUrls}
 
 # Downloading JS files, from collected endpoints
     # Message
     print_message "$GREEN" "Saving JavaScript files locally"
 
 # Calling bash file to download js files
-    fetcher -f jsUrls.txt -t 120 -x 15 1> /dev/null
-    # bash "$baseDir/scripts/jsRecon/downloadJS.sh" -f jsUrls.txt -t 10 -r 2 -x 12
-    mv fetched js/fetched
+    fetcher -f ${jsUrls} -t 120 -x 15 1> /dev/null
+    # bash "$baseDir/scripts/jsRecon/downloadJS.sh" -f ${jsUrls} -t 10 -r 2 -x 12
+    mv ${fetched_Directory} ${jsFetched_Directory}
     # Message
-    print_message "$GREEN" "JS file collected: $(ls js/fetched | wc -l)"
+    print_message "$GREEN" "JS file collected: $(ls ${jsFetched_Directory} | wc -l)"
 
     # Message
     print_message "$GREEN" "Extracting juicy stuff"
 
     (
-        bash "$baseDir/scripts/jsRecon/main.sh" -dir=js/fetched 1> /dev/null
+        bash "$baseDir/scripts/jsRecon/main.sh" -dir="${jsFetched_Directory}" 1> /dev/null
     ) &
     
     (
-        echo "js/fetched" | nuclei -l jsUrls.txt -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o js/jsNuclei.txt 1> /dev/null 2> /dev/null
+        echo "${jsFetched_Directory}" | nuclei -l ${jsUrls} -c 100 -retries 2 -t ~/nuclei-templates/exposures/ -o ${jsNuclei_Results} 1> /dev/null 2> /dev/null
     ) &
     wait
 

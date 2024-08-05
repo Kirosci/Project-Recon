@@ -10,6 +10,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
+# Test
+parser.add_argument("-test", action='store_true', help="It will call test.sh in scripts directory")
+
 # Config
 parser.add_argument("-update", action='store_true', help="Update to latest version")
 parser.add_argument("-example", action='store_true', help="Example: python3 main.py -f domains.txt -all https://burpcollaborator.link")
@@ -72,6 +75,12 @@ def errorMessage(msg):
 #     messageAfter("YOUR_MESSAGE", "YOUR_INFO")
 
 # ---
+
+# Calling test.sh file in scripts directory
+def callTest(cmd):
+    messageBefore("Test")
+    p_callTest = subprocess.Popen(cmd, shell=True).wait()
+    messageAfter("Test", "Calling test.sh file")
 
 # For updating the tool 
 def update(cmd):
@@ -173,6 +182,12 @@ def pseudoMain():
                 thre_update = threading.Thread(target=update, args=(cmdUpdate,))
                 thre_update.start()
                 thre_update.join()
+                sys.exit(1)
+            elif args.test:
+                cmdTest = "bash scripts/test.sh"
+                thre_test = threading.Thread(target=callTest, args=(cmdTest,))
+                thre_test.start()
+                thre_test.join()                
                 sys.exit(1)
             else:
                 pass

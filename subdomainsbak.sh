@@ -8,7 +8,7 @@
 # - $SubdomainResults
 # - $baseDir
 # - $tempFile
-# ==== (INFO)(END)
+# ==== (END)
 
 
 
@@ -16,7 +16,7 @@
 
 
 
-# --- (INIT)
+# ---- (INIT)
 
 # File containing domains to enumerate subdomains for
 domainFile=$1
@@ -35,7 +35,9 @@ source consts/commonVariables.sh
         subfinder_Passive_SubdomainResults='subfinder.txt'
         subdominator_Passive_SubdomainResults='subdominator.txt'
     
-        # Combined results of all passive tools
+        # Combined results of all passive tools (contains false positives)
+        unfiltered_Passive_CombinedSubdomainResults='unfiltered.passive.CombinedSubdomainResults.txt'
+        # Combined results of all passive tools (false positive removed)
         passive_CombinedSubdomainResults='passive.CombinedSubdomainResults.txt'
 
     # Active enumeration
@@ -52,9 +54,6 @@ source consts/commonVariables.sh
     # This file contains combined results of passive and active results
     active_and_passive_CombinedSubdomainResults='active.and.passive.CombinedSubdomainResults.txt'
 
-    # This file contains only 200 OK subdomains
-    liveSubdomains_SubdomainResults='liveSubdomains.txt'
-
 # Temporary path to save tempoprary subdomains enumeration files (In real it is permanent, I mean it doesn't gets removed)
 
     temp_SubdomainResults_Path='.tmp/subdomains'
@@ -64,7 +63,7 @@ source consts/commonVariables.sh
     # Active subdomain results path
         temp_Active_SubdomainResults_Path='.tmp/subdomains/active'
 
-# --- (INIT)(END)
+# ---- (END)
 
 
 
@@ -78,9 +77,7 @@ if [[ -z "$2" ]]; then
     timeout="$2"
 else
     timeout="0"
-fi 
-
-# --- (Check if timeout is provided for amass tool)(END)
+fi # --- (END)
 
 
 
@@ -157,7 +154,7 @@ checkWordlist() {
 
 } 
 
-# --- (Requirement check)(END)
+# --- (END)
 
 
 
@@ -165,7 +162,7 @@ checkWordlist() {
 
 
 
-# --- (Passive subdomain enumeration)
+# ---- (Function for passive subdomain enumeration)
 
 passiveEnumeration(){
 
@@ -222,30 +219,28 @@ passiveEnumeration(){
 
     # Sorting and combining results
     
-    cat ${assetfinder_Passive_SubdomainResults} ${subdominator_Passive_SubdomainResults} ${amass_Passive_SubdomainResults} ${haktrails_Passive_SubdomainResults} ${subfinder_Passive_SubdomainResults} 2> /dev/null | sort -u >> ${passive_CombinedSubdomainResults}
+    cat ${assetfinder_Passive_SubdomainResults} ${subdominator_Passive_SubdomainResults} ${amass_Passive_SubdomainResults} ${haktrails_Passive_SubdomainResults} ${subfinder_Passive_SubdomainResults} 2> /dev/null | sort -u >> ${unfiltered_Passive_CombinedSubdomainResults}
 
     # Appending results from previous scan if present (previous scan results are stored in temporary directory) 
-    cat ${temp_Passive_SubdomainResults_Path}/${assetfinder_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${subdominator_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${amass_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${haktrails_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${subfinder_Passive_SubdomainResults} 2> /dev/null | sort -u >> ${passive_CombinedSubdomainResults}
+    cat ${temp_Passive_SubdomainResults_Path}/${assetfinder_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${subdominator_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${amass_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${haktrails_Passive_SubdomainResults} ${temp_Passive_SubdomainResults_Path}/${subfinder_Passive_SubdomainResults} 2> /dev/null | sort -u >> ${unfiltered_Passive_CombinedSubdomainResults}
     
-    sort -u ${passive_CombinedSubdomainResults} -o ${passive_CombinedSubdomainResults} 1> /dev/null 
+    sort -u ${unfiltered_Passive_CombinedSubdomainResults} -o ${unfiltered_Passive_CombinedSubdomainResults} 1> /dev/null 
     
-    # Filtering out false positives, writing to tempFile then renaming it to passive_CombinedSubdomainResults
-    grep -E "\\b${domain//./\\.}\\b" "${passive_CombinedSubdomainResults}" | awk '{print$1}' | sort -u >> "${tempFile}"
-    mv ${tempFile} ${passive_CombinedSubdomainResults}
+    # Filtering out false positives
+    grep -E "\\b${domain//./\\.}\\b" "${unfiltered_Passive_CombinedSubdomainResults}" | awk '{print$1}' | sort -u >> "${passive_CombinedSubdomainResults}"
     
-    # Combining active and passive results
     cat ${active_CombinedSubdomainResults} ${passive_CombinedSubdomainResults} 2> /dev/null | sort -u >> ${active_and_passive_CombinedSubdomainResults} 2> /dev/null
 
 } 
 
-# --- (Passive subdomain enumeration)(END)
+# --- (END)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
-# --- (Active subdomain enumeration)
+# ---- (Function for active subdomain enumeration)
 
 activeEnumeration() {
 
@@ -300,7 +295,7 @@ activeEnumeration() {
 
 }
 
-# --- (Active subdomain enumeration)(END)
+# --- (END)
 
 
 
@@ -308,13 +303,13 @@ activeEnumeration() {
 
 
 
-# --- (Take screeenshots of all found subdomains)
+# --- (Function to take screeenshots of all found subdomains)
 
 screenshot() {
     print_message "$GREEN" "Taking screenshots"
     nuclei -l ${SubdomainResults} -headless -t ~/nuclei-templates/headless/screenshot.yaml -c 100 2> /dev/null 1> /dev/null
 }
-# --- (Take screeenshots of all found subdomains)(END)
+# --- (END)
 
 
 
@@ -322,21 +317,21 @@ screenshot() {
 
 
 
-# --- (Organise mess)
+# --- (Function to organise all mess produced)
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
     cat ${active_and_passive_CombinedSubdomainResults} 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> ${SubdomainResults} 2> /dev/null
     sort -u ${SubdomainResults} -o ${SubdomainResults} 
-    cat ${SubdomainResults} | httpx >> ${liveSubdomains_SubdomainResults} 2> /dev/null
-    sort -u ${liveSubdomains_SubdomainResults} -o ${liveSubdomains_SubdomainResults}
-    mv "${assetfinder_Passive_SubdomainResults}" "${passive_CombinedSubdomainResults}" "${subfinder_Passive_SubdomainResults}" "${subdominator_Passive_SubdomainResults}" "${amass_Passive_SubdomainResults}" "${haktrails_Passive_SubdomainResults}" "${passive_CombinedSubdomainResults}" "${temp_Passive_SubdomainResults_Path}" 2> /dev/null
+    cat ${SubdomainResults} | httpx >> liveSubdomains.txt 2> /dev/null
+    sort -u liveSubdomains.txt -o liveSubdomains.txt
+    mv "${assetfinder_Passive_SubdomainResults}" "${unfiltered_Passive_CombinedSubdomainResults}" "${subfinder_Passive_SubdomainResults}" "${subdominator_Passive_SubdomainResults}" "${amass_Passive_SubdomainResults}" "${haktrails_Passive_SubdomainResults}" "${passive_CombinedSubdomainResults}" "${temp_Passive_SubdomainResults_Path}" 2> /dev/null
     mv "${dnsgen_Active_SubdomainResults}" "${alterx_Active_SubdomainResults}" "${altdns_Active_SubdomainResults}" "${active_TotalPerMuted_SubdomainResults}" "${active_CombinedSubdomainResults}" "${temp_Active_SubdomainResults_Path}" 2> /dev/null
     mv "${active_and_passive_CombinedSubdomainResults}" "${temp_SubdomainResults_Path}" 2> /dev/null
     print_message "$GREEN" "Organising finished"
 } 
 
-# --- ((Organise mess)(END)
+# --- (END)
 
 
 
@@ -344,7 +339,7 @@ organise() {
 
 
 
-# --- (Kinda main function code)
+# --- (Kinda main function driver code)
 
 for domain in $(cat "$domainFile"); do
 
@@ -403,4 +398,4 @@ for domain in $(cat "$domainFile"); do
     cd "$baseDir"
 done
 
-# --- (Kinda main function code)(END)
+# --- (END)

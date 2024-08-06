@@ -1,5 +1,6 @@
 ------------
 
+- Format results of urls and seperate urls by extensions like reconftw
 - To check if any tool gets stuck:
     make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it
 
@@ -10,7 +11,6 @@
 ------------
 
 [DONE] - Check -nmap and -js flag, fix if something's wrong
-[DONE] - Format results of urls and seperate urls by extensions like reconftw
 
 ------------
 

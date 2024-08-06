@@ -1,48 +1,30 @@
 #!/bin/bash
 
-domainFile=$1
-baseDir=$(pwd)
+# ==== (INFO)
+# This script fuzzes all subdomains of the provided targets.
+# Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
+# - $tempFile
+# - $baseDir
+# ==== (INFO)(END)
 
-# ---
-
-GREEN=$(tput setaf 2)
-RED=$(tput setaf 1)
-ORANGE=$(tput setaf 3)
-RESET=$(tput sgr0) 
-
-timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
-time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
-
-# Function to calculate visible length of the message (excluding color codes)
-calculate_visible_length() {
-  local message=$1
-  # Remove color codes
-  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
-  echo ${#clean_message}
-}
+# ---- (INIT)
+domainFile=$1 # File containing domains to enumerate subdomains for
+source consts/functions.sh # Importing file responsbile for, decorated ouput.
+source consts/commonVariables.sh # Importing file responsible for, holding variables common in several scripts
+ipRanges_file_path='ipRanges.txt' # Filename to save found IP ranges
+subdomainIps_file_path='subdomainIps.txt' # Filename to save found IP ranges
+subdomainActivePassive_file_path='.tmp/subdomains/active+passive.txt' # Filename to save found IP ranges
+network_Directory_Results='network' # Directory name for saving other stuff
+# ---- (INIT)
 
 
-# Function to print the message with aligned time
-print_message() {
-  local color=$1
-  local message=$2
-  local count=$3
-  local time=$(date +"%H:%M:%S")
 
-  if [ -n "$count" ]; then
-    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
-  else
-    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
-  fi
+# ===============================
+# ===============================
 
-  visible_length=$(calculate_visible_length "$formatted_message")
-  total_length=80
-  spaces=$((total_length - visible_length))
-  
-  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
-}
 
-# ---
+
+# --- (Get ASN numbers from bgp.he.net)
 
 getASN() {
 # Find Ip Rnages from ASN
@@ -51,9 +33,8 @@ while IFS= read -r domain; do
     dir="results/$domain"
     cd $dir
 
-  # Removing previous network directory
-    rm -rf network 2> /dev/null
-
+  # Removing previous ${network_Directory_Results} directory
+    rm -rf ${network_Directory_Results} 2> /dev/null
 
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
@@ -69,7 +50,6 @@ while IFS= read -r domain; do
     # Message
     print_message "$GREEN" "ASN found "$(cat 'asn.txt' 2> /dev/null | wc -l)""
 
-
 # Extracting IP Ranges, if any ASN found
     if ! [[ $(wc -l < "asn.txt") -eq 0 ]]; then
 
@@ -77,12 +57,12 @@ while IFS= read -r domain; do
         print_message "$GREEN" "Extracting IP ranges for $domain"
 
         while IFS= read -r ASN; do
-            whois -h whois.radb.net -- '-i origin' "$ASN" | grep -Eo "([0-9.]+){4}/[0-9]+" | uniq  | tee -a ipRanges.txt 1> /dev/null
+            whois -h whois.radb.net -- '-i origin' "$ASN" | grep -Eo "([0-9.]+){4}/[0-9]+" | uniq  | tee -a ${ipRanges_file_path} 1> /dev/null
         done < "asn.txt"
-        sort -u ipRanges.txt -o ipRanges.txt 2> /dev/null 1> /dev/null
+        sort -u ${ipRanges_file_path} -o ${ipRanges_file_path} 2> /dev/null 1> /dev/null
 
         # Message
-        print_message "$GREEN" "IP ranges found "$(cat ipRanges.txt 2> /dev/null | wc -l)""
+        print_message "$GREEN" "IP ranges found "$(cat ${ipRanges_file_path} 2> /dev/null | wc -l)""
 
     fi
 
@@ -90,36 +70,34 @@ while IFS= read -r domain; do
     # Message
     print_message "$GREEN" "Extracting IPs from subdomains of $domain"
     while IFS= read -r subdomain; do
-        dig +short "$subdomain" | tee -a subdomainIps.txt > /dev/null
+        dig +short "$subdomain" | tee -a ${subdomainIps_file_path} > /dev/null
 
-    done < ".tmp/subdomains/active+passive.txt"
-
-
+    done < "${subdomainActivePassive_file_path}"
 
     # Use grep with the regex to check if the line contains an IPv4 address (Removing subdomains, as sometimes `dig` command gives subdomains too. for example: status.withsecure.com)
     while IFS= read -r line; do
       if echo "$line" | grep -E '^([0-9]{1,3}\.){3,4}[0-9]{1,3}$' > /dev/null; then
-          # If the line is IP then, append it to the subdomainIps.txt file
-          echo "$line" >> "subdomainIpsTemp.txt"
+          # If the line is IP then, append it to the ${subdomainIps_file_path} file
+          echo "$line" >> "${tempFile}"
       fi
-    done < "subdomainIps.txt"
+    done < "${subdomainIps_file_path}"
     
-    sort -u subdomainIpsTemp.txt -o subdomainIps.txt
+    sort -u ${tempFile} -o ${subdomainIps_file_path}
 
-    rm subdomainIpsTemp.txt
+    rm ${tempFile}
 
     # Message
-    print_message "$GREEN" "IPs found "$(cat subdomainIps.txt 2> /dev/null | wc -l)""
+    print_message "$GREEN" "IPs found "$(cat ${subdomainIps_file_path} 2> /dev/null | wc -l)""
 
 
 # Scan through nmap
-    if ! [[ $(cat "ipRanges.txt" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]] || ! [[ $(cat "subdomainIps.txt" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]]; then
+    if ! [[ $(cat "${ipRanges_file_path}" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]] || ! [[ $(cat "${subdomainIps_file_path}" 2> /dev/null | wc -l 2> /dev/null) -eq 0 ]]; then
 
       # Message
       print_message "$GREEN" "Nmap scan started"
 
-      mkdir -p network
-      mv ipRanges.txt subdomainIps.txt asn.txt network 2> /dev/null
+      mkdir -p ${network_Directory_Results}
+      mv ${ipRanges_file_path} ${subdomainIps_file_path} asn.txt ${network_Directory_Results} 2> /dev/null
 
     # Calling NMAP
       python3 "$baseDir/scripts/nmap.py"
@@ -133,6 +111,8 @@ while IFS= read -r domain; do
 done < $domainFile
 
 }
+
+# --- (Get ASN)(END)
 
 
 # Call of Nmap ;)

@@ -1,48 +1,26 @@
 #!/bin/bash
 
-domainFile=$1
+# ==== (INFO)
+# This script fuzzes all subdomains of the provided targets.
+# Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
+# - $UrlResults
+# ==== (INFO)(END)
 
-baseDir="$(pwd)"
+# --- (INIT)
+domainFile=$1 # File containing domains to enumerate subdomains for
+source consts/functions.sh # Importing file responsbile for, decorated ouput.
+source consts/commonVariables.sh # Importing file responsible for, holding variables common in several scripts
+xssResults='xss.txt' # Filename name for saving xss results
+# --- (INIT)
 
-# ---
 
-GREEN=$(tput setaf 2)
-RED=$(tput setaf 1)
-ORANGE=$(tput setaf 3)
-RESET=$(tput sgr0) 
 
-timeDate=$(echo -e "${ORANGE}[$(date "+%H:%M:%S : %D")]\n${RESET}")
-time=$(echo -e "${ORANGE}[$(date "+%H:%M:%S")]\n${RESET}")
+# ===============================
+# ===============================
 
-# Function to calculate visible length of the message (excluding color codes)
-calculate_visible_length() {
-  local message=$1
-  # Remove color codes
-  local clean_message=$(echo -e "$message" | sed 's/\x1b\[[0-9;]*m//g')
-  echo ${#clean_message}
-}
 
-# Function to print the message with aligned time
-print_message() {
-  local color=$1
-  local message=$2
-  local count=$3
-  local time=$(date +"%H:%M:%S")
 
-  if [ -n "$count" ]; then
-    formatted_message=$(printf '%s[%s%d] %s' "$color" "$message" "$count" "$RESET")
-  else
-    formatted_message=$(printf '%s[%s] %s' "$color" "$message" "$RESET")
-  fi
-
-  visible_length=$(calculate_visible_length "$formatted_message")
-  total_length=80
-  spaces=$((total_length - visible_length))
-  
-  printf '\t\t|---%s%*s[%s]\n' "$formatted_message" "$spaces" " " "$time"
-}
-
-# ---
+# --- (Sort of main function)
 
 while IFS= read -r domain; do 
 
@@ -52,19 +30,21 @@ while IFS= read -r domain; do
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
 
-    # if [ -f "xss.txt" ]; then
-    #     print_message "$GREEN" "XSS results are already there: "$(cat xss.txt 2> /dev/null | wc -l)""
+    # if [ -f "${xssResults}" ]; then
+    #     print_message "$GREEN" "XSS results are already there: "$(cat ${xssResults} 2> /dev/null | wc -l)""
     # else
-        cat "urls.txt" | grep = | kxss | grep '>\|<\|"' > xss.txt
+        cat "${UrlResults}" | grep = | kxss | grep '>\|<\|"' > ${xssResults}
 
         # Message
-        if ! [ $(wc -l < "xss.txt") -eq 0 ]; then
-            print_message "$GREEN" "RXSS found: "$(cat xss.txt 2> /dev/null | wc -l)""
+        if ! [ $(wc -l < "${xssResults}") -eq 0 ]; then
+            print_message "$GREEN" "RXSS found: "$(cat ${xssResults} 2> /dev/null | wc -l)""
         else
-            rm xss.txt 2> /dev/null
+            rm ${xssResults} 2> /dev/null
         fi
     # fi
 
     # Go back to Project-Recon dir at last 
     cd $baseDir
 done < $domainFile
+
+# --- (Main function)(END)

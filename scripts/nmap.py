@@ -36,7 +36,7 @@ def scan_ip_ranges(ip_ranges_file):
         ip_ranges = [line.strip() for line in irf if line.strip()]
 
     # Execute scanning in parallel using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = []
         
         for ip_range in ip_ranges:

@@ -7,6 +7,11 @@
 - Add logic to check if there is no line in any file, like subdomain.txt or assetfinder.txt in tmp folder or any file containing result, then run the tool, as when it checks if the file exists then it doesn't runs and even overwrites the file with no value
 
 - Implement JS methodology in Project-Recon
+- Add things from this https://github.com/eslam3kl/3klCon
+
+------------
+
+[DONE] Add to install dig (sudo apt-get install dnsutils) in setup.sh 
 
 ------------
 

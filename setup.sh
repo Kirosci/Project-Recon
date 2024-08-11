@@ -243,6 +243,15 @@ updateUpgrade() {
                     echo "y" | sudo apt install coreutils
 
                 fi
+            
+            elif [ $utility == "dnsutils" ]; then
+            
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | sudo apt install dnsutils
+
+                fi
 
             elif ! command -v $utility &>/dev/null; then
 
@@ -271,6 +280,15 @@ updateUpgrade() {
                     echo "y" | sudo dnf install coreutils
 
                 fi
+            
+            elif [ $utility == "dnsutils" ]; then
+            
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | sudo dnf install dnsutils
+
+                fi
 
             elif ! command -v $utility &>/dev/null; then
 
@@ -296,6 +314,15 @@ updateUpgrade() {
 
                     echo "[+] $utility not present, Installing..."
                     echo "y" | pacman -S coreutils
+
+                fi
+
+            elif [ $utility == "dnsutils" ]; then
+            
+                if ! command -v cut &>/dev/null; then
+
+                    echo "[+] $utility not present, Installing..."
+                    echo "y" | pacman -S dnsutils
 
                 fi
 

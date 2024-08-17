@@ -1,25 +1,28 @@
-------------
+---
 
+- Add this in setup.sh for screenshoting subdomains using nuclei templates (https://go-rod.github.io/#/compatibility?id=os):
+    - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install ./google-chrome-stable_current_amd64.deb
 - Format results of urls and seperate urls by extensions like reconftw
 - To check if any tool gets stuck:
-    make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it
+    - Make a log file, update it by writing ouput of every running tools to it, if nothing has been written to it for a long time and the process took long enough than expected, then kill the process and create the base ouput file for it or restart it
 
 - Add logic to check if there is no line in any file, like subdomain.txt or assetfinder.txt in tmp folder or any file containing result, then run the tool, as when it checks if the file exists then it doesn't runs and even overwrites the file with no value
 
 - Implement JS methodology in Project-Recon
 - Add things from this https://github.com/eslam3kl/3klCon
 
-------------
+---
 
 [DONE] Add to install dig (sudo apt-get install dnsutils) in setup.sh 
 
-------------
+---
 
 [DONE] - Check -nmap and -js flag, fix if something's wrong
 
-------------
+---
 
 [DONE] - Combine results of dir such as fuzz, nmap, screenshots, etc
 [DONE] - Currently working on this in org.sh file in "/home/cyrusop/bugBounty/serber/bugbounty/Project-Recon/VEEPEE/org.sh"
 
-------------
+---

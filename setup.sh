@@ -117,7 +117,7 @@ installmissingTools(){
 fixMissingAgain(){
     for tool in ${missingAgain[@]}; do
         echo "[+] Fixing misses"
-        echo "y" | sudo pip3 uninstall $tool
+        sudo pip3 uninstall -y $tool
         echo "[+] Fixed misses"
     done
 
@@ -205,9 +205,9 @@ updateUpgrade() {
 
         echo "[+] OS: Debian"
         
-        echo "y" | sudo apt update
-        echo "y" | sudo apt full-upgrade -y
-        echo "y" | sudo apt autoremove -y
+        sudo apt update -y
+        sudo apt full-upgrade -y
+        sudo apt autoremove -y
         apt install python3-pip
         apt install python3.11-venv
         dir=$(pwd)
@@ -240,7 +240,7 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | sudo apt install coreutils
+                    sudo apt install coreutils -y
 
                 fi
             
@@ -249,14 +249,14 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | sudo apt install dnsutils
+                    sudo apt install dnsutils -y
 
                 fi
 
             elif ! command -v $utility &>/dev/null; then
 
                 echo "[+] $utility not present, Installing..."
-                echo "y" | sudo apt install $utility
+                sudo apt install $utility -y
 
             fi
             
@@ -267,8 +267,8 @@ updateUpgrade() {
 
         echo "[+] OS: Fedora"
 
-        echo "y" | sudo dnf update -y
-        echo "y" | sudo dnf clean all
+        sudo dnf update -y
+        sudo dnf clean all -y
 
         for utility in ${commonUtilties[@]}; do
 
@@ -277,7 +277,7 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | sudo dnf install coreutils
+                    sudo dnf install coreutils -y
 
                 fi
             
@@ -286,14 +286,14 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | sudo dnf install dnsutils
+                    sudo dnf install dnsutils -y
 
                 fi
 
             elif ! command -v $utility &>/dev/null; then
 
                 echo "[+] $utility not present, Installing..."
-                echo "y" | sudo dnf install $utility
+                sudo dnf install $utility -y
 
             fi
 
@@ -304,7 +304,7 @@ updateUpgrade() {
 
         echo "[+] OS: Arch"
 
-        echo "y" | sudo pacman -Syu
+        sudo pacman -Syu
 
         for utility in ${commonUtilties[@]}; do
 
@@ -313,7 +313,7 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | pacman -S coreutils
+                    pacman -S coreutils
 
                 fi
 
@@ -322,14 +322,14 @@ updateUpgrade() {
                 if ! command -v cut &>/dev/null; then
 
                     echo "[+] $utility not present, Installing..."
-                    echo "y" | pacman -S dnsutils
+                    pacman -S dnsutils
 
                 fi
 
             elif ! command -v $utility &>/dev/null; then
 
                 echo "[+] $utility not present, Installing..."
-                echo "y" | pacman -S $utility
+                pacman -S $utility
 
             fi
             

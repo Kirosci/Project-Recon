@@ -208,22 +208,22 @@ updateUpgrade() {
         sudo apt update -y
         sudo apt full-upgrade -y
         sudo apt autoremove -y
-        apt install python3-pip
-        apt install python3.11-venv
+        apt install -y python3-pip
+        apt install -y python3.11-venv
         dir=$(pwd)
         cd ~
         python3 -m venv .venvPython
         source .venvPython/bin/activate
         cd $dir
-        echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
-        echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
-        chmod +x ~/.activatePythonVenv.sh
+#        echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
+#        echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
+#        chmod +x ~/.activatePythonVenv.sh
 
         if [ "$(echo $SHELL)" = "/bin/bash" ]; then
-            echo 'source ~/.activatePythonVenv.sh' >> ~/.bashrc
+            echo 'source ~/.venvPython/bin/activate' >> ~/.bashrc
             source ~/.bashrc
         elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
-            echo 'source ~/.activatePythonVenv.sh' >> ~/.zshrc
+            echo 'source ~/.venvPython/bin/activate' >> ~/.zshrc
             source ~/.zshrc
         else
             echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"
@@ -360,8 +360,6 @@ updateUpgrade() {
     fi
 
 }
-
-
 
 
 # Driver Code

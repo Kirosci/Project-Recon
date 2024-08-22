@@ -208,22 +208,22 @@ updateUpgrade() {
         sudo apt update -y
         sudo apt full-upgrade -y
         sudo apt autoremove -y
-        apt install -y python3-pip
-        apt install -y python3.11-venv
+        apt install -y python3-pip && echo "[+] Python Installed" || echo "[+] Python Not Installed" | tee -a log.txt
+        apt install -y python3.11-venv && echo "[+] Python venv Installed" || echo "[+] Python venv not Installed" | tee -a log.txt
         dir=$(pwd)
-        cd ~
-        python3 -m venv .venvPython
-        source .venvPython/bin/activate
-        cd $dir
+        cd ~ && echo "[+] Dir changed to '~'" || echo "[+] Dir didn't changed to '~'" | tee -a log.txt
+        python3 -m venv .venvPython && echo "[+] Python vevnv made" || echo "[+] Python vevnv not made  " | tee -a log.txt
+        source .venvPython/bin/activate && echo "[+] Python vevnv activated" || echo "[+] Python venv not activated" | tee -a log.txt
+        cd $dir  && echo "[+] Directory changed to $dir" || echo "[+] Directory not changed to $dir" | tee -a log.txt
 #        echo "#!/bin/bash" >> ~/.activatePythonVenv.sh
 #        echo "source ~/.venvPython/bin/activate" >> ~/.activatePythonVenv.sh
 #        chmod +x ~/.activatePythonVenv.sh
 
         if [ "$(echo $SHELL)" = "/bin/bash" ]; then
-            echo 'source ~/.venvPython/bin/activate' >> ~/.bashrc
+            echo 'source ~/.venvPython/bin/activate' >> ~/.bashrc && echo "[+] Python vevnv activate added to bashrc" || echo "[+] Python vevnv activate not added to bashrc" | tee -a log.txt
             source ~/.bashrc
         elif [ "$(echo $SHELL)" = "/bin/zsh" ]; then
-            echo 'source ~/.venvPython/bin/activate' >> ~/.zshrc
+            echo 'source ~/.venvPython/bin/activate' >> ~/.zshrc && echo "[+] Python vevnv activate added to zshrc" || echo "[+] Python vevnv activate not added to zshrc" | tee -a log.txt
             source ~/.zshrc
         else
             echo "Neither Bash nor Zsh is detected as the default shell. Please change your shell to one of these"

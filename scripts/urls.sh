@@ -38,6 +38,9 @@ source consts/commonVariables.sh
     # Active enumeration
         katana_Active_UrlResults='katana.txt'
         hakrawler_Active_UrlResults='hakrawler.txt'
+    
+    # Organise
+        urlsArranged='urlsArranged.txt'
 
 # Temporary path to save tempoprary subdomains enumeration files (In real it is permanent, I mean it doesn't gets removed)
 
@@ -156,6 +159,33 @@ organise(){
 
     # Moving unnecessary to temporary directory
     mv ${waybackurls_Passive_UrlResults} ${gau_Passive_UrlResults} ${waymore_Passive_UrlResults} ${katana_Active_UrlResults} ${hakrawler_Active_UrlResults} ${tempFile} ${temp_UrlResults_Path} 2> /dev/null
+    
+# Arranging urls according to their extensions
+    # Array of file extensions to search for
+    extensions=("~" "7z" "ace" "action" "aliases" "arc" "arj" "asc" "aws/config" "aws/credentials" "babelrc" "backup" "bak" "bas" "bash" "bash_profile" "bashrc" "bat" "bin" "bk" "bkp" "blade" "build" "buildignore" "buildpath" "bz" "bz2" "bzrconfig" "bzrignore" "c" "c++" "c$" "cab" "cache" "cc" "cer" "cfg" "cfignore" "cgi" "circleci" "class" "cls" "cnf" "commitlintrc" "conf" "config" "cpio" "cpp" "cpp$" "cred" "credentials" "crt" "cs" "cs^" "csh" "csr" "csv" "csvignore" "ctl" "ctp" "cxx" "dat" "data" "db" "db3" "deb" "der" "dir" "dist" "dll" "dmg" "dmp" "do" "dob" "docker" "docker-compose.yaml" "docker-compose.yml" "dockerfile" "dockerignore" "dockerrc" "docx" "DS_Store" "ear" "editorconfig" "ejs" "ejs^" "eml" "env" "env.development" "env.local" "env.production" "env.test" "erb" "eslintignore" "eslintrc" "exe" "factories" "fish" "freemarker" "frm" "ftl" "functions" "git" "gitattributes" "gitignore" "gitmodules" "go" "gpg" "gradle" "gz" "h" "h++" "haml" "handlebars" "hbs" "helmfile" "helmignore" "hgignore" "hgrc" "hh" "hjson" "hqx" "htaccess" "htmllintrc" "htpasswd" "huskyrc" "hxx" "idea" "ignore" "img" "inc" "inf" "ini" "iso" "jade" "jar" "java" "jenkinsfile" "jks" "jnlp" "json5" "jsx" "kbdx" "kdb" "kdbx" "key" "keychain" "ksh" "kube/config" "lck" "ldf" "less" "lintstagedrc" "lock" "log" "lst" "lz" "lzh" "lzma" "lzo" "m2" "markdown" "markdownlint" "md" "mdf" "mdx" "mercurial-hgignore" "metadata" "mkd" "mkdown" "msg" "mustache" "mvn" "mysql" "mysql-connect" "netrc" "npmignore" "npmrc" "nrg" "nunjucks" "nz" "old" "openvpn" "orig" "ost" "out" "ova" "ovpn" "p12" "p7b" "p7c" "pak" "pea" "pem" "pfx" "pgp" "pgsql" "php3" "php4" "php5" "php7" "pid" "pkcs12" "pkg" "pl" "pm" "pom" "ppdf" "ppk" "pptx" "prefs" "prettierrc" "profile" "project" "properties" "ps1" "pst" "ptxt" "pug" "pwd" "pxml" "py" "pyc" "pyd" "pyo" "pyx" "rake" "rar" "raw" "rb" "rc" "renv" "rhtml" "ron" "rpm" "rs" "rspec" "rst" "rsx" "ru" "s7z" "sar" "sass" "save" "sea" "secrets" "settings" "sfx" "sh" "sit" "sitx" "slugignore" "sm" "smx" "sql" "sqlite" "sqlite3" "styl" "stylelintrc" "swap" "swm" "swo" "swp" "tag.gz" "tar" "tar.bz2" "tar.gz" "tar.gz.xz" "tar.xz" "tar.xz.gz" "tbz2" "tcsh" "temp" "terraformrc" "test" "tfignore" "tgz" "tlz" "tmp" "todo" "toml" "tpl" "travis.yml" "ts" "tsx" "twig" "uue" "vb" "vbproj" "vbs" "vm" "vmdk" "vs" "vscode" "vtl" "vue" "war" "watchmanconfig" "webconfig" "webinfo" "webproj" "wim" "wsgi" "xar" "xlsx" "xmi" "xsql" "xz" "yaml" "yarnrc" "yml" "Z" "zip" "zoo" "zsh" "zshrc" "txt")
+
+    # Loop through each extension
+    for ext in "${extensions[@]}"; do
+        arrangedUrls=$(grep -E "\.${ext}(\?.*)?$" urls.txt)
+        if [ -n "$arrangedUrls" ]; then
+            echo "================(.${ext})" >> "$urlsArranged"
+            echo "" >> "$urlsArranged"
+
+            # Append each line of arrangedUrls to the file if URL is returning 200 OK
+            while IFS= read -r line; do
+                # Check if URL returns 200 OK
+                statusCode=$(curl -o /dev/null -s -w "%{http_code}" "$line")
+                if [ "$statusCode" -eq 200 ]; then
+                    echo "$line" >> "$urlsArranged"
+                fi
+            done <<< "$arrangedUrls"
+
+            # Add extra newlines for spacing
+            echo "" >> "$urlsArranged"
+            echo "" >> "$urlsArranged"
+        fi
+    done
+    
     print_message "$GREEN" "Organising finished"
 }
 

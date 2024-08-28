@@ -11,7 +11,7 @@
 domainFile=$1 # File containing domains to enumerate subdomains for
 source consts/functions.sh # Importing file responsbile for, decorated ouput.
 source consts/commonVariables.sh # Importing file responsible for, holding variables common in several scripts
-FuzzResults='fuzz.txt' # Filename to save combined fuzz results
+FuzzResults='fuzzCombined.txt' # Filename to save combined fuzz results
 fuzz_Directory_Results='fuzz' # Directory name for saving results
 wordlist_MixedMedium_Path='../../wordlists/mixedMedium.txt' # Wordlist path for fuzzing
 wordlist_DirSmall_Path='../../wordlists/dirSmall.txt' # Wordlist path for fuzzing

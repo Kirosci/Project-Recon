@@ -13,7 +13,7 @@ source consts/functions.sh # Importing file responsbile for, decorated ouput.
 source consts/commonVariables.sh # Importing file responsible for, holding variables common in several scripts
 ipRanges_file_path='ipRanges.txt' # Filename to save found IP ranges
 subdomainIps_file_path='subdomainIps.txt' # Filename to save found IP ranges
-subdomainActivePassive_file_path='.tmp/subdomains/active+passive.txt' # Filename to save found IP ranges
+subdomainActivePassive_file_path='.tmp/subdomains/active.and.passive.CombinedSubdomainResults.txt' # Filename to save found IP ranges
 network_Directory_Results='network' # Directory name for saving other stuff
 # ---- (INIT)
 

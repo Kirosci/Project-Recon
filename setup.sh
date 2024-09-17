@@ -3,7 +3,7 @@
 
 allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
-commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq")
+commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq" "net-tools" "tmux" "unzip" "zip")
 
 missingTools=()
 missingAgain=()

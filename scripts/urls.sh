@@ -83,7 +83,7 @@ passive() {
         #     print_message "$GREEN" "Waymore results are already there: $(cat "${temp_UrlResults_Path}/${waymore_Passive_UrlResults}" 2> /dev/null | wc -l)"
         # else
             # cp ${SubdomainResults} temp_subdomains_waymore.txt && 
-            cat ${SubdomainResults} | sed 's/^/https:\/\//' > ${tempFile}
+            cat ${domainFile} | sed 's/^/https:\/\//' > ${tempFile}
             waymore -n -xwm -urlr 0 -r 2 -i ${tempFile} -mode U -oU ${waymore_Passive_UrlResults} 2> /dev/null 1> /dev/null
             rm ${tempFile} 2> /dev/null
             print_message "$GREEN" "Waymore: $(cat "${waymore_Passive_UrlResults}" 2> /dev/null | wc -l)"

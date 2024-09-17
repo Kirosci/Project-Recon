@@ -44,18 +44,17 @@ while IFS= read -r domain; do
         ) &
 
         (
-        dirsearch -l ${SubdomainResults}  -w ${wordlist_MixedMedium_Path} -t 10 -i 200 -o ${fuzz_DirSmall_Results} 2> /dev/null
+        dirsearch -l ${SubdomainResults}  -w ${wordlist_MixedMedium_Path} -t 10 -i 200 -o "${fuzz_DirSmall_Results}" 2> /dev/null
         ) &
 
         wait
 
       # Combining fuzzed results
-        cat ${fuzz_MixedMedium_Results} ${fuzz_DirSmall_Results} 2> /dev/null | sort -u | tee -a ${FuzzResults}
+        cat ${fuzz_MixedMedium_Results} ${fuzz_DirSmall_Results} 2> /dev/null | sort -u | tee -a "${FuzzResults}"
 
       # Make dir and move results into
         mkdir -p ${fuzz_Directory_Results}
-        mv ${fuzz_MixedMedium_Results} ${fuzz_Directory_Results}
-        mv ${fuzz_DirSmall_Results} ${fuzz_Directory_Results}
+        mv "${fuzz_MixedMedium_Results}" "${fuzz_DirSmall_Results}" "${FuzzResults}" "${fuzz_Directory_Results}"
 
         # Message
         print_message "$GREEN" "${fuzz_MixedMedium_Results}: $(cat ${fuzz_Directory_Results}/${fuzz_MixedMedium_Results} 2> /dev/null | wc -l) | ${fuzz_DirSmall_Results}: $(cat ${fuzz_Directory_Results}/${fuzz_DirSmall_Results} 2> /dev/null | wc -l)"

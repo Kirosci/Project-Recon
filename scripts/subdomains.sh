@@ -306,7 +306,8 @@ screenshot() {
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
-    cat ${active_and_passive_CombinedSubdomainResults} 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> ${SubdomainResults} 2> /dev/null
+    # cat ${active_and_passive_CombinedSubdomainResults} 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> ${SubdomainResults} 2> /dev/null
+    cp ${active_and_passive_CombinedSubdomainResults} ${SubdomainResults}
     sort -u ${SubdomainResults} -o ${SubdomainResults} 
     cat ${SubdomainResults} | httpx >> ${liveSubdomains_SubdomainResults} 2> /dev/null
     sort -u ${liveSubdomains_SubdomainResults} -o ${liveSubdomains_SubdomainResults}

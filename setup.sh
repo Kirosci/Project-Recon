@@ -3,7 +3,7 @@
 
 allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
-commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq" "net-tools" "tmux" "unzip" "zip")
+commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq" "net-tools" "tmux" "unzip" "zip" "dnsutils" "nmap")
 
 missingTools=()
 missingAgain=()
@@ -74,6 +74,9 @@ installmissingTools(){
         # Misc Tools
             "dirsearch")
                 pip3 install dirsearch
+                ;;
+            "tld")
+                pip3 install tld
                 ;;
             "kxss")
                 /usr/local/go/bin/go install -v github.com/Emoe/kxss@latest

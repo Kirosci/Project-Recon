@@ -207,7 +207,7 @@ def pseudoMain():
             if args.amass_t:
                 amassTimeout = args.amass_t
             else:
-                amassTimeout = 30
+                amassTimeout = 1
 
 # Check if -org flag is provided without -dir flag
             if args.org and args.dir:

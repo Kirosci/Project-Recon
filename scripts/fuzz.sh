@@ -44,7 +44,7 @@ while IFS= read -r domain; do
         ) &
 
         (
-        dirsearch -l ${SubdomainResults}  -w ${wordlist_MixedMedium_Path} -t 10 -i 200 -o "${fuzz_DirSmall_Results}" 2> /dev/null
+        dirsearch -l ${SubdomainResults}  -w ${wordlist_DirSmall_Path} -t 10 -i 200 -o "${fuzz_DirSmall_Results}" 2> /dev/null
         ) &
 
         wait

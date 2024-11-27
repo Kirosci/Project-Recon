@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
+allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "ffuf" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
 commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq" "net-tools" "tmux" "unzip" "zip" "dnsutils" "nmap")
 
@@ -49,6 +49,9 @@ installmissingTools(){
                 ;;
             "massdns")
                 git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && mv bin/massdns /usr/local/bin/ && cd ../ && rm -rf massdns
+                ;;
+            "ffuf")
+                /usr/local/go/bin/go install github.com/ffuf/ffuf/v2@latest
                 ;;
 
 
@@ -211,6 +214,7 @@ updateUpgrade() {
         sudo apt update -y
         sudo apt full-upgrade -y
         sudo apt autoremove -y
+        sudo apt install dnsutils -y
         apt install -y python3-pip && echo "[+] Python Installed" || echo "[+] Python Not Installed" | tee -a log.txt
         apt install -y python3.11-venv && echo "[+] Python venv Installed" || echo "[+] Python venv not Installed" | tee -a log.txt
         dir=$(pwd)
@@ -272,6 +276,7 @@ updateUpgrade() {
 
         sudo dnf update -y
         sudo dnf clean all -y
+        sudo dnf install dnsutils -y
 
         for utility in ${commonUtilties[@]}; do
 
@@ -308,6 +313,8 @@ updateUpgrade() {
         echo "[+] OS: Arch"
 
         sudo pacman -Syu
+        sudo pacman -S dnsutils -y
+
 
         for utility in ${commonUtilties[@]}; do
 

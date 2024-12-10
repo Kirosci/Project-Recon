@@ -7,7 +7,7 @@
 # ====
 
 # Filename to save subdomain enumeration results
-Dir_SubdomainResults='subdomains.txt'
+SubdomainResults='subdomains.txt'
 
 # Filename to save results of URL enumeration
 UrlResults='urls.txt'

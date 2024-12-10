@@ -6,6 +6,7 @@
 
 # Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
 # - $UrlResults
+# - $SubdomainResults
 # - $baseDir
 # - $jsUrls
 # ==== (INFO)(END)

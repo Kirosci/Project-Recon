@@ -3,7 +3,7 @@
 # ==== (INFO)
 # This script enumerates subdomains for the provided targets.
 # Variables imported from "consts/commonVariables.sh" (These variables are common in several scripts)
-# - $Dir_SubdomainResults
+# - $SubdomainResults
 # - $baseDir
 # - $tempFile
 # ==== (INFO)
@@ -25,6 +25,7 @@ amass_Passive_SubdomainResults='amass.txt' # Filename to save results of passive
 subfinder_Passive_SubdomainResults='subfinder.txt' # Filename to save results of passive enumeration
 subdominator_Passive_SubdomainResults='subdominator.txt' # Filename to save results of passive enumeration
 passive_CombinedSubdomainResults='passive.CombinedSubdomainResults.txt' # Combined results of all passive tools
+puredns_ResolversFile="~/.config/puredns/resolvers.txt"
 alterx_Active_SubdomainResults='alterx.txt' # Filename to save results of active enumeration
 dnsgen_Active_SubdomainResults='dnsgen.txt' # Filename to save results of active enumeration
 altdns_Active_SubdomainResults='altdns.txt' # Filename to save results of active enumeration
@@ -143,36 +144,20 @@ checkWordlist() {
 passiveEnumeration(){
 
     (
-        # if [ -f "${temp_Passive_SubdomainResults_Path}/${assetfinder_Passive_SubdomainResults}" ]; then
-        #     print_message "$GREEN" "Assetfinder results are already there: $(cat "${temp_Passive_SubdomainResults_Path}/${assetfinder_Passive_SubdomainResults}" 2> /dev/null | wc -l)"
-        # else
-            echo "$domain" | assetfinder >> ${assetfinder_Passive_SubdomainResults}
-            print_message "$GREEN" "Assetfinder: $(cat ${assetfinder_Passive_SubdomainResults} 2> /dev/null | wc -l)"
-        # fi
+        echo "$domain" | assetfinder >> ${assetfinder_Passive_SubdomainResults}
+        print_message "$GREEN" "Assetfinder: $(cat ${assetfinder_Passive_SubdomainResults} 2> /dev/null | wc -l)"
     ) &
     (
-        # if [ -f "${temp_Passive_SubdomainResults_Path}/${haktrails_Passive_SubdomainResults}" ]; then
-        #     print_message "$GREEN" "Haktrails results are already there: $(cat "${temp_Passive_SubdomainResults_Path}/${haktrails_Passive_SubdomainResults}" 2> /dev/null | wc -l)"
-        # else
-            echo "$domain" | haktrails subdomains >> ${haktrails_Passive_SubdomainResults}
-            print_message "$GREEN" "Haktrails: $(cat ${haktrails_Passive_SubdomainResults} 2> /dev/null | wc -l)"
-        # fi
+        echo "$domain" | haktrails subdomains >> ${haktrails_Passive_SubdomainResults}
+        print_message "$GREEN" "Haktrails: $(cat ${haktrails_Passive_SubdomainResults} 2> /dev/null | wc -l)"
     ) &
     (
-        # if [ -f "${temp_Passive_SubdomainResults_Path}/${subfinder_Passive_SubdomainResults}" ]; then
-        #     print_message "$GREEN" "Subfinder results are already there: $(cat "${temp_Passive_SubdomainResults_Path}/${subfinder_Passive_SubdomainResults}" 2> /dev/null | wc -l)"
-        # else
-            echo "$domain" | subfinder -o ${subfinder_Passive_SubdomainResults} 2> /dev/null 1> /dev/null
-            print_message "$GREEN" "Subfinder: $(cat ${subfinder_Passive_SubdomainResults} 2> /dev/null | wc -l)"
-        # fi
+        echo "$domain" | subfinder -o ${subfinder_Passive_SubdomainResults} 2> /dev/null 1> /dev/null
+        print_message "$GREEN" "Subfinder: $(cat ${subfinder_Passive_SubdomainResults} 2> /dev/null | wc -l)"
     ) &
     (
-        # if [ -f "${temp_Passive_SubdomainResults_Path}/${subdominator_Passive_SubdomainResults}" ]; then
-        #     print_message "$GREEN" "Subdominator results are already there: $(cat "${temp_Passive_SubdomainResults_Path}/${subdominator_Passive_SubdomainResults}" 2> /dev/null | wc -l)"
-        # else
-            subdominator -d "$domain" -o ${subdominator_Passive_SubdomainResults} 2> /dev/null 1> /dev/null
-            print_message "$GREEN" "Subdominator: $(cat ${subdominator_Passive_SubdomainResults} 2> /dev/null | wc -l)"
-        # fi
+        subdominator -d "$domain" -o ${subdominator_Passive_SubdomainResults} 2> /dev/null 1> /dev/null
+        print_message "$GREEN" "Subdominator: $(cat ${subdominator_Passive_SubdomainResults} 2> /dev/null | wc -l)"
     ) &
 
     (
@@ -192,8 +177,6 @@ passiveEnumeration(){
                 amass enum -d "$domain" -timeout $timeout -o ${amass_Passive_SubdomainResults} 2> /dev/null
                 print_message "$GREEN" "Amass: $(cat ${amass_Passive_SubdomainResults} 2> /dev/null | wc -l)"
             fi
-
-
 
 
             # if [[ "$2" -eq 1 ]]; then   
@@ -244,38 +227,9 @@ passiveEnumeration(){
 
 activeEnumeration() {
 
-# These below 2 tools generate a lot of subdomains, and puredns can't handle that, they generate nearly around 33 GB of files to resolve, That's a lot!!
-    # ---
-    # (
-    #     # Dnsgen will take list of subdomains (${passive_CombinedSubdomainResults}) and will permute between them
-    #     if [ -f "${temp_Active_SubdomainResults_Path}/${dnsgen_Active_SubdomainResults}" ]; then
-    #         print_message "$GREEN" "Dnsgen results are already there: $(cat "${temp_Active_SubdomainResults_Path}/${dnsgen_Active_SubdomainResults}" 2> /dev/null | wc -l)"                            
-    #     else
-    #         dnsgen "${passive_CombinedSubdomainResults}" -f | tee -a ${dnsgen_Active_SubdomainResults} 1> /dev/null 2> /dev/null
-    #         print_message "$GREEN" "Dnsgen: $(cat ${dnsgen_Active_SubdomainResults} 2> /dev/null | wc -l)"
-    #     fi
-    # ) &
-
-    # (
-    # # Altdns will permute assetnote wordlist with domain name
-    #     if [ -f "${temp_Active_SubdomainResults_Path}/${altdns_Active_SubdomainResults}" ]; then
-    #         print_message "$GREEN" "Altdns results are already there: $(cat "${temp_Active_SubdomainResults_Path}/${altdns_Active_SubdomainResults}" 2> /dev/null | wc -l)"                            
-    #     else
-    #         altdns -i "$domain" -w "$wordlistsDir/assetnoteSubdomains.txt" -o ${altdns_Active_SubdomainResults}
-    #         print_message "$GREEN" "Altdns (Assetnote wordlist): $(cat ${altdns_Active_SubdomainResults} 2> /dev/null | wc -l)"
-    #     fi
-    # ) & 
-    # ---
-
-
     (
-    # Alterx takes subdomains (${passive_CombinedSubdomainResults}) and will permute between them, on behalf of specified rules
-        # if [ -f "${temp_Active_SubdomainResults_Path}/${alterx_Active_SubdomainResults}" ]; then
-        #     print_message "$GREEN" "Alterx results are already there: $(cat "${temp_Active_SubdomainResults_Path}/${alterx_Active_SubdomainResults}" 2> /dev/null | wc -l)"                            
-        # else
             cat "${passive_CombinedSubdomainResults}" | alterx -o ${alterx_Active_SubdomainResults} 2> /dev/null
             print_message "$GREEN" "Alterx: $(cat ${alterx_Active_SubdomainResults} 2> /dev/null | wc -l)"
-        # fi
     ) &
     wait
 
@@ -284,11 +238,8 @@ activeEnumeration() {
 
 # Puredns will resolve the permuted subdomains 
 
-    # if [ -f "${temp_Active_SubdomainResults_Path}/${active_CombinedSubdomainResults}" ]; then
-    #     print_message "$GREEN" "Puredns results are already there: $(cat "${temp_Active_SubdomainResults_Path}/${active_CombinedSubdomainResults}" 2> /dev/null | wc -l)"                            
-    # else
-        puredns resolve "${active_TotalPerMuted_SubdomainResults}" -q >> ${active_CombinedSubdomainResults}
-        # sort -u ${active_CombinedSubdomainResults} -o ${active_CombinedSubdomainResults}
+        cat ${active_TotalPerMuted_SubdomainResults} | dnsresolver --resolvers $(eval echo $puredns_ResolversFile) 2> /dev/null >> ${active_CombinedSubdomainResults}
+        # puredns resolve "${active_TotalPerMuted_SubdomainResults}" -q >> ${active_CombinedSubdomainResults}
 
         cat ${active_CombinedSubdomainResults} | grep -iE "${domain}$" | sed 's/^[^a-zA-Z0-9]*//' | sed -E 's#^https?://##; s#^www*\.##' | awk '{print tolower($0)}' | sort -u -o ${active_CombinedSubdomainResults}
 
@@ -311,7 +262,7 @@ activeEnumeration() {
 
 screenshot() {
     print_message "$GREEN" "Taking screenshots"
-    nuclei -l ${Dir_SubdomainResults} -headless -t ~/nuclei-templates/headless/screenshot.yaml -c 100 2> /dev/null 1> /dev/null
+    nuclei -l ${SubdomainResults} -headless -t ~/nuclei-templates/headless/screenshot.yaml -c 100 2> /dev/null 1> /dev/null
 }
 # --- (Take screeenshots of all found subdomains)(END)
 
@@ -326,10 +277,10 @@ screenshot() {
 
 organise() {
     print_message "$GREEN" "Organising found subdomains"
-    # cat ${active_and_passive_CombinedSubdomainResults} 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> ${Dir_SubdomainResults} 2> /dev/null
-    cp ${active_and_passive_CombinedSubdomainResults} ${Dir_SubdomainResults}
-    cat ${Dir_SubdomainResults} | sed -E 's#^https?://##; s#^www*\.##' | sort -u -o ${Dir_SubdomainResults} 
-    cat ${Dir_SubdomainResults} | httpx >> ${liveSubdomains_SubdomainResults} 2> /dev/null
+    # cat ${active_and_passive_CombinedSubdomainResults} 2> /dev/null | httpx -t 100 -mc 200,201,202,300,301,302,303,400,401,402,403,404 >> ${SubdomainResults} 2> /dev/null
+    cp ${active_and_passive_CombinedSubdomainResults} ${SubdomainResults}
+    cat ${SubdomainResults} | sed -E 's#^https?://##; s#^www*\.##' | sort -u -o ${SubdomainResults} 
+    cat ${SubdomainResults} | httpx >> ${liveSubdomains_SubdomainResults} 2> /dev/null
     cat ${liveSubdomains_SubdomainResults} | sed -E 's#^https?://##; s#^www*\.##' | sort -u -o ${liveSubdomains_SubdomainResults}
     mv "${assetfinder_Passive_SubdomainResults}" "${passive_CombinedSubdomainResults}" "${subfinder_Passive_SubdomainResults}" "${subdominator_Passive_SubdomainResults}" "${amass_Passive_SubdomainResults}" "${haktrails_Passive_SubdomainResults}" "${passive_CombinedSubdomainResults}" "${temp_Passive_SubdomainResults_Path}" 2> /dev/null
     mv "${dnsgen_Active_SubdomainResults}" "${alterx_Active_SubdomainResults}" "${altdns_Active_SubdomainResults}" "${active_TotalPerMuted_SubdomainResults}" "${active_CombinedSubdomainResults}" "${temp_Active_SubdomainResults_Path}" 2> /dev/null
@@ -351,7 +302,8 @@ organise() {
 for domain in $(cat "$domainFile"); do
 
     dir="results/$domain"
-    mkdir -p "$dir" 
+    mkdir -p "$dir"
+    cp $domainFile $dir
     cd $dir 
     # Message main
     printf '\t%s[%s]%s\t%s' "$ORANGE" "$domain" "$RESET" "$timeDate"
@@ -361,8 +313,8 @@ for domain in $(cat "$domainFile"); do
     mkdir -p "${temp_Active_SubdomainResults_Path}"
     mkdir -p screenshots    
 
-    if ! [[ "$(cat ${Dir_SubdomainResults}  2> /dev/null | wc -l)" -eq 0 ]]; then
-        print_message "$GREEN" "Subdomain results are already there: $(cat ${Dir_SubdomainResults} 2> /dev/null | wc -l)"
+    if ! [[ "$(cat ${SubdomainResults}  2> /dev/null | wc -l)" -eq 0 ]]; then
+        print_message "$GREEN" "Subdomain results are already there: $(cat ${SubdomainResults} 2> /dev/null | wc -l)"
     else
         wordlistsDir="$(dirname "$(dirname "$(pwd)")")/wordlists" 
         if [ "$3" == "passive" ]; then
@@ -380,7 +332,7 @@ for domain in $(cat "$domainFile"); do
                 passiveEnumeration
                 checkWordlist
                 activeEnumeration
-                cat ${passive_CombinedSubdomainResults} ${active_CombinedSubdomainResults} | sort -u > ${active_and_passive_CombinedSubdomainResults}
+                # cat ${passive_CombinedSubdomainResults} ${active_CombinedSubdomainResults} | sort -u > ${active_and_passive_CombinedSubdomainResults}
                 organise
                 screenshot
             fi
@@ -388,7 +340,7 @@ for domain in $(cat "$domainFile"); do
             passiveEnumeration
             checkWordlist
             activeEnumeration
-            cat ${passive_CombinedSubdomainResults} ${active_CombinedSubdomainResults} | sort -u > ${active_and_passive_CombinedSubdomainResults}
+            # cat ${passive_CombinedSubdomainResults} ${active_CombinedSubdomainResults} | sort -u > ${active_and_passive_CombinedSubdomainResults}
             organise
             screenshot
         else
@@ -398,7 +350,7 @@ for domain in $(cat "$domainFile"); do
             screenshot
         fi  
         # Message last
-        printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat ${Dir_SubdomainResults} 2> /dev/null | wc -l)" "$RESET" "$timeDate"
+        printf '\t%s[Found: %s]%s\t%s' "$GREEN" "$(cat ${SubdomainResults} 2> /dev/null | wc -l)" "$RESET" "$timeDate"
 
     fi 
 # Go back to Project-Recon dir at last 

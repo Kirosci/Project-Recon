@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-allTools=("assetfinder" "jsluice" "unfurl" "hakrawler" "ffuf" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
+allTools=("assetfinder" "dnsresolver" "jsluice" "unfurl" "hakrawler" "ffuf" "subjs" "massdns" "fetcher" "subfinder" "amass" "subdominator" "haktrails" "waymore" "katana" "gau" "waybackurls" "nuclei" "kxss" "qsreplace" "dirsearch" "httpx" "dnsgen" "altdns" "alterx" "puredns")
 
 commonUtilties=("python3" "pip3" "sed" "gawk" "coreutils" "curl" "git" "jq" "net-tools" "tmux" "unzip" "zip" "dnsutils" "nmap")
 
@@ -50,6 +50,8 @@ installmissingTools(){
             "massdns")
                 git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && mv bin/massdns /usr/local/bin/ && cd ../ && rm -rf massdns
                 ;;
+            "dnsresolver")
+                git clone https://github.com/ethicalhackingplayground/dnsresolver ; cd dnsresolver ; cargo install --path .                ;;
             "ffuf")
                 /usr/local/go/bin/go install github.com/ffuf/ffuf/v2@latest
                 ;;
@@ -215,6 +217,12 @@ updateUpgrade() {
         sudo apt full-upgrade -y
         sudo apt autoremove -y
         sudo apt install dnsutils -y
+
+        sudo apt install -y curl build-essential
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        source $HOME/.cargo/env
+
+
         apt install -y python3-pip && echo "[+] Python Installed" || echo "[+] Python Not Installed" | tee -a log.txt
         apt install -y python3.11-venv && echo "[+] Python venv Installed" || echo "[+] Python venv not Installed" | tee -a log.txt
         dir=$(pwd)
@@ -278,6 +286,11 @@ updateUpgrade() {
         sudo dnf clean all -y
         sudo dnf install dnsutils -y
 
+        sudo dnf install -y curl make gcc
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        source $HOME/.cargo/env
+
+
         for utility in ${commonUtilties[@]}; do
 
             if [ $utility == "coreutils" ]; then
@@ -314,6 +327,10 @@ updateUpgrade() {
 
         sudo pacman -Syu
         sudo pacman -S dnsutils -y
+
+        sudo pacman -S --needed curl base-devel
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        source $HOME/.cargo/env
 
 
         for utility in ${commonUtilties[@]}; do
